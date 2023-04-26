@@ -47,7 +47,7 @@
     <LinearLayout
         android:layout_width="406dp"
         android:layout_height="60dp"
-        android:layout_marginStart="120dp"
+        android:layout_marginStart="40dp"
         android:layout_marginEnd="4dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -58,8 +58,8 @@
 
         <ImageView
             android:id="@+id/homeIcon"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/home"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,8 +68,8 @@
 
         <ImageView
             android:id="@+id/bookIcon"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/book"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -78,8 +78,8 @@
 
         <ImageView
             android:id="@+id/notifyIcon"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/notifications"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -88,8 +88,8 @@
 
         <ImageView
             android:id="@+id/settingsIcon"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/settings"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -98,18 +98,15 @@
 
         <ImageView
             android:id="@+id/profileIcon"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:src="@drawable/profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:src="@drawable/profile"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
             app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
-
-
-</LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
