@@ -21,9 +21,9 @@
 
         <EditText
             android:id="@+id/EditTextSearch"
-            android:layout_width="243dp"
+            android:layout_width="293dp"
             android:layout_height="50dp"
-            android:layout_marginEnd="80dp"
+            android:layout_marginEnd="40dp"
             android:background="@drawable/search_bar"
             android:hint="Search"
             android:padding="8dp"
@@ -40,21 +40,30 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="406dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="4dp"
+        android:id="@+id/iconLayout"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:background="@drawable/icon_layout"
+        android:gravity="center"
         android:orientation="horizontal"
+        android:paddingLeft="11dp"
+        android:paddingTop="20dp"
+        android:paddingRight="11dp"
+        android:paddingBottom="20dp"
+        android:showDividers="middle"
+        android:divider="@drawable/empty_divider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar"
-        app:layout_constraintVertical_bias="0.964">
+        app:layout_constraintVertical_bias="1.0">
 
         <ImageView
             android:id="@+id/homeIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:src="@drawable/home"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -65,6 +74,7 @@
             android:id="@+id/bookIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:src="@drawable/book"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -75,6 +85,7 @@
             android:id="@+id/notifyIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:src="@drawable/notifications"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -85,6 +96,7 @@
             android:id="@+id/settingsIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:src="@drawable/settings"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
