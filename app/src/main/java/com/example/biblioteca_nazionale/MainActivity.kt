@@ -13,7 +13,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.login)
-        setContentView(R.layout.home_page)
+        //setContentView(R.layout.home_page)
+        setContentView(R.layout.activity_main)
     }
 
     /*private lateinit var binding: ActivityMainBinding
