@@ -12,7 +12,7 @@ import com.example.biblioteca_nazionale.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.profile_updated)
+        setContentView(R.layout.edit_profile)
     }
 
     /*private lateinit var binding: ActivityMainBinding
