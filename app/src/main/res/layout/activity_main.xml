@@ -13,11 +13,11 @@
         android:layout_width="134dp"
         android:layout_height="111dp"
         android:layout_marginTop="368dp"
+        android:src="@drawable/logo_welcome"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.537"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/logo_welcome" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/name_app"
