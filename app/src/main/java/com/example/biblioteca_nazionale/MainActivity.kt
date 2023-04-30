@@ -14,7 +14,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.login)
         //setContentView(R.layout.home_page)
-        setContentView(R.layout.activity_main)
+        //setContentView(R.layout.activity_main)
+        setContentView(R.layout.register)
     }
 
     /*private lateinit var binding: ActivityMainBinding
