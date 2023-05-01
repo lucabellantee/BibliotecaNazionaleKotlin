@@ -8,6 +8,34 @@
     tools:context=".MainActivity">
 
 
+    <Button
+        android:id="@+id/loginButtonWelcPage"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="4dp"
+        android:backgroundTint="@color/primary_color"
+        android:text="Login"
+        android:textSize="18sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/loginButtonWelcPage2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/loginButtonWelcPage2"
+        app:layout_constraintTop_toBottomOf="@+id/name_app" />
+
+    <Button
+        android:id="@+id/loginButtonWelcPage2"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="4dp"
+        android:backgroundTint="@color/primary_color"
+        android:text="Register"
+        android:textSize="18sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginButtonWelcPage" />
+
     <ImageView
         android:id="@+id/logoWelcome"
         android:layout_width="wrap_content"
@@ -16,9 +44,9 @@
         android:background="@color/ic_launcher_background"
         android:src="@drawable/ic_launcher_foreground"
         app:layout_constraintBottom_toTopOf="@+id/name_app"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/name_app"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="@+id/name_app"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5" />
 
@@ -26,39 +54,13 @@
         android:id="@+id/name_app"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="4dp"
         android:text="Biblioteca Nazionale"
         android:textColor="#000000"
         android:textSize="25sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/loginButtonWelcPage"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="@+id/loginButtonWelcPage"
         app:layout_constraintTop_toBottomOf="@+id/logoWelcome" />
 
-    <Button
-        android:id="@+id/loginButtonWelcPage"
-        android:layout_width="350dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/primary_color"
-        android:text="Login"
-        android:textSize="18sp"
-        app:cornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_app" />
-
-    <Button
-        android:id="@+id/loginButtonWelcPage2"
-        android:layout_width="350dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/primary_color"
-        android:text="Register"
-        android:textSize="18sp"
-        app:cornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButtonWelcPage" />
 </androidx.constraintlayout.widget.ConstraintLayout>
