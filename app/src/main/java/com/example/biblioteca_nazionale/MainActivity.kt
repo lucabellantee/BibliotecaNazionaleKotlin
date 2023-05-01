@@ -1,18 +1,34 @@
 package com.example.biblioteca_nazionale
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
 import com.example.biblioteca_nazionale.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.edit_profile)
+        //binding = ActivityMainBinding.inflate(layoutInflater)
+        //setContentView(binding.root)
+        setContentView(R.layout.activity_main)
+
+        val loginButt : Button = findViewById<Button>(R.id.loginButtonWelcPage)
+        val regButt : Button = findViewById<Button>(R.id.loginButtonWelcPage2)
+
+        loginButt.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        })
+
+        regButt.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this, RegistrationActivity::class.java)
+            startActivity(intent)
+        })
     }
 
     /*private lateinit var binding: ActivityMainBinding
