@@ -85,7 +85,7 @@
         android:id="@+id/constraintLayout"
         android:layout_width="409dp"
         android:layout_height="100dp"
-        android:background="@color/lavender"
+        android:background="@color/primary_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

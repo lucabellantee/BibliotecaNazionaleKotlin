@@ -10,19 +10,23 @@
 
     <ImageView
         android:id="@+id/logoWelcome"
-        android:layout_width="134dp"
-        android:layout_height="111dp"
-        android:layout_marginTop="368dp"
-        android:src="@drawable/logo_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="340dp"
+        android:background="@color/ic_launcher_background"
+        android:src="@drawable/ic_launcher_foreground"
+        app:layout_constraintBottom_toTopOf="@+id/name_app"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.537"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
 
     <TextView
         android:id="@+id/name_app"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Biblioteca Nazionale"
         android:textColor="#000000"
         android:textSize="25sp"
@@ -35,7 +39,7 @@
         android:layout_width="350dp"
         android:layout_height="60dp"
         android:layout_marginTop="32dp"
-        android:backgroundTint="@color/lavender"
+        android:backgroundTint="@color/primary_color"
         android:text="Login"
         android:textSize="18sp"
         app:cornerRadius="20dp"
@@ -49,7 +53,7 @@
         android:layout_width="350dp"
         android:layout_height="60dp"
         android:layout_marginTop="12dp"
-        android:backgroundTint="@color/lavender"
+        android:backgroundTint="@color/primary_color"
         android:text="Register"
         android:textSize="18sp"
         app:cornerRadius="20dp"
