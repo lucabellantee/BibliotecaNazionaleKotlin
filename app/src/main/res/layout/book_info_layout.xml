@@ -23,7 +23,7 @@
             android:id="@+id/arrowIcon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/back_arrow" />
+            android:src="@drawable/baseline_arrow_back_24" />
 
         <EditText
             android:id="@+id/EditTextSearch"
@@ -42,7 +42,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/search" />
+            android:src="@drawable/baseline_search_24" />
 
     </LinearLayout>
 
@@ -68,10 +68,10 @@
 
         <ImageView
             android:id="@+id/homeIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:src="@drawable/home"
+            android:src="@drawable/baseline_home_24"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
@@ -79,10 +79,10 @@
 
         <ImageView
             android:id="@+id/bookIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:src="@drawable/book"
+            android:src="@drawable/baseline_book_24"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
@@ -90,10 +90,10 @@
 
         <ImageView
             android:id="@+id/notifyIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:src="@drawable/notifications"
+            android:src="@drawable/baseline_notifications_24"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
@@ -101,10 +101,10 @@
 
         <ImageView
             android:id="@+id/settingsIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:src="@drawable/settings"
+            android:src="@drawable/baseline_settings_24"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
@@ -112,10 +112,10 @@
 
         <ImageView
             android:id="@+id/profileIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:src="@drawable/profile"
+            android:src="@drawable/ic_baseline_person_24"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
@@ -181,7 +181,7 @@
                     android:layout_height="50dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/like_icon" />
+                    app:srcCompat="@drawable/round_hearth_24" />
 
                 <ImageView
                     android:id="@+id/sharing"
@@ -189,7 +189,7 @@
                     android:layout_height="50dp"
                     app:layout_constraintEnd_toStartOf="@+id/like_icon"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/share_icon" />
+                    app:srcCompat="@drawable/outline_share_lavander_24" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView

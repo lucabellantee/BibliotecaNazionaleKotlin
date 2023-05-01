@@ -26,10 +26,10 @@
 
         <ImageView
             android:id="@+id/homeIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:src="@drawable/home"
+            android:src="@drawable/baseline_home_24"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
@@ -37,10 +37,10 @@
 
         <ImageView
             android:id="@+id/bookIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:src="@drawable/book"
+            android:src="@drawable/baseline_book_24"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
@@ -48,10 +48,10 @@
 
         <ImageView
             android:id="@+id/notifyIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:src="@drawable/notifications"
+            android:src="@drawable/baseline_notifications_24"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
@@ -59,10 +59,10 @@
 
         <ImageView
             android:id="@+id/settingsIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:src="@drawable/settings"
+            android:src="@drawable/baseline_settings_24"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
@@ -70,10 +70,10 @@
 
         <ImageView
             android:id="@+id/profileIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
-            android:src="@drawable/profile"
+            android:src="@drawable/ic_baseline_person_24"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayoutSearchBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/EditTextSearch"
@@ -92,13 +92,13 @@
 
         <ImageView
             android:id="@+id/imageViewShareIconWhite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/share_ico_white" />
+            app:srcCompat="@drawable/outline_share_white_24" />
 
         <ImageView
             android:id="@+id/arrowIcon"
@@ -106,7 +106,7 @@
             android:layout_height="35dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/back_arrow_white"
+            android:src="@drawable/round_arrow_back_white_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
