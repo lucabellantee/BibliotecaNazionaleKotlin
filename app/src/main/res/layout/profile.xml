@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="90dp"
         android:background="@drawable/icon_layout"
+        android:divider="@drawable/empty_divider_width"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingLeft="11dp"
@@ -18,12 +19,10 @@
         android:paddingRight="11dp"
         android:paddingBottom="20dp"
         android:showDividers="middle"
-        android:divider="@drawable/empty_divider_width"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
             android:id="@+id/homeIcon"
@@ -81,5 +80,50 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="408dp"
+        android:layout_height="39dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:text="Profilo"
+            android:textAlignment="center"
+            android:textColor="#6D77FA" />
+
+        <ImageView
+            android:layout_margin="10dp"
+            android:id="@+id/imageView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/baseline_notifications_none_24" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="409dp"
+        android:layout_height="601dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/iconLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"></LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
