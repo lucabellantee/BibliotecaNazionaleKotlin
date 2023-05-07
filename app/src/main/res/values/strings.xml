@@ -8,4 +8,6 @@
     <string name="password_changed">Password modificata</string>
     <string name="message_password_changed">La password è stata modificata con successo !</string>
     <string name="back_to_login">Ritorna alla pagina di login</string>
+    <string name="book_description">Descrizione</string>
+    <string name="rating_bar_description">Inserisci un indice di gradimento</string>
 </resources>
