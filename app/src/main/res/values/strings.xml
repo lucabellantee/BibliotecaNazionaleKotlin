@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Biblioteca_Nazionale</string>
+    <string name="create_new_password">Crea una nuova password</string>
+    <string name="description_new_password">Inserisci la nuova password e dopo confermala per resettarla</string>
+    <string name="reset_password">Reset password</string>
+    <string name="new_password">Nuova password</string>
+    <string name="conferm_new_password">Conferma password</string>
 </resources>
