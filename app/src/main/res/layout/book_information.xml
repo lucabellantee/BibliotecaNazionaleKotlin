@@ -5,6 +5,159 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/iconLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewBookName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="The Lords of the rings trilogy "
+                        android:textColor="#6D77FA" />
+
+                    <ImageView
+                        android:id="@+id/imageView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/outline_share_lavander_24" />
+
+                    <ImageView
+                        android:id="@+id/imageView14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/round_hearth_24" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RatingBar
+                        android:id="@+id/ratingBarBook"
+                        android:layout_width="239dp"
+                        android:layout_height="45dp"
+                        android:contentDescription="@string/rating_bar_description" />
+
+                    <TextView
+                        android:id="@+id/textViewRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5.0 (123)" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imageViewBook"
+                    android:layout_width="match_parent"
+                    android:layout_height="137dp"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <TextView
+                    android:id="@+id/textViewDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Descrizione" />
+
+                <TextView
+                    android:id="@+id/textViewMainDescription"
+                    android:layout_width="393dp"
+                    android:layout_height="52dp"
+                    android:text="The Lord of the Rings is the saga of a group of sometimes reluctant heroes who set forth to save their world from consummate evil...." />
+
+                <LinearLayout
+                    android:layout_width="391dp"
+                    android:layout_height="match_parent"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewMoreDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Leggi di più"
+                        android:textColor="#6D77FA" />
+
+                    <ImageView
+                        android:id="@+id/buttonMoreDescription"
+                        android:layout_width="24dp"
+                        android:layout_height="20dp"
+                        android:rotationY="180"
+                        app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.gms.maps.MapView
+                        android:id="@+id/mapView"
+                        android:layout_width="223dp"
+                        android:layout_height="match_parent" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textViewNomeBiblioteca"
+                            android:layout_width="match_parent"
+                            android:layout_height="43dp"
+                            android:layout_margin="10dp"
+                            android:text="Biblioteca univpm"
+                            android:textColor="#FB0707" />
+
+                        <TextView
+                            android:id="@+id/textViewDataRiconsegna"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="Da riconsegnare entro il GG/MM/YY" />
+
+                        <Button
+                            android:id="@+id/button2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="Prenota prestito"
+                            app:cornerRadius="40dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
     <LinearLayout
         android:id="@+id/linearLayoutSearchBar"
         android:layout_width="match_parent"
@@ -121,159 +274,5 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="406dp"
-        android:layout_height="193dp"
-        android:layout_marginTop="432dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/iconLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/linearLayoutSearchBar">
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
-            android:layout_width="223dp"
-            android:layout_height="match_parent" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textViewNomeBiblioteca"
-                android:layout_width="match_parent"
-                android:layout_height="43dp"
-                android:layout_margin="10dp"
-                android:text="Biblioteca univpm"
-                android:textColor="#FB0707" />
-
-            <TextView
-                android:id="@+id/textViewDataRiconsegna"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Da riconsegnare entro il GG/MM/YY" />
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Prenota prestito"
-                app:cornerRadius="40dp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textViewBookName"
-        android:layout_width="233dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:text="The Lords of the rings trilogy "
-        android:textColor="#6D77FA"
-        app:layout_constraintEnd_toStartOf="@+id/imageView13"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar" />
-
-    <RatingBar
-        android:contentDescription="@string/rating_bar_description"
-        android:id="@+id/ratingBarBook"
-        android:layout_width="239dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewBookName" />
-
-    <TextView
-        android:id="@+id/textViewRating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="152dp"
-        android:text="5.0 (123)"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/ratingBarBook"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView13"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView14"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar"
-        app:srcCompat="@drawable/outline_share_lavander_24" />
-
-    <ImageView
-        android:id="@+id/imageView14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar"
-        app:srcCompat="@drawable/round_hearth_24" />
-
-    <ImageView
-        android:id="@+id/imageViewBook"
-        android:layout_width="383dp"
-        android:layout_height="137dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBarBook"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/textViewDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Descrizione"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewBook" />
-
-    <TextView
-        android:id="@+id/textViewMainDescription"
-        android:layout_width="393dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="4dp"
-        android:text="The Lord of the Rings is the saga of a group of sometimes reluctant heroes who set forth to save their world from consummate evil...."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
-
-    <TextView
-        android:id="@+id/textViewMoreDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="268dp"
-        android:text="Leggi di più"
-        android:textColor="#6D77FA"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMainDescription"
-        app:layout_constraintVertical_bias="0.466" />
-
-    <ImageView
-        android:id="@+id/buttonMoreDescription"
-        android:layout_width="24dp"
-        android:layout_height="20dp"
-        android:rotationY="180"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textViewMoreDescription"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMainDescription"
-        app:srcCompat="@drawable/baseline_arrow_back_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

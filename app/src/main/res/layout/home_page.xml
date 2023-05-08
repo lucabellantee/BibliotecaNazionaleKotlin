@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <LinearLayout
         android:id="@+id/linearLayoutSearchBar"
         android:layout_width="match_parent"
@@ -117,5 +118,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
