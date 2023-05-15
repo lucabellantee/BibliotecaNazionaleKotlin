@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/homeIcon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:icon="@drawable/baseline_home_24"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/bookIcon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:icon="@drawable/baseline_book_24"
+        android:title="Books" />
+
+    <item
+        android:id="@+id/notificationIcon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:icon="@drawable/baseline_notifications_24"
+        android:title="Notifications" />
+
+    <item
+        android:id="@+id/settingsIcon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:icon="@drawable/baseline_settings_24"
+        android:title="Settings" />
+
+
+    <item
+        android:id="@+id/profileIcon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="Profile" />
+
+</menu>
