@@ -1,8 +1,10 @@
 package com.example.biblioteca_nazionale.data
 
+import android.util.Log
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
 
 class BookRepository {
     private val database = Firebase.firestore
@@ -43,7 +45,7 @@ class BookRepository {
         private const val TAG = "BookRepository"
     }
 
-    suspend fun uploadBook(book: Book) {
+    /*suspend fun uploadBook(book: Book) {
         val db = FirebaseFirestore.getInstance()
         db.collection("books")
             .document(book.id)
@@ -56,5 +58,5 @@ class BookRepository {
         val docRef = db.collection("books").document(bookId)
         val docSnapshot = docRef.get().await()
         return docSnapshot.toObject(Book::class.java)
-    }
+    }*/
 }
