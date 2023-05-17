@@ -122,7 +122,8 @@
                     <com.google.android.gms.maps.MapView
                         android:id="@+id/mapView"
                         android:layout_width="223dp"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:contentDescription="niente"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -196,13 +197,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="TextView" />
-
-                    <item
-                        android:id="@+id/notifyIcon"
-                        android:layout_width="57dp"
-                        android:layout_height="match_parent"
-                        android:icon="@drawable/baseline_notifications_24"
-                        android:title="Home" />
 
                 </LinearLayout>
 
@@ -409,8 +403,6 @@
             app:menu="@menu/bottom_navigation_menu">
 
         </com.google.android.material.bottomnavigation.BottomNavigationView>
-
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </LinearLayout>
 

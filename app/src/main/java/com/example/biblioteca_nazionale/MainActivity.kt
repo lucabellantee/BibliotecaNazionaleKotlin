@@ -6,6 +6,9 @@ import android.os.Bundle
 
 import android.view.View
 import android.widget.Button
+import com.example.biblioteca_nazionale.activity.HomePageActivity
+import com.example.biblioteca_nazionale.activity.LoginActivity
+import com.example.biblioteca_nazionale.activity.RegistrationActivity
 import com.example.biblioteca_nazionale.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val regButt : Button = findViewById<Button>(R.id.loginButtonWelcPage2)
 
         loginButt.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, HomePageActivity::class.java)
             startActivity(intent)
         })
 

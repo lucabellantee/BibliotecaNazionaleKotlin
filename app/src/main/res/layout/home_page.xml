@@ -49,7 +49,7 @@
 
         <fragment
             android:id="@+id/bookListFragment"
-            android:name="com.example.myapp.BookListFragment"
+            android:name="com.example.biblioteca_nazionale.fragments.BookListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
