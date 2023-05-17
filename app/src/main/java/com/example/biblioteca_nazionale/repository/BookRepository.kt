@@ -1,9 +1,8 @@
-package com.example.biblioteca_nazionale.data
+package com.example.biblioteca_nazionale.repository
 
 import android.util.Log
+import com.example.biblioteca_nazionale.model.Book
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 
 class BookRepository {
