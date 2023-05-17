@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 
 
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
-    fun registerUser(email: String, password: String) {
+    fun registerUserWithEmailPassword(email: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = authRepository.registerUser(email, password)
             // Gestisci il risultato qui (ad esempio, emetti un LiveData, un StateFlow, ecc.)
