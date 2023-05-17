@@ -13,6 +13,7 @@ class SignInViewModel(private val authRepository: AuthRepository) : ViewModel() 
         viewModelScope.launch(Dispatchers.IO) {
             val result = authRepository.registerUser(email, password)
             // Gestisci il risultato qui (ad esempio, emetti un LiveData, un StateFlow, ecc.)
+            // TODO LUCA: Vedere cosa fare qui
         }
     }
 
