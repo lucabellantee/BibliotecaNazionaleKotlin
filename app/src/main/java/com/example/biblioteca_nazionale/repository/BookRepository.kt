@@ -23,7 +23,7 @@ class BookRepository {
                 }
     }
 
-    fun getBooks(callback: (List<Book>) -> Unit) {
+    /*fun getBooks(callback: (List<Book>) -> Unit) {
         booksCollection
             .get()
             .addOnSuccessListener { result ->
@@ -39,9 +39,17 @@ class BookRepository {
                 Log.e(TAG, "Error getting books", e)
                 callback(emptyList())
             }
-    }
+    }*/
 
-    companion object {
+    fun getBooks() : List<Book>{
+        val book1 = Book("IS734687682", "Harry potter", "J.K.Rowling", "", "", "")
+        val book2 = Book("IS7345645682", "Harry potter 2", "J.K.Rowling", "", "", "")
+        val book3 = Book("IS739347682", "Harry potter 3", "J.K.Rowling", "", "", "")
+        return listOf<Book>(book1, book2, book3)
+            }
+
+
+        companion object {
         private const val TAG = "BookRepository"
     }
 
