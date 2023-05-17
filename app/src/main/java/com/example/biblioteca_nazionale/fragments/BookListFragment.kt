@@ -36,8 +36,7 @@ class BookListFragment : Fragment() {
         binding.recyclerViewBooks.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewBooks.adapter = adapter
 
-        viewModel.getBooks().observe(viewLifecycleOwner, { books ->
-            adapter.submitList(books)
+        viewModel.getBooks().observe(viewLifecycleOwner, { books -> adapter.submitList(books)
         })
     }
 }
