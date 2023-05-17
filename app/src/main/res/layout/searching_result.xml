@@ -5,150 +5,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <data>
+        <variable
+            android:name="book"
+            android:type="com.example.biblioteca_nazionale.model.Book" />
+    </data>
+
+
     <LinearLayout
-        android:id="@+id/linearLayoutSearchBar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/search_layout"
-        android:orientation="horizontal"
-        android:paddingLeft="11dp"
-        android:paddingTop="20dp"
-        android:paddingRight="11dp"
-        android:paddingBottom="20dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/arrowIcon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/baseline_arrow_back_24" />
-
-        <EditText
-            android:id="@+id/EditTextSearch"
-            android:layout_width="270dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/search_bar"
-            android:hint="Search"
-            android:padding="8dp"
-            android:paddingLeft="20dp"
-            android:paddingTop="17.5dp"
-            android:textColor="@color/black" />
-
-        <ImageView
-            android:id="@+id/searchIcon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/baseline_search_24" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/iconLayout"
-        android:layout_width="0dp"
-        android:layout_height="90dp"
-        android:background="@drawable/icon_layout"
-        android:divider="@drawable/empty_divider_width"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingLeft="11dp"
-        android:paddingTop="20dp"
-        android:paddingRight="11dp"
-        android:paddingBottom="20dp"
-        android:showDividers="middle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar"
-        app:layout_constraintVertical_bias="1.0">
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation"
+            android:id="@+id/imageViewCover"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:itemHorizontalTranslationEnabled="false"
-            app:menu="@menu/bottom_navigation_menu">
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/your_cover_image" />
 
-        </com.google.android.material.bottomnavigation.BottomNavigationView>
-
-    </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/iconLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar">
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/textViewTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/search_layout"
-            android:orientation="horizontal">
+            android:text="Book Title"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/bookImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                tools:srcCompat="@tools:sample/avatars" />
+        <TextView
+            android:id="@+id/textViewDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Book Description"
+            android:textSize="14sp" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="222dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:rating="3.5"
+            android:stepSize="0.5" />
 
-                <TextView
-                    android:id="@+id/bookTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="37dp"
-                    android:text="sss" />
+    </LinearLayout>
 
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp">
-
-                    <RatingBar
-                        android:id="@+id/ratingBar2"
-                        style="@android:style/Widget.Material.RatingBar.Small"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:isIndicator="false"
-                        android:numStars="5"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="TextView"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/ratingBar2"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:id="@+id/bookDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="67dp"
-                    android:text="TextView" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,9 +1,8 @@
-package com.example.biblioteca_nazionale.data
+package com.example.biblioteca_nazionale.repository
 
 import android.util.Log
+import com.example.biblioteca_nazionale.model.Book
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 
 class BookRepository {
@@ -11,16 +10,17 @@ class BookRepository {
     private val booksCollection = database.collection("books")
 
     fun addBook(book: Book, callback: (Boolean) -> Unit) {
-        booksCollection
-            .add(book)
-            .addOnSuccessListener {
-                book.id = it.id
-                callback(true)
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Error adding book", e)
-                callback(false)
-            }
+
+            booksCollection
+                .add(book)
+                .addOnSuccessListener {
+                    book.id = it.id
+                    callback(true)
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error adding book", e)
+                    callback(false)
+                }
     }
 
     fun getBooks(callback: (List<Book>) -> Unit) {

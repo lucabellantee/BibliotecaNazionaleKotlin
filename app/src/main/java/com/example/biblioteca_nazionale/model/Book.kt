@@ -1,9 +1,9 @@
-package com.example.biblioteca_nazionale.data
+package com.example.biblioteca_nazionale.model
 
 import java.util.Date
 
 data class Book(
-    var id: String? = null,
+    var isbn: String? = null,
     var title: String? = null,
     var author: String? = null,
     var publisher: String? = null,
