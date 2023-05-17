@@ -14,7 +14,7 @@ class BookRepository {
             booksCollection
                 .add(book)
                 .addOnSuccessListener {
-                    book.id = it.id
+                    book.isbn = it.id
                     callback(true)
                 }
                 .addOnFailureListener { e ->
