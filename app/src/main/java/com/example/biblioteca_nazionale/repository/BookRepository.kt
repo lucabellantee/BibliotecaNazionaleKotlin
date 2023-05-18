@@ -6,7 +6,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.firestore.ktx.firestore
 
 class BookRepository {
-    private val database = Firebase.firestore
+    /*private val database = Firebase.firestore
     private val booksCollection = database.collection("books")
 
     fun addBook(book: Book, callback: (Boolean) -> Unit) {
@@ -21,7 +21,7 @@ class BookRepository {
                     Log.e(TAG, "Error adding book", e)
                     callback(false)
                 }
-    }
+    }*/
 
     /*fun getBooks(callback: (List<Book>) -> Unit) {
         booksCollection
