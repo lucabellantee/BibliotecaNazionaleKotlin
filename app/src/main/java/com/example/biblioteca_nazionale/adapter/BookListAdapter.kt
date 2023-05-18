@@ -22,7 +22,8 @@ class BookListAdapter(var data: List<Book>): RecyclerView.Adapter<BookListAdapte
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        holder.title.text = data.get(position).toString()
+        holder.title.text = data.get(position).title
+        holder.desc.text = data.get(position).description
     }
 
     override fun getItemCount(): Int {
