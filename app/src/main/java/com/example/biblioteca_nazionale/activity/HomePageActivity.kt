@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.HomePageBinding
-import com.example.biblioteca_nazionale.fragments.BlankFragment
 import com.example.biblioteca_nazionale.fragments.BookListFragment
 
 class HomePageActivity : AppCompatActivity() {
@@ -19,11 +18,10 @@ class HomePageActivity : AppCompatActivity() {
         binding = HomePageBinding.inflate(layoutInflater)
 
         val fragmentManager: FragmentManager = supportFragmentManager
-        val bookListFragment = BookListFragment()
-        val blankFrag = BlankFragment()
+        val bookListFrag = BookListFragment()
 
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragmentContainer, blankFrag) //Quì serve la recyclerView
+        fragmentTransaction.replace(R.id.fragmentContainer, bookListFrag) //Quì serve la recyclerView
         fragmentTransaction.commit()
     }
 }
