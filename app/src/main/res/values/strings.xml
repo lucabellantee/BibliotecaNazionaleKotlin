@@ -44,5 +44,7 @@
         <string name="flower11_description">Dahlia is named after the Swedish botanist Anders
         Dahl</string>
         <string name="flower12_description">There are over 150 species of tulips.</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
