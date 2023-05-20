@@ -7,13 +7,13 @@
     <fragment
         android:id="@+id/bookListFragment"
         android:name="com.example.biblioteca_nazionale.fragments.BookListFragment"
-        android:label="BookListFragment" />
+        android:label="BookListFragment" >
+        <action
+            android:id="@+id/action_bookListFragment_to_bookInfoFragment"
+            app:destination="@id/bookInfoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/bookInfoFragment"
         android:name="com.example.biblioteca_nazionale.fragments.BookInfoFragment"
-        android:label="BookInfoFragment" >
-        <action
-            android:id="@+id/action_bookInfoFragment_to_bookListFragment"
-            app:destination="@id/bookListFragment" />
-    </fragment>
+        android:label="BookInfoFragment" />
 </navigation>

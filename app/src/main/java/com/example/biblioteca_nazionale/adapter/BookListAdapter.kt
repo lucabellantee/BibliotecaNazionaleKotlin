@@ -5,39 +5,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+//import com.bumptech.glide.Glide
 import androidx.recyclerview.widget.RecyclerView
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.model.Book
 
-class BookListAdapter(private val data: List<Book>) :
-    RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
+class BookListAdapter(var data: List<Book>): RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
 
-    private lateinit var mListner: OnBookClickListener
+    class BookViewHolder(val row: View) : RecyclerView.ViewHolder(row) {
+        val title = row.findViewById<TextView>(R.id.book_title)
+        val desc = row.findViewById<TextView>(R.id.book_description)
+        val author = row.findViewById<TextView>(R.id.book_author)
+        val cover = row.findViewById<ImageView>(R.id.imageViewCover)
 
-    interface OnBookClickListener {
-        fun onBookClick(position: Int)
     }
 
-    fun setOnBookClickListener(listner:OnBookClickListener){
-        mListner = listner
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookListAdapter.BookViewHolder {
+        val layout = LayoutInflater.from(parent.context).inflate(R.layout.searching_result, parent, false)
 
-    class BookViewHolder(itemView: View,listner : OnBookClickListener) : RecyclerView.ViewHolder(itemView) {
-        val title: TextView = itemView.findViewById(R.id.book_title)
-        val desc: TextView = itemView.findViewById(R.id.book_description)
-        val author: TextView = itemView.findViewById(R.id.book_author)
-        val cover: ImageView = itemView.findViewById(R.id.imageViewCover)
-
-        init{
-            itemView.setOnClickListener {
-                listner.onBookClick(adapterPosition)
-            }
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.searching_result, parent, false)
-        return BookViewHolder(itemView,mListner)
+        return BookViewHolder(layout)
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
@@ -46,9 +32,14 @@ class BookListAdapter(private val data: List<Book>) :
         holder.desc.text = currentBook.isbn
         holder.author.text = currentBook.copertina
 
-        // Carica l'immagine della copertina del libro qui, se necessario
-        // Glide, Picasso o altre librerie di caricamento delle immagini possono essere utilizzate
+        /*val resourceId = holder.itemView.context.resources.getIdentifier(
+            currentBook.copertina, "drawable", holder.itemView.context.packageName
+        )
+        Glide.with(holder.cover)
+            .load(resourceId)
+            .into(holder.cover)*/
     }
+
 
     override fun getItemCount(): Int {
         return data.size
