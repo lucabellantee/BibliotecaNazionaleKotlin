@@ -4,7 +4,7 @@ import android.content.res.Resources
 import com.example.biblioteca_nazionale.model.Book
 
 /* Returns initial list of flowers. */
-fun bookList(resources: Resources): List<Book> {
+/*fun bookList(resources: Resources): List<Book> {
     return listOf(
         Book(
             isbn = "000",
@@ -17,4 +17,4 @@ fun bookList(resources: Resources): List<Book> {
             author = "io1"
         )
     )
-}
+}*/

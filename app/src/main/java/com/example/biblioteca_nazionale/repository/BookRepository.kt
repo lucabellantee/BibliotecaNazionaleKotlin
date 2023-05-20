@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.biblioteca_nazionale.interface_.ApiService
 import com.example.biblioteca_nazionale.model.Book
-import com.example.biblioteca_nazionale.model.BookResponse
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.firestore.ktx.firestore
 import retrofit2.Call
@@ -53,9 +52,9 @@ class BookRepository {
     }*/
 
     fun getBooks() : List<Book>{
-        val book1 = Book("IS734687682", "Harry potter", "J.K.Rowling", "", "Questo è il primo libro sulla pietra filosofale", "@drawable/baseline_settings_24")
-        val book2 = Book("IS7345645682", "Harry potter 2", "J.K.Rowling", "", "Quì si parla della camera dei segreti", "@drawable/success_mak")
-        val book3 = Book("IS739347682", "Harry potter 3", "J.K.Rowling", "", "Questo parla del prigioniero di Azkaban, cioè il padrino di Harry", "@drawable/welcome_background")
+        val book1 = Book(734687682, "Harry potter", "J.K.Rowling", "", "Questo è il primo libro sulla pietra filosofale", "", "", "", "")
+        val book2 = Book(734564568, "Harry potter 2", "J.K.Rowling", "", "Quì si parla della camera dei segreti", "", "", "", "")
+        val book3 = Book(739347682, "Harry potter 3", "J.K.Rowling", "", "Questo parla del prigioniero di Azkaban, cioè il padrino di Harry", "", "", "", "")
         return listOf<Book>(book1, book2, book3)
             }
 

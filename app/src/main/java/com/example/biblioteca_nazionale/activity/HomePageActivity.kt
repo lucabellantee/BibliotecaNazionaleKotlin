@@ -57,12 +57,12 @@ class HomePageActivity : AppCompatActivity() {
                     myStringBuilder.append("\n")
                 }
 
-
+                //textView.text = myStringBuilder
 
             }
 
             override fun onFailure(call: Call<List<Book>?>, t: Throwable) {
-                TODO("Not yet implemented")
+                Log.d("HomePageActivity", "onFailure"+t.message)
             }
         })
     }

@@ -8,7 +8,7 @@ import com.example.biblioteca_nazionale.model.Book
 
 /* Handles operations on BooksLiveData and holds details about it. */
 class DataSource(resources: Resources) {
-    private val initialBookList = bookList(resources)
+    /*private val initialBookList = bookList(resources)
     private val BooksLiveData = MutableLiveData(initialBookList)
 
     /* Adds Book to liveData and posts value. */
@@ -61,5 +61,5 @@ class DataSource(resources: Resources) {
                 newInstance
             }
         }
-    }
+    }*/
 }

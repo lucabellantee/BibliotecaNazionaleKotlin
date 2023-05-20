@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
+//import com.bumptech.glide.Glide
 import androidx.recyclerview.widget.RecyclerView
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.model.Book
@@ -28,16 +28,16 @@ class BookListAdapter(var data: List<Book>): RecyclerView.Adapter<BookListAdapte
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val currentBook = data[position]
-        holder.title.text = currentBook.title
-        holder.desc.text = currentBook.description
-        holder.author.text = currentBook.author
+        holder.title.text = currentBook.codiceIdentificativo
+        holder.desc.text = currentBook.isbn
+        holder.author.text = currentBook.copertina
 
-        val resourceId = holder.itemView.context.resources.getIdentifier(
-            currentBook.coverImageUrl, "drawable", holder.itemView.context.packageName
+        /*val resourceId = holder.itemView.context.resources.getIdentifier(
+            currentBook.copertina, "drawable", holder.itemView.context.packageName
         )
         Glide.with(holder.cover)
             .load(resourceId)
-            .into(holder.cover)
+            .into(holder.cover)*/
     }
 
 
