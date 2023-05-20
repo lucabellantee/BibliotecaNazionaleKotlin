@@ -1,16 +1,10 @@
 package com.example.biblioteca_nazionale.model
 
-import java.io.Serializable
+import com.google.gson.annotations.SerializedName
+
+data class Book(
+    @SerializedName("id")val id: String,
+    @SerializedName("volumeInfo")val info: InfoBook
+)
 
 
-class Book(
-    val progressivoId: Int,
-    val codiceIdentificativo: String,
-    val isbn: String,
-    val autorePrincipale: String,
-    val copertina: String,
-    val titolo: String,
-    val pubblicazione: String,
-    val livello: String,
-    val tipo: String
-) : Serializable
