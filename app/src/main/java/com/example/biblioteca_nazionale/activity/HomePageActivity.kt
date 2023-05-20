@@ -10,7 +10,7 @@ import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.HomePageBinding
 import com.example.biblioteca_nazionale.fragments.BookListFragment
 import com.example.biblioteca_nazionale.interface_.ApiService
-import com.example.biblioteca_nazionale.model.BookResponse
+import com.example.biblioteca_nazionale.model.Book
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,24 +47,19 @@ class HomePageActivity : AppCompatActivity() {
 
         val retrofitDati = retrofitBld.getBookISBN()
 
-        retrofitDati.enqueue(object: Callback<List<BookResponse>?>) {
-            fun onResponse(call: Call<List<BookResponse>>, response: Response<List<BookResponse>?>) {
+        retrofitDati.enqueue(object : Callback<List<Book>?> {
+            override fun onResponse(call: Call<List<Book>?>, response: Response<List<Book>?>) {
                 val responseBody = response.body()!!
 
-                val stringBuilder = StringBuilder()
-                for (data in responseBody) {
-                    stringBuilder.append(data.codiceIdentificativo) //li seleziono io, quindi posso prendere solo quelli che mi interessano
-                    stringBuilder.append("\n")          //tra quelli di BookResponse
-
-                    testo = findViewById<TextView>(R.id.qualcosa)
-                    testo.text = stringBuilder
+                for(myData in responseBody){
+                    
                 }
             }
 
-            fun onFailure(call: Call<List<BookResponse>?>, t: Throwable) {
-                Log.d("HomePageActivity", "onFailure: "+t.message)
+            override fun onFailure(call: Call<List<Book>?>, t: Throwable) {
+                TODO("Not yet implemented")
             }
-        }
+        })
     }
 
 }
