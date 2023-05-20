@@ -1,19 +1,6 @@
 package com.example.biblioteca_nazionale.repository
 
-import android.util.Log
-import android.widget.TextView
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.example.biblioteca_nazionale.interface_.ApiService
 import com.example.biblioteca_nazionale.model.Book
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.firestore.ktx.firestore
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.StringBuilder
 
 class BookRepository {
     /*private val database = Firebase.firestore
@@ -51,12 +38,12 @@ class BookRepository {
             }
     }*/
 
-    fun getBooks() : List<Book>{
+    /*fun getBooks() : List<Book>{
         val book1 = Book(734687682, "Harry potter", "J.K.Rowling", "", "Questo è il primo libro sulla pietra filosofale", "", "", "", "")
         val book2 = Book(734564568, "Harry potter 2", "J.K.Rowling", "", "Quì si parla della camera dei segreti", "", "", "", "")
         val book3 = Book(739347682, "Harry potter 3", "J.K.Rowling", "", "Questo parla del prigioniero di Azkaban, cioè il padrino di Harry", "", "", "", "")
         return listOf<Book>(book1, book2, book3)
-            }
+            }*/
 
 
         companion object {

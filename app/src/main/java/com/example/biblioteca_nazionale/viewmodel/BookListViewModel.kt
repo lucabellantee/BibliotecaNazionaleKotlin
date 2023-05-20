@@ -16,7 +16,7 @@ class BookListViewModel(private val bookRepository: BookRepository) : ViewModel(
 
     fun getBooks() {
         viewModelScope.launch {
-            _books.value = bookRepository.getBooks()
+            //_books.value = bookRepository.getBooks()
         }
     }
 

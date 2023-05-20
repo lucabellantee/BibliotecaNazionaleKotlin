@@ -1,22 +1,22 @@
 package com.example.biblioteca_nazionale.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-//import com.bumptech.glide.Glide
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.biblioteca_nazionale.R
-import com.example.biblioteca_nazionale.model.Book
+import com.example.biblioteca_nazionale.model.BooksResponse
 
-class BookListAdapter(var data: List<Book>): RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
+class BookListAdapter(var data: LiveData<BooksResponse>): RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
 
     class BookViewHolder(val row: View) : RecyclerView.ViewHolder(row) {
         val title = row.findViewById<TextView>(R.id.book_title)
         val desc = row.findViewById<TextView>(R.id.book_description)
         val author = row.findViewById<TextView>(R.id.book_author)
-        val cover = row.findViewById<ImageView>(R.id.imageViewCover)
+        //val cover = row.findViewById<ImageView>(R.id.imageViewCover)
 
     }
 
@@ -27,21 +27,21 @@ class BookListAdapter(var data: List<Book>): RecyclerView.Adapter<BookListAdapte
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        val currentBook = data[position]
-        holder.title.text = currentBook.codiceIdentificativo
-        holder.desc.text = currentBook.isbn
-        holder.author.text = currentBook.copertina
+        //val currentBook = data[position]
+        //val currentBook = data.value?.get(position)
+        Log.d("BookListAdapter", "Valore: ${data.value?.items?.get(0)}")
 
-        /*val resourceId = holder.itemView.context.resources.getIdentifier(
-            currentBook.copertina, "drawable", holder.itemView.context.packageName
-        )
-        Glide.with(holder.cover)
-            .load(resourceId)
-            .into(holder.cover)*/
+        //val currentBook = data.value?.items?.get(position)
+        val currentBook = data.value?.items?.get(position)
+        holder.title.text = currentBook?.info?.title ?: ""
+        holder.desc.text = currentBook?.info?.description ?: ""
+        holder.author.text = currentBook?.info?.authors.toString()
+
     }
 
 
     override fun getItemCount(): Int {
-        return data.size
+        return data.value?.items?.size ?: 0
+        //return data?.items?.size ?: 0
     }
 }

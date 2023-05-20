@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.biblioteca_nazionale.viewmodel.BooksViewModel" />
+    </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -49,16 +54,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center|left"
-                    android:text="Book Title"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+                    <!--android:text="@{viewModel.libriLiveData.items.get().info.title}"-->
 
                 <TextView
                     android:id="@+id/book_author"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Book Author"
                     android:textSize="14sp" />
+                    <!--android:text="@{viewModel.libriLiveData.items.get().info.authors.toString()}"-->
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -80,10 +85,10 @@
                         style="@style/Widget.AppCompat.RatingBar.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:contentDescription="description"
                         android:numStars="5"
                         android:rating="3.5"
                         android:stepSize="0.5" />
+                        <!--android:contentDescription="description"-->
 
                     <TextView
                         android:id="@+id/totalRating"
@@ -98,8 +103,8 @@
                     android:id="@+id/book_description"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Book Description"
                     android:textSize="14sp" />
+                    <!--android:text="@{viewModel.libriLiveData.items.get().info.description}"-->
 
             </LinearLayout>
         </LinearLayout>
