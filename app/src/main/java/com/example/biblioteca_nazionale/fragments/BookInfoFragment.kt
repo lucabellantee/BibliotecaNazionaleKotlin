@@ -1,14 +1,11 @@
-package com.example.biblioteca_nazionale.fragments
-
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
-import com.example.biblioteca_nazionale.adapter.BookListAdapter
-import androidx.navigation.fragment.findNavController
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
-import com.example.biblioteca_nazionale.repository.BookRepository
+import com.example.biblioteca_nazionale.model.Book
+import java.io.Serializable
 
 class BookInfoFragment: Fragment(R.layout.fragment_book_info) {
 
@@ -19,8 +16,9 @@ class BookInfoFragment: Fragment(R.layout.fragment_book_info) {
 
         binding = FragmentBookInfoBinding.bind(view)
 
-
+        val selectedBook = arguments?.getSerializable("selectedBook")
+        // Utilizza il libro selezionato come desideri
+        selectedBook?.let {
+        }
     }
-
-
 }
