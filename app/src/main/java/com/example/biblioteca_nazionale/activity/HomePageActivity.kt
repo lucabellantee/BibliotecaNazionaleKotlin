@@ -51,9 +51,14 @@ class HomePageActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<Book>?>, response: Response<List<Book>?>) {
                 val responseBody = response.body()!!
 
+                val myStringBuilder = StringBuilder()
                 for(myData in responseBody){
-                    
+                    myStringBuilder.append(myData.titolo)
+                    myStringBuilder.append("\n")
                 }
+
+
+
             }
 
             override fun onFailure(call: Call<List<Book>?>, t: Throwable) {
