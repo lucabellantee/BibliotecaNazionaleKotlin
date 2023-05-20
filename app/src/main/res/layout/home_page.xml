@@ -95,9 +95,20 @@
             android:src="@drawable/baseline_search_24" />-->
     </LinearLayout>
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/iconLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar"
 
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
 
-    <FrameLayout
+    <!--<FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -106,7 +117,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar">
 
-    </FrameLayout>
+    </FrameLayout>-->
 
     <LinearLayout
         android:id="@+id/iconLayout"
