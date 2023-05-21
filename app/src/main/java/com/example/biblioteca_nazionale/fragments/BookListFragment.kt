@@ -50,16 +50,16 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
         binding.recyclerViewBooks.layoutManager = layoutManager
         val adapter = BookListAdapter(model.getLibriLiveData())
 
-        bookListAdapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
+        adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
             override fun onBookClick(position: Int) {
-                val book:Book = model.getBooks()[position]
+                /*val book:Book = model.getBooks()[position]
                 val bookInfoFrag = BookInfoFragment()
                 val bundle = Bundle()
                 bundle.putSerializable("selectedBook", book);                bookInfoFrag.arguments = bundle
                 val fragmentManager: FragmentManager = parentFragmentManager
                 val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
                 fragmentTransaction.replace(R.id.fragmentContainer, bookInfoFrag)
-                fragmentTransaction.commit()
+                fragmentTransaction.commit()*/
             }
         })
         binding.recyclerViewBooks.adapter = adapter

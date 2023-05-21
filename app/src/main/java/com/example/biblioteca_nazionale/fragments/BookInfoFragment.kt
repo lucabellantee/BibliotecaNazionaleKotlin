@@ -7,7 +7,7 @@ import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
 import java.io.Serializable
 
-class BookInfoFragment: Fragment(R.layout.fragment_book_info) {
+class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
     lateinit var binding: FragmentBookInfoBinding
 
@@ -19,6 +19,7 @@ class BookInfoFragment: Fragment(R.layout.fragment_book_info) {
         val selectedBook = arguments?.getSerializable("selectedBook")
         // Utilizza il libro selezionato come desideri
         selectedBook?.let {
+            //binding.textViewBookName.text = selectedBook[""]
         }
     }
 }
