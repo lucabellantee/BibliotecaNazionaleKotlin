@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         val regButt : Button = findViewById<Button>(R.id.loginButtonWelcPage2)
 
         loginButt.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, HomePageActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         })
 
