@@ -5,11 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.BooksResponse
 import com.example.biblioteca_nazionale.utils.GoogleBooksApiClient
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 class BooksViewModel : ViewModel() {
     private val googleBooksApiClient: GoogleBooksApiClient = GoogleBooksApiClient()

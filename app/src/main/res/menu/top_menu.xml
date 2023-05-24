@@ -7,6 +7,4 @@
         android:title="Indietro"
         app:showAsAction="ifRoom" />
 
-    <!-- Altri elementi del menu -->
-
 </menu>

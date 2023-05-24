@@ -37,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(intent)
                     } else {
                         Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+
                     }
                 }
             } else {
@@ -49,9 +50,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        /*if (firebaseAuth.currentUser != null) {
+        if (firebaseAuth.currentUser != null) {
             val intent = Intent(this, HomePageActivity::class.java)
             startActivity(intent)
-        }*/
+        }
     }
 }
