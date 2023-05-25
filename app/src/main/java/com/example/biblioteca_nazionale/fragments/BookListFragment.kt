@@ -2,8 +2,10 @@ package com.example.biblioteca_nazionale.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
@@ -21,6 +23,13 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
     private val model: BooksViewModel = BooksViewModel()
 
+    /*override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_book_info, container, false)
+    }*/
     /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -105,8 +114,6 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
                 return true
             }
         })
-
-
 
         val layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewBooks.layoutManager = layoutManager

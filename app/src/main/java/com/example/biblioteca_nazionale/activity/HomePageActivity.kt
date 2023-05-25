@@ -7,6 +7,9 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.databinding.HomePageBinding
@@ -20,6 +23,7 @@ class HomePageActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     var model:BooksViewModel = BooksViewModel()
     lateinit var adapter:BookListAdapter
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +34,19 @@ class HomePageActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
 
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.fragmentContainer) as NavHostFragment
+        navController = navHostFragment.navController
+
+        binding.bottomNavigation.setOnItemSelectedListener {item ->
+            when(item.itemId){
+                R.id.profileIcon -> {
+                    findNavController(R.id.fragmentContainer).navigate(R.id.action_bookListFragment_to_profileFragment2)
+                    true
+                }
+                else -> false
+            }
+        }
 
         val fragmentManager: FragmentManager = supportFragmentManager
         val bookListFrag = BookListFragment()
