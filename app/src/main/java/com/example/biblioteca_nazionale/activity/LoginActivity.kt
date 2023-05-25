@@ -83,10 +83,10 @@ class LoginActivity : AppCompatActivity() {
 
         firebaseAuth.signOut()
 
-    /*    if (firebaseAuth.currentUser != null) {
+     if (firebaseAuth.currentUser != null) {
             val intent = Intent(this, HomePageActivity::class.java)
             startActivity(intent)
-        }*/
+        }
     }
 
 
