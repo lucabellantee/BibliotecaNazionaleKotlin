@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.model.BooksResponse
 
@@ -48,16 +50,15 @@ class BookListAdapter(var data: LiveData<BooksResponse>) :
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        //val currentBook = data[position]
-        //val currentBook = data.value?.get(position)
-        Log.d("BookListAdapter", "Valore: ${data.value?.items?.get(0)}")
-
-        //val currentBook = data.value?.items?.get(position)
         val currentBook = data.value?.items?.get(position)
         holder.title.text = currentBook?.info?.title ?: ""
         holder.desc.text = currentBook?.info?.description ?: ""
         holder.author.text = currentBook?.info?.authors.toString()
 
+        Glide.with(holder.itemView)
+            .load(currentBook?.info?.imageLinks?.thumbnail.toString())
+            .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
+            .into(holder.cover)
     }
 
     override fun getItemCount(): Int {
