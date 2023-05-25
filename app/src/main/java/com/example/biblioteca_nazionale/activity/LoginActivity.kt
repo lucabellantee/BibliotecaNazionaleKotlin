@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.biblioteca_nazionale.R
@@ -20,6 +21,8 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: LoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
+
+
 
     // login google
     private lateinit var googleSignInClient : GoogleSignInClient
@@ -80,63 +83,63 @@ class LoginActivity : AppCompatActivity() {
 
         firebaseAuth.signOut()
 
-        /*    if (firebaseAuth.currentUser != null) {
-                val intent = Intent(this, HomePageActivity::class.java)
-                startActivity(intent)
-            }*/
+    /*    if (firebaseAuth.currentUser != null) {
+            val intent = Intent(this, HomePageActivity::class.java)
+            startActivity(intent)
+        }*/
     }
 
 
-    /*  override fun onStart() {
-          super.onStart()
+  /*  override fun onStart() {
+        super.onStart()
 
-          if (firebaseAuth.currentUser != null) {
+        if (firebaseAuth.currentUser != null) {
 
-               if (firebaseAuth.currentUser != null) {
-                   val intent = Intent(this, HomePageActivity::class.java)
-                   startActivity(intent)
-               }
-          }   */
+             if (firebaseAuth.currentUser != null) {
+                 val intent = Intent(this, HomePageActivity::class.java)
+                 startActivity(intent)
+             }
+        }   */
 
 
-    // INIZIO FUNZIONI LOGIN GOOGLE
+        // INIZIO FUNZIONI LOGIN GOOGLE
 
-    private fun signInGoogle(){
-        val signInIntent = googleSignInClient.signInIntent
-        launcher.launch(signInIntent)
-    }
-
-    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            result ->
-        if (result.resultCode == Activity.RESULT_OK){
-
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            handleResults(task)
+        private fun signInGoogle(){
+            val signInIntent = googleSignInClient.signInIntent
+            launcher.launch(signInIntent)
         }
-    }
 
-    private fun handleResults(task: Task<GoogleSignInAccount>) {
-        if (task.isSuccessful){
-            val account : GoogleSignInAccount? = task.result
-            if (account != null){
-                updateUI(account)
+        private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+                result ->
+            if (result.resultCode == Activity.RESULT_OK){
+
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                handleResults(task)
             }
-        }else{
-            Toast.makeText(this, task.exception.toString() , Toast.LENGTH_SHORT).show()
         }
-    }
 
-    private fun updateUI(account: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(account.idToken , null)
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
-            if (it.isSuccessful){
-                // Se corretto entro nella HomePageActivity
-                startActivity(Intent(this , HomePageActivity::class.java))
+        private fun handleResults(task: Task<GoogleSignInAccount>) {
+            if (task.isSuccessful){
+                val account : GoogleSignInAccount? = task.result
+                if (account != null){
+                    updateUI(account)
+                }
             }else{
-                // Toast.makeText(this, it.exception.toString() , Toast.LENGTH_SHORT).show()
-                Toast.makeText(this, "Error login with Google" , Toast.LENGTH_LONG).show()
+                Toast.makeText(this, task.exception.toString() , Toast.LENGTH_SHORT).show()
             }
         }
-    }
+
+        private fun updateUI(account: GoogleSignInAccount) {
+            val credential = GoogleAuthProvider.getCredential(account.idToken , null)
+            firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
+                if (it.isSuccessful){
+                    // Se corretto entro nella HomePageActivity
+                    startActivity(Intent(this , HomePageActivity::class.java))
+                }else{
+                    // Toast.makeText(this, it.exception.toString() , Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error login with Google" , Toast.LENGTH_LONG).show()
+                }
+            }
+        }
 
 }
