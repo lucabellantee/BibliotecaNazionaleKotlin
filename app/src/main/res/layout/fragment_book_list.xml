@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingVertical="10dp">
+    android:paddingVertical="0dp">
 
     <LinearLayout
         android:id="@+id/linearLayoutSearchBar"
@@ -55,6 +55,6 @@
         android:id="@+id/recyclerViewBooks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"/>
 
 </LinearLayout>

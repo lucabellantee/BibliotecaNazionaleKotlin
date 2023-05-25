@@ -61,7 +61,7 @@ class BookListAdapter(var data: LiveData<BooksResponse>) :
     }
 
     override fun getItemCount(): Int {
-        return data.value?.items?.size ?: 0
+        return (data.value?.items?.size ?: 0)
         //return data?.items?.size ?: 0
     }
 }
