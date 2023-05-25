@@ -73,7 +73,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             } else {
                 Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
-
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.example.biblioteca_nazionale.fragments
 
+import BookInfoFragment
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +8,8 @@ import android.view.View
 import androidx.appcompat.widget.SearchView
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.activity.LoginActivity
@@ -78,10 +81,10 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
                 adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
                     override fun onBookClick(position: Int) {
-                        /*val book:Book = model.getBooks()[position]
                         val bookInfoFrag = BookInfoFragment()
-                        val bundle = Bundle()
-                        bundle.putSerializable("selectedBook", book);                bookInfoFrag.arguments = bundle
+                        /*val bundle = Bundle()
+                        bundle.putSerializable("selectedBook", book);
+                        bookInfoFrag.arguments = bundle
                         val fragmentManager: FragmentManager = parentFragmentManager
                         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
                         fragmentTransaction.replace(R.id.fragmentContainer, bookInfoFrag)
@@ -121,6 +124,8 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
         adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
             override fun onBookClick(position: Int) {
+                /*val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment()
+                findNavController().navigate(action)*/
                 /*val book:Book = model.getBooks()[position]
                 val bookInfoFrag = BookInfoFragment()
                 val bundle = Bundle()

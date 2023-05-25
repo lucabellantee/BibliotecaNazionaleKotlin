@@ -53,6 +53,7 @@ class HomePageActivity : AppCompatActivity() {
 
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragmentContainer, bookListFrag) //Quì serve la recyclerView
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit()
     }
 

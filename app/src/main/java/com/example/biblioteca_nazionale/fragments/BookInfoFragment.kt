@@ -24,10 +24,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding = FragmentBookInfoBinding.bind(view)
 
-        val selectedBook = arguments?.getSerializable("selectedBook")
+        /*val selectedBook = arguments?.getSerializable("selectedBook")
         // Utilizza il libro selezionato come desideri
         selectedBook?.let {
             //binding.textViewBookName.text = selectedBook[""]
-        }
+        }*/
     }
 }
