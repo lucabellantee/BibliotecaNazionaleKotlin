@@ -22,8 +22,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: LoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
 
-
-
     // login google
     private lateinit var googleSignInClient : GoogleSignInClient
     // login google

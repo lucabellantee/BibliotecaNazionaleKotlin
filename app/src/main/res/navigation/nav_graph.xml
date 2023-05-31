@@ -9,18 +9,18 @@
         android:name="com.example.biblioteca_nazionale.fragments.BookListFragment"
         android:label="BookListFragment" >
         <action
-            android:id="@+id/action_bookListFragment_to_bookInfoFragment"
-            app:destination="@id/bookInfoFragment" />
-        <action
             android:id="@+id/action_bookListFragment_to_profileFragment2"
             app:destination="@id/profileFragment2" />
+        <action
+            android:id="@+id/action_bookListFragment_to_bookInfoFragment"
+            app:destination="@id/bookInfoFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/bookInfoFragment"
-        android:name="com.example.biblioteca_nazionale.fragments.BookInfoFragment"
-        android:label="BookInfoFragment" />
     <fragment
         android:id="@+id/profileFragment2"
         android:name="com.example.biblioteca_nazionale.fragments.ProfileFragment"
         android:label="ProfileFragment" />
+    <fragment
+        android:id="@+id/bookInfoFragment"
+        android:name="BookInfoFragment"
+        android:label="BookInfoFragment" />
 </navigation>

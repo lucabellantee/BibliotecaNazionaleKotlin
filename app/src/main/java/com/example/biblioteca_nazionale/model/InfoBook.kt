@@ -7,5 +7,11 @@ data class InfoBook(
     @SerializedName("authors")val authors: List<String>,
     @SerializedName("description")val description: String,
     @SerializedName("publisher")val publisher: String,
-    @SerializedName("publishedDate") val publishedDate: String
+    @SerializedName("publishedDate") val publishedDate: String,
+    @SerializedName("imageLinks") val imageLinks: ImageLinks
+)
+
+data class ImageLinks(
+    @SerializedName("smallThumbnail") val smallThumbnail: String,
+    @SerializedName("thumbnail") val thumbnail: String
 )

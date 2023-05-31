@@ -1,12 +1,10 @@
 package com.example.biblioteca_nazionale.activity
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -14,6 +12,7 @@ import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.databinding.HomePageBinding
 import com.example.biblioteca_nazionale.fragments.BookListFragment
+import com.example.biblioteca_nazionale.fragments.ProfileFragment
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -38,7 +37,7 @@ class HomePageActivity : AppCompatActivity() {
             .findFragmentById(R.id.fragmentContainer) as NavHostFragment
         navController = navHostFragment.navController
 
-        binding.bottomNavigation.setOnItemSelectedListener {item ->
+        /*binding.bottomNavigation.setOnItemSelectedListener {item ->
             when(item.itemId){
                 R.id.profileIcon -> {
                     findNavController(R.id.fragmentContainer).navigate(R.id.action_bookListFragment_to_profileFragment2)
@@ -46,7 +45,7 @@ class HomePageActivity : AppCompatActivity() {
                 }
                 else -> false
             }
-        }
+        }*/
 
         val fragmentManager: FragmentManager = supportFragmentManager
         val bookListFrag = BookListFragment()
@@ -54,6 +53,34 @@ class HomePageActivity : AppCompatActivity() {
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragmentContainer, bookListFrag) //Quì serve la recyclerView
         fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit()
+
+        binding.bottomNavigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.profileIcon -> replaceFragment(ProfileFragment())
+                R.id.homeIcon -> {
+
+                }
+                R.id.notificationIcon -> {
+
+                }
+                R.id.bookIcon -> {
+
+                }
+                R.id.settingsIcon -> {
+
+                }
+                else -> {}
+            }
+
+            true
+        }
+    }
+
+    private fun replaceFragment(fragment: Fragment){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragmentContainer,  fragment)
         fragmentTransaction.commit()
     }
 
