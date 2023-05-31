@@ -70,6 +70,10 @@ class HomePageActivity : AppCompatActivity() {
         }
     }
 
+    /*override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }*/
+
     private fun replaceFragment(fragment: Fragment){
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()

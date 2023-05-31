@@ -19,11 +19,19 @@
             app:destination="@id/profileFragment" />
         <action
             android:id="@+id/action_bookListFragment_to_bookInfoFragment"
-            app:destination="@id/bookInfoFragment" /> <!-- Modifica qui -->
+            app:destination="@id/bookInfoFragment"
+            app:popUpTo="@id/bookInfoFragment"
+            app:popUpToInclusive="true" /> <!-- Modifica qui -->
     </fragment>
     <fragment
         android:id="@+id/bookInfoFragment"
         android:name="com.example.biblioteca_nazionale.fragments.BookInfoFragment"
         android:label="fragment_book_info"
-        tools:layout="@layout/fragment_book_info" />
+        tools:layout="@layout/fragment_book_info" >
+        <action
+            android:id="@+id/action_bookInfoFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment"
+            app:popUpTo="@id/bookListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

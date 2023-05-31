@@ -33,8 +33,6 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
 
         /*firebaseAuth = FirebaseAuth.getInstance()
-
-
         binding.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_back -> {
@@ -56,8 +54,8 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
                 adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
                     override fun onBookClick(position: Int) {
-                        findNavController().navigate(R.id.action_bookListFragment_to_bookInfoFragment)
-                    }
+                        val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment()
+                        findNavController().navigate(action)                    }
                 })
                 binding.recyclerViewBooks.adapter = adapter
                 return true
@@ -71,13 +69,12 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
                 adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
                     override fun onBookClick(position: Int) {
-                        findNavController().navigate(R.id.action_bookListFragment_to_bookInfoFragment)
-                    }
+                        val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment()
+                        findNavController().navigate(action)                            }
                 })
                 binding.recyclerViewBooks.adapter = adapter
                 return true
             }
         })
     }
-
 }
