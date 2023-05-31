@@ -56,8 +56,7 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
                 adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
                     override fun onBookClick(position: Int) {
-                        val navController = requireActivity().findNavController(R.id.fragmentContainer)
-                        navController.navigate(R.id.action_bookListFragment_to_bookInfoFragment)
+                        findNavController().navigate(R.id.action_bookListFragment_to_bookInfoFragment)
                     }
                 })
                 binding.recyclerViewBooks.adapter = adapter

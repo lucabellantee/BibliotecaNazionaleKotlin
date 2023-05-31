@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph"
-            tools:layout="@layout/fragment_book_list" />
+            tools:layout="@layout/fragment_book_list"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

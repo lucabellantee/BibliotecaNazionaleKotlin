@@ -26,7 +26,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     }*/
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         binding = FragmentBookInfoBinding.bind(view)
 
         /*val selectedBook = arguments?.getSerializable("selectedBook")

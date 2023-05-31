@@ -47,13 +47,6 @@ class HomePageActivity : AppCompatActivity() {
             }
         }*/
 
-        val fragmentManager: FragmentManager = supportFragmentManager
-        val bookListFrag = BookListFragment()
-
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragmentContainer, bookListFrag) //Quì serve la recyclerView
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit()
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
