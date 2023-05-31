@@ -4,6 +4,9 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+apply plugin: "androidx.navigation.safeargs.kotlin"
+
+
 android {
     namespace 'com.example.biblioteca_nazionale'
     compileSdk 33
