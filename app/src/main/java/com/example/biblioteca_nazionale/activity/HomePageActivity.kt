@@ -1,6 +1,8 @@
 package com.example.biblioteca_nazionale.activity
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -15,6 +17,9 @@ import com.example.biblioteca_nazionale.fragments.BookListFragment
 import com.example.biblioteca_nazionale.fragments.ProfileFragment
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class HomePageActivity : AppCompatActivity() {
 
@@ -32,7 +37,6 @@ class HomePageActivity : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
 
-
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainer) as NavHostFragment
         navController = navHostFragment.navController
@@ -47,6 +51,38 @@ class HomePageActivity : AppCompatActivity() {
             }
         }*/
 
+        //      PROVA DATABASE FIREBASE
+
+        val db = Firebase.firestore
+        val user1 = hashMapOf(
+            "lucabellante@gmail.com" to "email",
+            "luca1234" to "password",
+        )
+
+        db.collection("utenti").document("datiUtenti")
+            .set(user1)
+            .addOnSuccessListener { Log.d("/HomePageActivity", "DocumentSnapshot successfully written!") }
+            .addOnFailureListener {Log.d("/HomePageActivity", "Error writing document") }
+
+
+
+        // Leggo il documento
+        val docRef = db.collection("utenti").document("datiUtenti")
+        docRef.get()
+
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d(TAG, "ECCO I DATI: ${document.data}")
+                } else {
+                    Log.d(TAG, "Nessun dato")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "ERROREEEEEEEE ", exception)
+            }
+
+//      FINE PROVA DATABASE FIREBASE
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -55,6 +91,7 @@ class HomePageActivity : AppCompatActivity() {
 
                 }
                 R.id.notificationIcon -> {
+
 
                 }
                 R.id.bookIcon -> {
@@ -68,6 +105,8 @@ class HomePageActivity : AppCompatActivity() {
 
             true
         }
+
+
     }
 
     /*override fun onSupportNavigateUp(): Boolean {
@@ -80,5 +119,8 @@ class HomePageActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.fragmentContainer,  fragment)
         fragmentTransaction.commit()
     }
+
+
+
 
 }
