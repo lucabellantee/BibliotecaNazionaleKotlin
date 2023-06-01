@@ -47,13 +47,6 @@ class HomePageActivity : AppCompatActivity() {
             }
         }*/
 
-        val fragmentManager: FragmentManager = supportFragmentManager
-        val bookListFrag = BookListFragment()
-
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragmentContainer, bookListFrag) //Quì serve la recyclerView
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit()
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -76,6 +69,10 @@ class HomePageActivity : AppCompatActivity() {
             true
         }
     }
+
+    /*override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }*/
 
     private fun replaceFragment(fragment: Fragment){
         val fragmentManager = supportFragmentManager
