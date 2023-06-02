@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.databinding.HomePageBinding
+import com.example.biblioteca_nazionale.firebase.FirebaseDB
 import com.example.biblioteca_nazionale.fragments.BookListFragment
 import com.example.biblioteca_nazionale.fragments.ProfileFragment
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
@@ -35,8 +36,13 @@ class HomePageActivity : AppCompatActivity() {
 
         binding = HomePageBinding.inflate(layoutInflater)
 
-        firebaseAuth = FirebaseAuth.getInstance()
 
+/*
+        firebaseAuth = FirebaseAuth.getInstance()
+        val db = Firebase.firestore
+        // Prendo il riferimento allo user corrente -> codice UID
+        val user = FirebaseAuth.getInstance().currentUser
+*/
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainer) as NavHostFragment
         navController = navHostFragment.navController
@@ -51,12 +57,15 @@ class HomePageActivity : AppCompatActivity() {
             }
         }*/
 
+        val firebase = FirebaseDB()
+        firebase.writeUidAndEmail()
+
         //      PROVA DATABASE FIREBASE
 
-        val db = Firebase.firestore
+/*
         val user1 = hashMapOf(
-            "lucabellante@gmail.com" to "email",
-            "luca1234" to "password",
+            user?.email.toString() to "email",
+            user?.uid to "uid",
         )
 
         db.collection("utenti").document("datiUtenti")
@@ -82,7 +91,7 @@ class HomePageActivity : AppCompatActivity() {
                 Log.d(TAG, "ERROREEEEEEEE ", exception)
             }
 
-//      FINE PROVA DATABASE FIREBASE
+//      FINE PROVA DATABASE FIREBASE */
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
