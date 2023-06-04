@@ -131,7 +131,7 @@
                         android:layout_marginHorizontal="80dp"
                         android:text="The Lords of the rings trilogy "
                         android:textAlignment="center"
-                        android:textColor="#6D77FA"
+                        android:textColor="@color/primary_color"
                         android:textSize="24sp" />
 
                 </LinearLayout>
@@ -203,7 +203,7 @@
                     android:layout_gravity="right"
                     android:layout_marginRight="45dp"
                     android:text="Leggi di più"
-                    android:textColor="#6D77FA" />
+                    android:textColor="@color/primary_color" />
 
                 <View
                     android:layout_width="match_parent"
@@ -219,45 +219,60 @@
                     android:id="@+id/linearLayout4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp">
+                    android:orientation="horizontal">
 
                     <com.google.android.gms.maps.MapView
                         android:id="@+id/mapView"
-                        android:layout_width="223dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
                         android:contentDescription="niente" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/textViewNomeBiblioteca"
-                            android:layout_width="match_parent"
-                            android:layout_height="43dp"
-                            android:layout_margin="10dp"
-                            android:text="Biblioteca univpm"
-                            android:textColor="#FB0707" />
-
-                        <TextView
-                            android:id="@+id/textViewDataRiconsegna"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:text="Da riconsegnare entro il GG/MM/YY" />
-
-                        <Button
-                            android:id="@+id/button2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:text="Prenota prestito"
-                            app:cornerRadius="40dp" />
-                    </LinearLayout>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textViewNomeBiblioteca"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Biblioteca univpm"
+                        android:textColor="#FB0707"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/textViewDataRiconsegna"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:text="Da riconsegnare entro il GG/MM/YY"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/button2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="60dp"
+                        android:layout_marginVertical="10dp"
+                        android:text="Prenota prestito"
+                        app:cornerRadius="40dp" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/textViewDescription"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@android:color/darker_gray" />
 
                 <TextView
                     android:id="@+id/prova"

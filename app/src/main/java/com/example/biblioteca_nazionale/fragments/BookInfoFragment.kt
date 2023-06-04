@@ -1,23 +1,16 @@
 package com.example.biblioteca_nazionale.fragments
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.UnderlineSpan
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
-import java.io.Serializable
-import java.lang.NullPointerException
 
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
@@ -42,8 +35,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 binding.textMoreDescription.visibility = View.GONE
             } else
                 binding.textViewDescription.text = description
-
-
 
             Glide.with(requireContext())
                 .load(book.info.imageLinks?.thumbnail.toString())
