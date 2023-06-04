@@ -52,7 +52,7 @@ class BookListAdapter(var data: LiveData<BooksResponse>) :
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val currentBook = data.value?.items?.get(position)
         holder.title.text = currentBook?.info?.title ?: ""
-        holder.desc.text = currentBook?.info?.description ?: ""
+        holder.desc.text = currentBook?.info?.description ?: "Descrizione non disponibile"
         holder.author.text = currentBook?.info?.authors.toString()
 
         Glide.with(holder.itemView)

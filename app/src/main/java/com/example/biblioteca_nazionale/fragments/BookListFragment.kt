@@ -1,6 +1,7 @@
 package com.example.biblioteca_nazionale.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -57,6 +58,7 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
                     override fun onBookClick(position: Int) {
                         val libri = model.getLibriLiveData()
                         val libro  =libri.value?.items?.get(position)
+                        Log.d("yolo", libro.toString())
                         if (libro != null) {
                             val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
                             findNavController().navigate(action)
