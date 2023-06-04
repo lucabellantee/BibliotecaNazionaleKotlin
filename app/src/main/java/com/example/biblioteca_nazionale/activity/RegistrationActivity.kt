@@ -1,8 +1,10 @@
 package com.example.biblioteca_nazionale.activity
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -10,6 +12,9 @@ import com.example.biblioteca_nazionale.MainActivity
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.RegisterBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -17,13 +22,15 @@ class RegistrationActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.register)
-        //val back : ImageView = findViewById<ImageView>(R.id.arrowIcon)
 
         binding = RegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
+
+        //val db = Firebase.firestore
+        //val firestoreDb = FirebaseFirestore.getInstance()
+        val db = FirebaseFirestore.getInstance()
 
         binding.textViewLoginFromReg.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
@@ -42,9 +49,25 @@ class RegistrationActivity : AppCompatActivity() {
 
             if (email.isNotEmpty() && pass.isNotEmpty() && confirmPass.isNotEmpty()) {
                 if (pass == confirmPass) {
-
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                         if (it.isSuccessful) {
+                            val user = hashMapOf(
+                                "email" to email,
+                                "password" to pass
+                            )
+                            val userId = firebaseAuth.currentUser?.uid
+                            db.collection("utenti").document(userId!!).set(user)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show()
+                                    Log.d("Firestore Collection", "Value: $user")
+
+                                    val intent = Intent(this, LoginActivity::class.java)
+                                    startActivity(intent)
+                                }
+                                .addOnFailureListener { exception ->
+                                    Toast.makeText(this, "Failed to add data to Firestore", Toast.LENGTH_SHORT).show()
+                                    Log.e("Firestore Collection", "Error: ${exception.message}")
+                                }
                             val intent = Intent(this, LoginActivity::class.java)
                             startActivity(intent)
                         } else {

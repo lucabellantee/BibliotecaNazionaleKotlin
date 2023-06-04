@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "266674426165-g4r0pv479krrr2n1s5jnoqm4vca1vp5m.apps.googleusercontent.com",
+          "client_id": "266674426165-ph7bhmbhe4nf6eshmmaka91lc8insu15.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.biblioteca_nazionale",
+            "certificate_hash": "cbc4c0dea93e9265a0ce1f6ff78c49e9b16cb374"
+          }
+        },
+        {
+          "client_id": "266674426165-249marfnfjtpn1o5tfj34hie564qfuec.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +35,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "266674426165-g4r0pv479krrr2n1s5jnoqm4vca1vp5m.apps.googleusercontent.com",
+              "client_id": "266674426165-249marfnfjtpn1o5tfj34hie564qfuec.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
