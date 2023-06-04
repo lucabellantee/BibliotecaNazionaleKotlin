@@ -21,7 +21,11 @@
             android:id="@+id/action_bookListFragment_to_bookInfoFragment"
             app:destination="@id/bookInfoFragment"
             app:popUpTo="@id/bookInfoFragment"
-            app:popUpToInclusive="true" /> <!-- Modifica qui -->
+            app:popUpToInclusive="true" >
+            <argument
+                android:name="book"
+                app:argType="com.example.biblioteca_nazionale.model.Book" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/bookInfoFragment"
