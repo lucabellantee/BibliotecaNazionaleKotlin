@@ -93,9 +93,18 @@ class HomePageActivity : AppCompatActivity() {
 
 //      FINE PROVA DATABASE FIREBASE */
 
+
+          Log.d("/HomePageActivity","PROFILE OK !!!!!!!!")
+          replaceFragment(ProfileFragment())
+
+        // TODO luca: il problema è che questo comando non viene letto correttamente, vedere se
+        // todo continuo: c'entra con i task ASINCRONI
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.profileIcon -> replaceFragment(ProfileFragment())
+                R.id.profileIcon -> {
+                 //   Log.d("/HomePageActivity","PROFILE OK !!!!!!!!")
+                  //  replaceFragment(ProfileFragment())
+                }
                 R.id.homeIcon -> {
 
                 }

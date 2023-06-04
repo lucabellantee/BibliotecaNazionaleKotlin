@@ -16,8 +16,9 @@ class FirebaseDB {
 
     fun writeUidAndEmail(){
 
+
         val newUser = Users(user?.uid.toString()  , user?.email.toString())
-        db.collection("utenti").document("datiUtenti")
+        db.collection("utenti").document(user?.uid.toString())
             .set(newUser)
             .addOnSuccessListener { Log.d("/HomePageActivity", "DocumentSnapshot successfully written!") }
             .addOnFailureListener { Log.d("/HomePageActivity", "Error writing document") }
