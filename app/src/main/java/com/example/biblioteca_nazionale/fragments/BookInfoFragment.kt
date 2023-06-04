@@ -25,15 +25,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
     private var isExpanded = false
 
-
-
-    /*override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_book_info, container, false)
-    }*/
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -42,12 +33,20 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         val book = arguments?.getParcelable<Book>("book")
 
         book?.let {
-            binding.textViewBookName.text = it.info.title
-            binding.textViewDescription.text = it.info.description
-            binding.textViewAutore.text = it.info.authors.toString()
+            binding.textViewBookName.text = it.info?.title ?: ""
+            binding.textViewAutore.text = it.info?.authors?.toString() ?: ""
+
+            val description = it.info?.description
+            if (description.isNullOrEmpty()) {
+                binding.textViewDescription.text = "Descrizione non disponibile"
+                binding.textMoreDescription.visibility = View.GONE
+            } else
+                binding.textViewDescription.text = description
+
+
 
             Glide.with(requireContext())
-                .load(book?.info?.imageLinks?.thumbnail.toString())
+                .load(book.info.imageLinks?.thumbnail.toString())
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
         }

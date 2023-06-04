@@ -5,12 +5,12 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class InfoBook(
-    @SerializedName("title")val title: String,
-    @SerializedName("authors")val authors: List<String>,
-    @SerializedName("description")val description: String,
-    @SerializedName("publisher")val publisher: String,
-    @SerializedName("publishedDate") val publishedDate: String,
-    @SerializedName("imageLinks") val imageLinks: ImageLinks
+    @SerializedName("title") val title: String?,
+    @SerializedName("authors") val authors: List<String>?,
+    @SerializedName("description") val description: String?,
+    @SerializedName("publisher") val publisher: String?,
+    @SerializedName("publishedDate") val publishedDate: String?,
+    @SerializedName("imageLinks") val imageLinks: ImageLinks?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
