@@ -6,28 +6,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/baseline_home_24"
-        android:title="Home" />
+        android:title="@string/home" />
 
     <item
         android:id="@+id/bookIcon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/baseline_book_24"
-        android:title="Books" />
+        android:title="@string/books" />
 
     <item
         android:id="@+id/notificationIcon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/baseline_notifications_24"
-        android:title="Notifications" />
+        android:title="@string/notifications" />
 
     <item
         android:id="@+id/settingsIcon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/baseline_settings_24"
-        android:title="Settings" />
+        android:title="@string/settings" />
 
 
     <item
@@ -35,6 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/ic_baseline_person_24"
-        android:title="Profile" />
+        android:title="@string/profile" />
 
 </menu>

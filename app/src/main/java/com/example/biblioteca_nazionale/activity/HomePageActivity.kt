@@ -15,8 +15,12 @@ import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.databinding.HomePageBinding
 import com.example.biblioteca_nazionale.firebase.FirebaseDB
 import com.example.biblioteca_nazionale.fragments.BookListFragment
+import com.example.biblioteca_nazionale.fragments.MyBooksFragment
+import com.example.biblioteca_nazionale.fragments.NotificationsFragment
 import com.example.biblioteca_nazionale.fragments.ProfileFragment
+import com.example.biblioteca_nazionale.fragments.SettingsFragment
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -37,15 +41,15 @@ class HomePageActivity : AppCompatActivity() {
         binding = HomePageBinding.inflate(layoutInflater)
 
 
-/*
+        /*
         firebaseAuth = FirebaseAuth.getInstance()
         val db = Firebase.firestore
         // Prendo il riferimento allo user corrente -> codice UID
         val user = FirebaseAuth.getInstance().currentUser
 */
-        val navHostFragment = supportFragmentManager
+        /*val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainer) as NavHostFragment
-        navController = navHostFragment.navController
+        navController = navHostFragment.navController*/
 
         /*binding.bottomNavigation.setOnItemSelectedListener {item ->
             when(item.itemId){
@@ -62,7 +66,7 @@ class HomePageActivity : AppCompatActivity() {
 
         //      PROVA DATABASE FIREBASE
 
-/*
+        /*
         val user1 = hashMapOf(
             user?.email.toString() to "email",
             user?.uid to "uid",
@@ -93,43 +97,42 @@ class HomePageActivity : AppCompatActivity() {
 
 //      FINE PROVA DATABASE FIREBASE */
 
-        binding.bottomNavigation.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.profileIcon -> replaceFragment(ProfileFragment())
-                R.id.homeIcon -> {
-
-                }
-                R.id.notificationIcon -> {
-
-
-                }
-                R.id.bookIcon -> {
-
-                }
-                R.id.settingsIcon -> {
-
-                }
-                else -> {}
-            }
-
-            true
-        }
-
-
-    }
-
-    /*override fun onSupportNavigateUp(): Boolean {
+        /*override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }*/
 
-    private fun replaceFragment(fragment: Fragment){
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragmentContainer,  fragment)
-        fragmentTransaction.commit()
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigation.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.homeIcon -> {
+                    replaceFragment(BookListFragment())
+                    true
+                }
+                R.id.bookIcon -> {
+                    replaceFragment(MyBooksFragment())
+                    true
+                }
+                R.id.notificationIcon -> {
+                    replaceFragment(NotificationsFragment())
+                    true
+                }
+                R.id.settingsIcon -> {
+                    replaceFragment(SettingsFragment())
+                    true
+                }
+                R.id.profileIcon -> {
+                    replaceFragment(ProfileFragment())
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
-
-
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
+    }
 
 }
