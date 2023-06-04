@@ -6,22 +6,18 @@
     app:startDestination="@id/bookListFragment">
 
     <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.biblioteca_nazionale.fragments.ProfileFragment"
-        android:label="ProfileFragment" />
-    <fragment
         android:id="@+id/bookListFragment"
         android:name="com.example.biblioteca_nazionale.fragments.BookListFragment"
         android:label="fragment_book_list"
         tools:layout="@layout/fragment_book_list" >
         <action
-            android:id="@+id/action_bookListFragment_to_profileFragment2"
-            app:destination="@id/profileFragment" />
-        <action
             android:id="@+id/action_bookListFragment_to_bookInfoFragment"
             app:destination="@id/bookInfoFragment"
             app:popUpTo="@id/bookInfoFragment"
-            app:popUpToInclusive="true" /> <!-- Modifica qui -->
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_bookListFragment_to_profileInfoFragment"
+            app:destination="@id/profileInfoFragment" /> <!-- Modifica qui -->
     </fragment>
     <fragment
         android:id="@+id/bookInfoFragment"
@@ -34,4 +30,10 @@
             app:popUpTo="@id/bookListFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/profileInfoFragment"
+        android:name="com.example.biblioteca_nazionale.fragments.ProfileFragment"
+        android:label="fragment_profile_info"
+        tools:layout="@layout/fragment_profile" />
 </navigation>
