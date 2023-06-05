@@ -3,10 +3,12 @@ package com.example.biblioteca_nazionale.activity
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -20,11 +22,15 @@ import com.example.biblioteca_nazionale.fragments.NotificationsFragment
 import com.example.biblioteca_nazionale.fragments.ProfileFragment
 import com.example.biblioteca_nazionale.fragments.SettingsFragment
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
+import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class HomePageActivity : AppCompatActivity() {
 
@@ -61,11 +67,21 @@ class HomePageActivity : AppCompatActivity() {
             }
         }*/
 
-        val firebase = FirebaseDB()
-        firebase.writeUidAndEmail()
+    //    val firebase = FirebaseDB()
+      //  firebase.writeUidAndEmail()
 
-        //      PROVA DATABASE FIREBASE
 
+    /*    val firebaseViewModel: FirebaseViewModel by viewModels()
+        val firebaseDB = FirebaseDB()
+        Log.d("/HomePageActivity",firebaseDB.getAllUserInfo().isInitialized.toString()) //    PROVA DATABASE FIREBASE
+            firebaseDB.getAllUserInfo().observe(this, { result ->
+                println(result) // Stampa il valore del LiveData
+            })*/
+
+
+        // firebaseDB.getAllUserInfo()
+
+        //
         /*
         val user1 = hashMapOf(
             user?.email.toString() to "email",
@@ -100,6 +116,18 @@ class HomePageActivity : AppCompatActivity() {
         /*override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }*/
+
+
+        val firebaseViewModel: FirebaseViewModel by viewModels()
+        // Create the observer which updates the UI.
+        val userInfoObserver = Observer<DocumentSnapshot> { newName ->
+            // Update the UI, in this case, a TextView.
+            Log.d("/HomePageActivity", newName.data.toString())
+        }
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+       // model.currentName.observe(this, nameObserver)
+        firebaseViewModel.getUserInfo("1cK02hokWHS1Ivnr1iKr34JKe4q1").observe(this,userInfoObserver)
 
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigation.setOnItemSelectedListener { menuItem ->
