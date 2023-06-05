@@ -1,6 +1,7 @@
 package com.example.biblioteca_nazionale.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.activity.LoginActivity
 import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.databinding.FragmentBookListBinding
+import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -54,8 +56,16 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
                 adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
                     override fun onBookClick(position: Int) {
-                        val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment()
-                        findNavController().navigate(action)                    }
+                        val libri = model.getLibriLiveData()
+                        val libro  =libri.value?.items?.get(position)
+                        Log.d("yolo", libro.toString())
+                        if (libro != null) {
+                            val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
+                            findNavController().navigate(action)
+                        } else {
+                            // Gestisci il caso in cui il libro è nullo
+                        }
+                    }
                 })
                 binding.recyclerViewBooks.adapter = adapter
                 return true
@@ -69,8 +79,14 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
                 adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
                     override fun onBookClick(position: Int) {
-                        val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment()
-                        findNavController().navigate(action)                            }
+                        val libri = model.getLibriLiveData()
+                        val libro  =libri.value?.items?.get(position)
+                        if (libro != null) {
+                            val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
+                            findNavController().navigate(action)
+                        } else {
+                            // Gestisci il caso in cui il libro è nullo
+                        }                      }
                 })
                 binding.recyclerViewBooks.adapter = adapter
                 return true
