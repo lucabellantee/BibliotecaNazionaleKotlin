@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.biblioteca_nazionale.firebase.FirebaseDB
+import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.firestore.DocumentSnapshot
 
 class FirebaseViewModel: ViewModel() {
@@ -16,7 +17,11 @@ class FirebaseViewModel: ViewModel() {
 
 
     fun getUserInfo(uid: String): MutableLiveData<DocumentSnapshot>{
-        firebase.getAllUserInfoFromUid(uid)
-        return firebase.userInfoLiveData
+      return  firebase.getAllUserInfoFromUid(uid)
+    }
+
+
+    fun saveNewUser(uid: String, email: String){
+        firebase.saveNewUser(Users(uid,email))
     }
 }

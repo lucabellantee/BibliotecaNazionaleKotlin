@@ -47,75 +47,7 @@ class HomePageActivity : AppCompatActivity() {
         binding = HomePageBinding.inflate(layoutInflater)
 
 
-        /*
-        firebaseAuth = FirebaseAuth.getInstance()
-        val db = Firebase.firestore
-        // Prendo il riferimento allo user corrente -> codice UID
-        val user = FirebaseAuth.getInstance().currentUser
-*/
-        /*val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.fragmentContainer) as NavHostFragment
-        navController = navHostFragment.navController*/
-
-        /*binding.bottomNavigation.setOnItemSelectedListener {item ->
-            when(item.itemId){
-                R.id.profileIcon -> {
-                    findNavController(R.id.fragmentContainer).navigate(R.id.action_bookListFragment_to_profileFragment2)
-                    true
-                }
-                else -> false
-            }
-        }*/
-
-    //    val firebase = FirebaseDB()
-      //  firebase.writeUidAndEmail()
-
-
-    /*    val firebaseViewModel: FirebaseViewModel by viewModels()
-        val firebaseDB = FirebaseDB()
-        Log.d("/HomePageActivity",firebaseDB.getAllUserInfo().isInitialized.toString()) //    PROVA DATABASE FIREBASE
-            firebaseDB.getAllUserInfo().observe(this, { result ->
-                println(result) // Stampa il valore del LiveData
-            })*/
-
-
-        // firebaseDB.getAllUserInfo()
-
-        //
-        /*
-        val user1 = hashMapOf(
-            user?.email.toString() to "email",
-            user?.uid to "uid",
-        )
-
-        db.collection("utenti").document("datiUtenti")
-            .set(user1)
-            .addOnSuccessListener { Log.d("/HomePageActivity", "DocumentSnapshot successfully written!") }
-            .addOnFailureListener {Log.d("/HomePageActivity", "Error writing document") }
-
-
-
-        // Leggo il documento
-        val docRef = db.collection("utenti").document("datiUtenti")
-        docRef.get()
-
-        docRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d(TAG, "ECCO I DATI: ${document.data}")
-                } else {
-                    Log.d(TAG, "Nessun dato")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "ERROREEEEEEEE ", exception)
-            }
-
-//      FINE PROVA DATABASE FIREBASE */
-
-        /*override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
-    }*/
+// INIZIO PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
 
 
         val firebaseViewModel: FirebaseViewModel by viewModels()
@@ -126,8 +58,11 @@ class HomePageActivity : AppCompatActivity() {
         }
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-       // model.currentName.observe(this, nameObserver)
+        // model.currentName.observe(this, nameObserver)
         firebaseViewModel.getUserInfo("1cK02hokWHS1Ivnr1iKr34JKe4q1").observe(this,userInfoObserver)
+
+// FINE PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
+
 
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigation.setOnItemSelectedListener { menuItem ->

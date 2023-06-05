@@ -54,8 +54,7 @@ class FirebaseDB {
 
 
      var userInfoLiveData: MutableLiveData<DocumentSnapshot> =  MutableLiveData()
-// List<DocumentSnapshot>
-   fun getAllUserInfoFromUid(uid: String) {
+   fun getAllUserInfoFromUid(uid: String): MutableLiveData<DocumentSnapshot> {
 
        val docRef = db.collection("utenti").document(uid)
        docRef.get()
@@ -71,8 +70,19 @@ class FirebaseDB {
            .addOnFailureListener { exception ->
             Log.d("/FirebaseDB", "Errore lettura dati !!!")
            }
-
+        return userInfoLiveData
    }
+
+
+
+    fun saveNewUser(newUser: Users){
+
+        db.collection("utenti").document(newUser.UID)
+            .set(newUser)
+            .addOnSuccessListener { Log.d("/HomePageActivity", "DocumentSnapshot successfully written!") }
+            .addOnFailureListener {Log.d("/HomePageActivity", "Error writing document") }
+
+    }
 
 
 }
