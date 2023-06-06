@@ -5,17 +5,25 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.viewModels
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentProfileBinding
+import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 
 class ProfileFragment : Fragment() {
 
-    //lateinit var binding: FragmentProfileBinding
+    lateinit var binding: FragmentProfileBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+     //   val firebaseViewModel: FirebaseViewModel by viewModels()
+     //   binding.currentEmail.text = firebaseViewModel.getEmailLoggedUser()
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
+
+
+
 }

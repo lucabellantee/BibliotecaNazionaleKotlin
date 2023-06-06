@@ -7,8 +7,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.LoginBinding
+import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -16,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.DocumentSnapshot
 
 class LoginActivity : AppCompatActivity() {
 
@@ -130,7 +134,11 @@ class LoginActivity : AppCompatActivity() {
             val credential = GoogleAuthProvider.getCredential(account.idToken , null)
             firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
                 if (it.isSuccessful){
-                    // Se corretto entro nella HomePageActivity
+                    // Salvo i miei dati su FireBase nella collection "Utenti"
+                    val firebaseViewModel: FirebaseViewModel by viewModels()
+                    firebaseViewModel.saveNewUser(account.idToken.toString(),account.email.toString())
+
+                    // Se corretto entro nella HomePageActivity, attivandola con questo comadno
                     startActivity(Intent(this , HomePageActivity::class.java))
                 }else{
                     // Toast.makeText(this, it.exception.toString() , Toast.LENGTH_SHORT).show()

@@ -3,10 +3,12 @@ package com.example.biblioteca_nazionale.activity
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -20,11 +22,15 @@ import com.example.biblioteca_nazionale.fragments.NotificationsFragment
 import com.example.biblioteca_nazionale.fragments.ProfileFragment
 import com.example.biblioteca_nazionale.fragments.SettingsFragment
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
+import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class HomePageActivity : AppCompatActivity() {
 
@@ -41,65 +47,22 @@ class HomePageActivity : AppCompatActivity() {
         binding = HomePageBinding.inflate(layoutInflater)
 
 
-        /*
-        firebaseAuth = FirebaseAuth.getInstance()
-        val db = Firebase.firestore
-        // Prendo il riferimento allo user corrente -> codice UID
-        val user = FirebaseAuth.getInstance().currentUser
-*/
-        /*val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.fragmentContainer) as NavHostFragment
-        navController = navHostFragment.navController*/
-
-        /*binding.bottomNavigation.setOnItemSelectedListener {item ->
-            when(item.itemId){
-                R.id.profileIcon -> {
-                    findNavController(R.id.fragmentContainer).navigate(R.id.action_bookListFragment_to_profileFragment2)
-                    true
-                }
-                else -> false
-            }
-        }*/
-
-        val firebase = FirebaseDB()
-        firebase.writeUidAndEmail()
-
-        //      PROVA DATABASE FIREBASE
-
-        /*
-        val user1 = hashMapOf(
-            user?.email.toString() to "email",
-            user?.uid to "uid",
-        )
-
-        db.collection("utenti").document("datiUtenti")
-            .set(user1)
-            .addOnSuccessListener { Log.d("/HomePageActivity", "DocumentSnapshot successfully written!") }
-            .addOnFailureListener {Log.d("/HomePageActivity", "Error writing document") }
+// INIZIO PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
 
 
+        val firebaseViewModel: FirebaseViewModel by viewModels()
+        // Create the observer which updates the UI.
+        val userInfoObserver = Observer<DocumentSnapshot> { newName ->
+            // Update the UI, in this case, a TextView.
+            Log.d("/HomePageActivity", newName.data.toString())
+        }
 
-        // Leggo il documento
-        val docRef = db.collection("utenti").document("datiUtenti")
-        docRef.get()
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        // model.currentName.observe(this, nameObserver)
+        firebaseViewModel.getUserInfo("1cK02hokWHS1Ivnr1iKr34JKe4q1").observe(this,userInfoObserver)
 
-        docRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d(TAG, "ECCO I DATI: ${document.data}")
-                } else {
-                    Log.d(TAG, "Nessun dato")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "ERROREEEEEEEE ", exception)
-            }
+// FINE PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
 
-//      FINE PROVA DATABASE FIREBASE */
-
-        /*override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
-    }*/
 
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigation.setOnItemSelectedListener { menuItem ->
