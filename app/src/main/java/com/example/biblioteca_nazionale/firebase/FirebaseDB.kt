@@ -5,13 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 
 class FirebaseDB {
@@ -34,8 +28,7 @@ class FirebaseDB {
             .addOnFailureListener { /*Log.d("/HomePageActivity", "Error writing document")*/ }
     }
 
-
-     var userInfoLiveData: MutableLiveData<DocumentSnapshot> =  MutableLiveData()
+    var userInfoLiveData: MutableLiveData<DocumentSnapshot> =  MutableLiveData()
    fun getAllUserInfoFromUid(uid: String): MutableLiveData<DocumentSnapshot> {
 
        val docRef = db.collection("utenti").document(uid)
