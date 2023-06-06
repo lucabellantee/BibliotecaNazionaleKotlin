@@ -1,21 +1,19 @@
 package com.example.biblioteca_nazionale.fragments
 
+
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.UnderlineSpan
 import android.view.View
-import android.widget.Toolbar
-import androidx.appcompat.widget.SearchView
+import android.view.View.OnFocusChangeListener
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.google.android.material.appbar.MaterialToolbar
 
 
@@ -23,8 +21,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
     lateinit var binding: FragmentBookInfoBinding
     private lateinit var toolbar: MaterialToolbar
-
-
 
     private var isExpanded = false
 
@@ -40,6 +36,15 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
             findNavController().navigate(action)
         }
+
+        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(focusSearchView= true)
+                findNavController().navigate(action)
+            }
+        }
+
+
 
 
         val book = arguments?.getParcelable<Book>("book")

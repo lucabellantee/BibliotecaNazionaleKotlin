@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/search_bar"
                 android:baselineAligned="false"
+                android:focusedByDefault="false"
                 android:paddingVertical="5dp"
                 android:paddingRight="20dp"
                 android:theme="@style/Search_view_theme"
