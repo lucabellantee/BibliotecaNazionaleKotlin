@@ -5,16 +5,26 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.UnderlineSpan
 import android.view.View
+import android.widget.Toolbar
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.biblioteca_nazionale.adapter.BookListAdapter
+import com.google.android.material.appbar.MaterialToolbar
+
 
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
     lateinit var binding: FragmentBookInfoBinding
+    private lateinit var toolbar: MaterialToolbar
+
+
 
     private var isExpanded = false
 
@@ -22,6 +32,15 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentBookInfoBinding.bind(view)
+
+        toolbar = binding.toolbar
+
+        toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
+        toolbar.setNavigationOnClickListener {
+            val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
+            findNavController().navigate(action)
+        }
+
 
         val book = arguments?.getParcelable<Book>("book")
 
