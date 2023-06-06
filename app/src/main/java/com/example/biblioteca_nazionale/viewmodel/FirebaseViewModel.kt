@@ -24,4 +24,8 @@ class FirebaseViewModel: ViewModel() {
     fun saveNewUser(uid: String, email: String){
         firebase.saveNewUser(Users(uid,email))
     }
+
+    fun getEmailLoggedUser(): String = firebase.getCurrentEmail()
+
+    fun getUidLoggedUser(): String = firebase.getCurrentUid()
 }

@@ -17,7 +17,6 @@ import kotlin.coroutines.suspendCoroutine
 class FirebaseDB {
 
 
-
     companion object{
         val firebaseAuth = FirebaseAuth.getInstance()
         val db = com.google.firebase.ktx.Firebase.firestore
@@ -34,23 +33,6 @@ class FirebaseDB {
             .addOnSuccessListener { /*Log.d("/HomePageActivity", "DocumentSnapshot successfully written!")*/ }
             .addOnFailureListener { /*Log.d("/HomePageActivity", "Error writing document")*/ }
     }
-
-/*    lateinit var userDocuments: MutableLiveData<List<DocumentSnapshot>>
-    suspend fun getAllUserInfo(): List<DocumentSnapshot> = suspendCoroutine { continuation -> userDocuments = MutableLiveData()
-        FirebaseFirestore.getInstance().collection("utenti")
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val myListOfDocuments: List<DocumentSnapshot> = task.result?.documents ?: emptyList()
-                    continuation.resume(myListOfDocuments)
-                    // userDocuments = MutableLiveData()
-                    userDocuments.postValue(myListOfDocuments)
-                } else {
-                    val exception = task.exception
-                    continuation.resumeWithException(exception ?: Exception("Failed to retrieve user info"))
-                }
-            }
-    }*/
 
 
      var userInfoLiveData: MutableLiveData<DocumentSnapshot> =  MutableLiveData()
@@ -83,6 +65,10 @@ class FirebaseDB {
             .addOnFailureListener {Log.d("/HomePageActivity", "Error writing document") }
 
     }
+
+    fun getCurrentEmail(): String = user?.email.toString()
+
+    fun getCurrentUid(): String = user?.uid.toString()
 
 
 }
