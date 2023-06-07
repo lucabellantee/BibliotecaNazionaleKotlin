@@ -52,9 +52,12 @@ class HomePageActivity : AppCompatActivity() {
 
         val firebaseViewModel: FirebaseViewModel by viewModels()
         // Create the observer which updates the UI.
-        val userInfoObserver = Observer<DocumentSnapshot> { newName ->
+        val userInfoObserver = Observer<DocumentSnapshot> { currentUserInfo ->
             // Update the UI, in this case, a TextView.
-            Log.d("/HomePageActivity", newName.data.toString())
+            //Log.d("/HomePageActivity", currentUserInfo.data.toString())
+
+            //firebaseViewModel.getCurrentUser("provaUser").toString()
+           // Log.d("/HomePageActivity",firebaseViewModel.getCurrentUser("provaUser").toString())
         }
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.

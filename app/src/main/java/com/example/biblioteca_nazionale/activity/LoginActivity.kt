@@ -136,7 +136,8 @@ class LoginActivity : AppCompatActivity() {
                 if (it.isSuccessful){
                     // Salvo i miei dati su FireBase nella collection "Utenti"
                     val firebaseViewModel: FirebaseViewModel by viewModels()
-                    firebaseViewModel.saveNewUser(account.idToken.toString(),account.email.toString())
+                    // TODO LUCA: riattivare questa funziona e modificarla
+                   // firebaseViewModel.saveNewUser(account.idToken.toString(),account.email.toString())
 
                     // Se corretto entro nella HomePageActivity, attivandola con questo comadno
                     startActivity(Intent(this , HomePageActivity::class.java))
