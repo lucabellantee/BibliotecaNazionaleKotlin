@@ -32,6 +32,15 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
         binding = FragmentBookListBinding.bind(view)
 
+        var focusSearchView = arguments?.getBoolean("focusSearchView") ?: false
+        Log.d("yolo",            binding.searchView.requestFocus().toString())
+        if (focusSearchView) {
+            binding.searchView.requestFocus()
+            Log.d("yoloddd",binding.searchView.requestFocus().toString())
+        }
+
+
+
 
 
         /*firebaseAuth = FirebaseAuth.getInstance()
@@ -58,7 +67,6 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
                     override fun onBookClick(position: Int) {
                         val libri = model.getLibriLiveData()
                         val libro  =libri.value?.items?.get(position)
-                        Log.d("yolo", libro.toString())
                         if (libro != null) {
                             val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
                             findNavController().navigate(action)
@@ -92,5 +100,8 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
                 return true
             }
         })
+
+        Log.d("yolxzxzoddd",binding.searchView.hasFocus().toString())
+
     }
 }

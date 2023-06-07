@@ -49,25 +49,9 @@ class RegistrationActivity : AppCompatActivity() {
 
             if (email.isNotEmpty() && pass.isNotEmpty() && confirmPass.isNotEmpty()) {
                 if (pass == confirmPass) {
+
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            val user = hashMapOf(
-                                "email" to email,
-                                "password" to pass
-                            )
-                            val userId = firebaseAuth.currentUser?.uid
-                            db.collection("utenti").document(userId!!).set(user)
-                                .addOnSuccessListener {
-                                    Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show()
-                                    Log.d("Firestore Collection", "Value: $user")
-
-                                    val intent = Intent(this, LoginActivity::class.java)
-                                    startActivity(intent)
-                                }
-                                .addOnFailureListener { exception ->
-                                    Toast.makeText(this, "Failed to add data to Firestore", Toast.LENGTH_SHORT).show()
-                                    Log.e("Firestore Collection", "Error: ${exception.message}")
-                                }
                             val intent = Intent(this, LoginActivity::class.java)
                             startActivity(intent)
                         } else {

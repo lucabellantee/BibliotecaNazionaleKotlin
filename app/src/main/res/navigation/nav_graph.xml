@@ -32,7 +32,12 @@
             android:id="@+id/action_bookInfoFragment_to_bookListFragment"
             app:destination="@id/bookListFragment"
             app:popUpTo="@id/bookListFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true">
+            <argument
+                android:name="focusSearchView"
+                app:argType="boolean"
+                android:defaultValue="false" /> <!-- Assicurati di specificare un valore di default -->
+        </action>
     </fragment>
 
     <fragment
