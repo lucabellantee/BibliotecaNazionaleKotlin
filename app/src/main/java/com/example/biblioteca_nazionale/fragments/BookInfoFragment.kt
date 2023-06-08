@@ -17,6 +17,7 @@ import com.example.biblioteca_nazionale.model.Book
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.appbar.MaterialToolbar
 
@@ -47,6 +48,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             googleMap.uiSettings.isRotateGesturesEnabled=true
             googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom=true
 
+            googleMap.setMapStyle(context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_style) }) // Carica lo stile personalizzato della mappa
 
 
             // Imposta la posizione iniziale della mappa
