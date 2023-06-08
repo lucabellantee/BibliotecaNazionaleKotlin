@@ -44,9 +44,8 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
                 val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-            }, 1) // Delay di 2000 millisecondi (2 secondi)
+            }, 1)
         }
-
 
         /*firebaseAuth = FirebaseAuth.getInstance()
         binding.toolbar.setOnMenuItemClickListener { item ->
