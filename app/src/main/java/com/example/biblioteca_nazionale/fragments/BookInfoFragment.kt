@@ -45,8 +45,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
 
 
-
-
         val book = arguments?.getParcelable<Book>("book")
 
         book?.let {

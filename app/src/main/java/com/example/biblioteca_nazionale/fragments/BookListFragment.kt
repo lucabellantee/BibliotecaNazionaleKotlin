@@ -48,13 +48,6 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
         }
 
 
-
-
-
-
-
-
-
         /*firebaseAuth = FirebaseAuth.getInstance()
         binding.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {

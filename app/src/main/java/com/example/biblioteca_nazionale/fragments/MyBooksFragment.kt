@@ -5,12 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.biblioteca_nazionale.R
-import com.example.biblioteca_nazionale.activity.HomePageActivity
 import com.example.biblioteca_nazionale.adapter.BookAdapter
 import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.ImageLinks
@@ -32,7 +30,6 @@ class MyBooksFragment : Fragment() {
     val libro2 = Book("749204830284",info2)
     val list = listOf(libro1, libro2)
  */
-
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

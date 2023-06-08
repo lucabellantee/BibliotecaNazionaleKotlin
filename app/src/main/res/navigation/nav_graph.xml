@@ -44,5 +44,18 @@
         android:id="@+id/profileInfoFragment"
         android:name="com.example.biblioteca_nazionale.fragments.ProfileFragment"
         android:label="fragment_profile_info"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileInfoFragment_to_credentialUpdated"
+            app:destination="@id/credentialUpdated" />
+    </fragment>
+    <fragment
+        android:id="@+id/credentialUpdated"
+        android:name="com.example.biblioteca_nazionale.fragments.CredentialUpdated"
+        android:label="fragment_credential_updated"
+        tools:layout="@layout/fragment_credential_updated" >
+        <action
+            android:id="@+id/action_credentialUpdated_to_profileInfoFragment"
+            app:destination="@id/profileInfoFragment" />
+    </fragment>
 </navigation>

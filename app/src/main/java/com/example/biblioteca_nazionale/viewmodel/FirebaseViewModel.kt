@@ -1,9 +1,7 @@
 package com.example.biblioteca_nazionale.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.biblioteca_nazionale.firebase.FirebaseDB
 import com.example.biblioteca_nazionale.model.UserSettings
@@ -46,4 +44,5 @@ class FirebaseViewModel: ViewModel() {
 
         return Users(uid.toString(),email.toString(), UserSettings(libriPrenotatiData , commentiData ))
     }
+
 }
