@@ -1,9 +1,13 @@
 package com.example.biblioteca_nazionale.fragments
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.Navigation
@@ -33,11 +37,19 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
         binding = FragmentBookListBinding.bind(view)
 
         var focusSearchView = arguments?.getBoolean("focusSearchView") ?: false
-        Log.d("yolo",            binding.searchView.requestFocus().toString())
         if (focusSearchView) {
-            binding.searchView.requestFocus()
-            Log.d("yoloddd",binding.searchView.requestFocus().toString())
+            binding.searchView.postDelayed({
+                binding.searchView.clearFocus()
+                binding.searchView.requestFocus()
+
+                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+            }, 1) // Delay di 2000 millisecondi (2 secondi)
         }
+
+
+
+
 
 
 
