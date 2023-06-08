@@ -60,7 +60,9 @@ class ProfileFragment : Fragment() {
                             }
                         //val action = ProfileFragmentDirections.actionProfileInfoFragmentToCredentialUpdated()
                         //findNavController().navigate(action)
-                        Navigation.findNavController(requireView()).navigate(R.id.action_profileInfoFragment_to_credentialUpdated)
+                        val navController = Navigation.findNavController(binding.root)
+                        navController.navigate(R.id.action_profileInfoFragment_to_credentialUpdated)
+                        //Navigation.findNavController(requireView()).navigate(R.id.action_profileInfoFragment_to_credentialUpdated)
                     } else {
                         Toast.makeText(context, "Operazione di cambio credenziali non completata!", Toast.LENGTH_SHORT).show()
                     }
