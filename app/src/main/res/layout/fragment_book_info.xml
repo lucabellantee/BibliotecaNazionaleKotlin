@@ -187,6 +187,17 @@
                     android:layout_marginRight="20dp" />
 
                 <TextView
+                    android:id="@+id/descrizioneText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="50dp"
+                    android:elegantTextHeight="true"
+                    android:padding="2dp"
+                    android:text="Descrizione"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
+
+                <TextView
                     android:id="@+id/textViewDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -221,10 +232,10 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <com.google.android.gms.maps.MapView
+                    <com.example.biblioteca_nazionale.components.CustomMapView
                         android:id="@+id/mapView"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="225dp"
                         android:contentDescription="niente" />
 
                 </LinearLayout>
