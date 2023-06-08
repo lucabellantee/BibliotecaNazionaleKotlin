@@ -1,12 +1,12 @@
 package com.example.biblioteca_nazionale.fragments
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.UnderlineSpan
 import android.view.View
-import android.view.View.OnFocusChangeListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -14,6 +14,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.appbar.MaterialToolbar
 
 
@@ -24,10 +28,55 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
     private var isExpanded = false
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentBookInfoBinding.bind(view)
+
+
+        val mapView: MapView = binding.mapView
+        mapView.onCreate(savedInstanceState)
+
+
+        mapView.getMapAsync { googleMap ->
+            // Personalizzazione e visualizzazione della mappa
+            googleMap.uiSettings.isZoomControlsEnabled = true // Abilita i controlli di zoom
+            googleMap.uiSettings.isMyLocationButtonEnabled = true // Abilita il pulsante "La mia posizione"
+            googleMap.uiSettings.isScrollGesturesEnabled = true // Abilita il gesto di scorrimento sulla mappa
+            googleMap.uiSettings.isRotateGesturesEnabled=true
+            googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom=true
+
+
+
+            // Imposta la posizione iniziale della mappa
+            val initialLatLng = LatLng(40.7128, -74.0060) // Esempio: New York City
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(initialLatLng, 12f)
+            googleMap.moveCamera(cameraUpdate)
+
+            // Aggiungi marcatori sulla mappa
+            val markerOptions = MarkerOptions()
+                .position(initialLatLng)
+                .title("New York City")
+                .snippet("La città che non dorme mai")
+            googleMap.addMarker(markerOptions)
+
+            // Aggiungi altre personalizzazioni e funzionalità alla mappa secondo le tue esigenze
+
+            // Esempio: Aggiungi un'interazione al clic su un marker
+            googleMap.setOnMarkerClickListener { marker ->
+                // Gestisci l'evento del clic sul marker
+                // ...
+                // Restituisci true per indicare che l'evento è stato gestito
+                true
+            }
+
+            // Esempio: Aggiungi un'interazione al clic sulla mappa
+            googleMap.setOnMapClickListener { latLng ->
+                // Gestisci l'evento del clic sulla mappa
+                // ...
+            }
+        }
 
         toolbar = binding.toolbar
 
@@ -43,8 +92,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 findNavController().navigate(action)
             }
         }
-
-
 
 
         val book = arguments?.getParcelable<Book>("book")
@@ -83,6 +130,19 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val mapView: MapView = binding.mapView
+
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val mapView: MapView = binding.mapView
+        mapView.onPause()
     }
 
     private fun updateDescriptionText() {

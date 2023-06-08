@@ -25,6 +25,9 @@
             android:name=".activity.HomePageActivity"
             android:windowSoftInputMode="adjustPan">
         </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC9BLGJeWVSlUqfUpQTcGmVpiB4sYp0MT8" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
