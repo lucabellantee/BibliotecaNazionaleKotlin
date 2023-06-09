@@ -2,28 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/homeIcon"
+        android:id="@+id/bookListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/baseline_home_24"
         android:title="@string/home" />
 
     <item
-        android:id="@+id/bookIcon"
+        android:id="@+id/myBooksFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/baseline_book_24"
         android:title="@string/books" />
 
     <item
-        android:id="@+id/notificationIcon"
+        android:id="@+id/notificationsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/baseline_notifications_24"
         android:title="@string/notifications" />
 
     <item
-        android:id="@+id/settingsIcon"
+        android:id="@+id/settingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/baseline_settings_24"
@@ -31,7 +31,7 @@
 
 
     <item
-        android:id="@+id/profileIcon"
+        android:id="@+id/profileInfoFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/ic_baseline_person_24"

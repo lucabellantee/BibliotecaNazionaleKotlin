@@ -19,10 +19,9 @@
                 android:name="book"
                 app:argType="com.example.biblioteca_nazionale.model.Book" />
         </action>
-        <action
-            android:id="@+id/action_bookListFragment_to_profileInfoFragment"
-            app:destination="@id/profileInfoFragment" /> <!-- Modifica qui -->
+        <!-- Modifica qui -->
     </fragment>
+
     <fragment
         android:id="@+id/bookInfoFragment"
         android:name="com.example.biblioteca_nazionale.fragments.BookInfoFragment"
@@ -49,6 +48,7 @@
             android:id="@+id/action_profileInfoFragment_to_credentialUpdated"
             app:destination="@id/credentialUpdated" />
     </fragment>
+
     <fragment
         android:id="@+id/credentialUpdated"
         android:name="com.example.biblioteca_nazionale.fragments.CredentialUpdated"
@@ -58,4 +58,22 @@
             android:id="@+id/action_credentialUpdated_to_profileInfoFragment"
             app:destination="@id/profileInfoFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/myBooksFragment"
+        android:name="com.example.biblioteca_nazionale.fragments.MyBooksFragment"
+        android:label="fragment_my_books"
+        tools:layout="@layout/fragment_my_books" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.biblioteca_nazionale.fragments.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.example.biblioteca_nazionale.fragments.NotificationsFragment"
+        android:label="fragment_notifications"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

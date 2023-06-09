@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.databinding.HomePageBinding
@@ -46,6 +47,12 @@ class HomePageActivity : AppCompatActivity() {
 
         binding = HomePageBinding.inflate(layoutInflater)
 
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
+        navController = navHostFragment.navController
+
+        val navView: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        navView.setupWithNavController(navController)
+
 
 // INIZIO PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
 
@@ -67,32 +74,7 @@ class HomePageActivity : AppCompatActivity() {
 // FINE PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
 
 
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        bottomNavigation.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.homeIcon -> {
-                    replaceFragment(BookListFragment())
-                    true
-                }
-                R.id.bookIcon -> {
-                    replaceFragment(MyBooksFragment())
-                    true
-                }
-                R.id.notificationIcon -> {
-                    replaceFragment(NotificationsFragment())
-                    true
-                }
-                R.id.settingsIcon -> {
-                    replaceFragment(SettingsFragment())
-                    true
-                }
-                R.id.profileIcon -> {
-                    replaceFragment(ProfileFragment())
-                    true
-                }
-                else -> false
-            }
-        }
+
     }
 
     private fun replaceFragment(fragment: Fragment) {
