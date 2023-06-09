@@ -36,7 +36,7 @@ class FirebaseViewModel: ViewModel() {
 
         val impostazioniData = data?.get("Impostazioni") as? HashMap<String, Any>
         //Log.d("/FirebaseViewModel",impostazioniData.toString())
-        val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, String>
+        val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
         val commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
         Log.d("/FirebaseViewModel",commentiData.toString())
         val uid = data?.get("uid") as? String

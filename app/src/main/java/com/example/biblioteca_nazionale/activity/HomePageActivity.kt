@@ -74,7 +74,6 @@ class HomePageActivity : AppCompatActivity() {
 // FINE PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
 
 
-
     }
 
     private fun replaceFragment(fragment: Fragment) {

@@ -21,16 +21,6 @@ class MyBooksFragment : Fragment() {
     /*override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }*/
-/*
-    val listaStringa = listOf("stringa1", "stringa2")
-    val imagelinkss = ImageLinks("thumbnail", "")
-    val info1 = InfoBook("titolo primo libro", listaStringa,"","","", imagelinkss)
-    val info2 = InfoBook("titolo secondo libro", listaStringa,"","","", imagelinkss)
-    val libro1 = Book("759389304",info1)
-    val libro2 = Book("749204830284",info2)
-    val list = listOf(libro1, libro2)
- */
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //val firebaseViewModel: FirebaseViewModel by viewModels()
@@ -38,20 +28,22 @@ class MyBooksFragment : Fragment() {
         // In provaUser dovrebbe andarci l'uid o l'email del utente
         val utente: Users =  firebaseViewModel.getCurrentUser("provaUser")
 
-        val titoliLibri: HashMap<String,String>? = utente.userSettings.libriPrenotati
+        val libriPrenotati: HashMap<String,ArrayList<String>>? = utente.userSettings.libriPrenotati
+
+        // titoliLibri mi restituisce tutti i nomi dei libri, che a loro volta sono degli array
+        val titoliLibri = utente.userSettings.libriPrenotati?.keys?.toList()
 
         val listaStringa = listOf("stringa1", "stringa2")
         val imagelinkss = ImageLinks("thumbnail", "")
 
-        val info1 = InfoBook(titoliLibri?.get("1"), listaStringa,"","","", imagelinkss)
-        val info2 = InfoBook(titoliLibri?.get("010"), listaStringa,"","","", imagelinkss)
+        val info1 = InfoBook(titoliLibri?.get(0).toString(), listaStringa,"","","", imagelinkss)
 
-        val id1 = utente.userSettings.libriPrenotati?.filterValues { it == info1.toString() }?.keys
-        val id2 = utente.userSettings.libriPrenotati?.filterValues { it == info2.toString() }?.keys
+
+
+        val id1 = utente.userSettings.libriPrenotati?.get(titoliLibri?.get(0).toString())?.get(0)
 
         val libro1 = Book(id1.toString(),info1)
-        val libro2 = Book(id2.toString(),info2)
-        val list = listOf(libro1, libro2)
+        val list = listOf(libro1)
 
 
         val view = inflater.inflate(R.layout.fragment_my_books, container, false)
