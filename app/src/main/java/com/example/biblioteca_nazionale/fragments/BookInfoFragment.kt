@@ -15,6 +15,9 @@ import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
 import android.location.Geocoder
+import android.util.Log
+import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
+import com.example.biblioteca_nazionale.viewmodel.OPACViewModel
 import java.util.Locale
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
@@ -29,6 +32,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     lateinit var binding: FragmentBookInfoBinding
     private lateinit var toolbar: MaterialToolbar
 
+    private val opacModel: OPACViewModel = OPACViewModel()
+
+
     private var isExpanded = false
 
     @SuppressLint("ClickableViewAccessibility")
@@ -36,6 +42,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentBookInfoBinding.bind(view)
+
+        opacModel.searchIdentificativoLibro("Animal Farm")
+
+        Log.d("yolo", opacModel.getOpacLiveData().value?.briefRecords?.get(0).toString())
 
 
         val mapView: MapView = binding.mapView
