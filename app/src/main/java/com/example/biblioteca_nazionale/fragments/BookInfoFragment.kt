@@ -14,6 +14,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
+import android.location.Geocoder
+import android.util.Log
+import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
+import com.example.biblioteca_nazionale.viewmodel.OPACViewModel
+import java.util.Locale
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
@@ -27,6 +32,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     lateinit var binding: FragmentBookInfoBinding
     private lateinit var toolbar: MaterialToolbar
 
+    private val opacModel: OPACViewModel = OPACViewModel()
+
+
     private var isExpanded = false
 
     @SuppressLint("ClickableViewAccessibility")
@@ -35,101 +43,126 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding = FragmentBookInfoBinding.bind(view)
 
+        opacModel.searchIdentificativoLibro("Animal Farm")
+
+        Log.d("yolo", opacModel.getOpacLiveData().value?.briefRecords?.get(0).toString())
+
 
         val mapView: MapView = binding.mapView
         mapView.onCreate(savedInstanceState)
 
+        val cityName = "Teramo"
 
-        mapView.getMapAsync { googleMap ->
-            // Personalizzazione e visualizzazione della mappa
-            googleMap.uiSettings.isZoomControlsEnabled = true // Abilita i controlli di zoom
-            googleMap.uiSettings.isMyLocationButtonEnabled = true // Abilita il pulsante "La mia posizione"
-            googleMap.uiSettings.isScrollGesturesEnabled = true // Abilita il gesto di scorrimento sulla mappa
-            googleMap.uiSettings.isRotateGesturesEnabled=true
-            googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom=true
+        // Ottieni le coordinate geografiche corrispondenti al nome della città utilizzando il servizio di geocoding
+        val geocoder = context?.let { Geocoder(it, Locale.getDefault()) }
+        val addressList = geocoder?.getFromLocationName(cityName, 1)
 
-            googleMap.setMapStyle(context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_style) }) // Carica lo stile personalizzato della mappa
+        if (addressList != null) {
+            if (addressList.isNotEmpty()) {
+                mapView.getMapAsync { googleMap ->
+                    // Personalizzazione e visualizzazione della mappa
+                    googleMap.uiSettings.isZoomControlsEnabled = true // Abilita i controlli di zoom
+                    googleMap.uiSettings.isMyLocationButtonEnabled =
+                        true // Abilita il pulsante "La mia posizione"
+                    googleMap.uiSettings.isScrollGesturesEnabled =
+                        true // Abilita il gesto di scorrimento sulla mappa
+                    googleMap.uiSettings.isRotateGesturesEnabled = true
+                    googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
 
+                    googleMap.setMapStyle(context?.let {
+                        MapStyleOptions.loadRawResourceStyle(
+                            it,
+                            R.raw.map_style
+                        )
+                    }) // Carica lo stile personalizzato della mappa
 
-            // Imposta la posizione iniziale della mappa
-            val initialLatLng = LatLng(40.7128, -74.0060) // Esempio: New York City
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(initialLatLng, 12f)
-            googleMap.moveCamera(cameraUpdate)
+                    val address = addressList[0]
+                    val initialLatLng = LatLng(address.latitude, address.longitude)
+                    // Imposta la posizione iniziale della mappa
 
-            // Aggiungi marcatori sulla mappa
-            val markerOptions = MarkerOptions()
-                .position(initialLatLng)
-                .title("New York City")
-                .snippet("La città che non dorme mai")
-            googleMap.addMarker(markerOptions)
+                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(initialLatLng, 12f)
+                    googleMap.moveCamera(cameraUpdate)
 
-            // Aggiungi altre personalizzazioni e funzionalità alla mappa secondo le tue esigenze
+                    // Aggiungi il marker e le altre personalizzazioni come desiderato
+                    val markerOptions = MarkerOptions()
+                        .position(initialLatLng)
+                        .title(cityName)
+                        .snippet("La città che non dorme mai")
+                    googleMap.addMarker(markerOptions)
+                    googleMap.moveCamera(cameraUpdate)
 
-            // Esempio: Aggiungi un'interazione al clic su un marker
-            googleMap.setOnMarkerClickListener { marker ->
-                // Gestisci l'evento del clic sul marker
-                // ...
-                // Restituisci true per indicare che l'evento è stato gestito
-                true
+                    // Aggiungi altre personalizzazioni e funzionalità alla mappa secondo le tue esigenze
+
+                    // Esempio: Aggiungi un'interazione al clic su un marker
+                    googleMap.setOnMarkerClickListener { marker ->
+                        // Gestisci l'evento del clic sul marker
+                        // ...
+                        // Restituisci true per indicare che l'evento è stato gestito
+                        true
+                    }
+
+                    // Esempio: Aggiungi un'interazione al clic sulla mappa
+                    googleMap.setOnMapClickListener { latLng ->
+                        // Gestisci l'evento del clic sulla mappa
+                        // ...
+                    }
+                }
             }
 
-            // Esempio: Aggiungi un'interazione al clic sulla mappa
-            googleMap.setOnMapClickListener { latLng ->
-                // Gestisci l'evento del clic sulla mappa
-                // ...
-            }
-        }
+            toolbar = binding.toolbar
 
-        toolbar = binding.toolbar
-
-        toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
-        toolbar.setNavigationOnClickListener {
-            val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
-            findNavController().navigate(action)
-        }
-
-        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(focusSearchView= true)
+            toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
+            toolbar.setNavigationOnClickListener {
+                val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
                 findNavController().navigate(action)
             }
-        }
 
-
-        val book = arguments?.getParcelable<Book>("book")
-
-        book?.let {
-            binding.textViewBookName.text = it.info?.title ?: ""
-            binding.textViewAutore.text = it.info?.authors?.toString() ?: ""
-
-            val description = it.info?.description
-            if (description.isNullOrEmpty()) {
-                binding.textViewDescription.text = "Descrizione non disponibile"
-                binding.textMoreDescription.visibility = View.GONE
-            } else
-                binding.textViewDescription.text = description
-
-            Glide.with(requireContext())
-                .load(book.info.imageLinks?.thumbnail.toString())
-                .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
-                .into(binding.imageViewBook)
-        }
-
-        val spannableString = SpannableString("Leggi di più")
-        spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
-        binding.textMoreDescription.text = spannableString
-
-        binding.textViewDescription.post {
-            if (binding.textViewDescription.lineCount < 5) {
-                binding.textMoreDescription.visibility = View.GONE
-            } else {
-                binding.textMoreDescription.visibility = View.VISIBLE
-                binding.textMoreDescription.setOnClickListener {
-                    isExpanded = !isExpanded
-                    updateDescriptionText()
+            binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    val action =
+                        BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(
+                            focusSearchView = true
+                        )
+                    findNavController().navigate(action)
                 }
-                binding.textViewDescription.maxLines = 5
-                binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
+            }
+
+
+            val book = arguments?.getParcelable<Book>("book")
+
+            book?.let {
+                binding.textViewBookName.text = it.info?.title ?: ""
+                binding.textViewAutore.text = it.info?.authors?.toString() ?: ""
+
+                val description = it.info?.description
+                if (description.isNullOrEmpty()) {
+                    binding.textViewDescription.text = "Descrizione non disponibile"
+                    binding.textMoreDescription.visibility = View.GONE
+                } else
+                    binding.textViewDescription.text = description
+
+                Glide.with(requireContext())
+                    .load(book.info.imageLinks?.thumbnail.toString())
+                    .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
+                    .into(binding.imageViewBook)
+            }
+
+            val spannableString = SpannableString("Leggi di più")
+            spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
+            binding.textMoreDescription.text = spannableString
+
+            binding.textViewDescription.post {
+                if (binding.textViewDescription.lineCount < 5) {
+                    binding.textMoreDescription.visibility = View.GONE
+                } else {
+                    binding.textMoreDescription.visibility = View.VISIBLE
+                    binding.textMoreDescription.setOnClickListener {
+                        isExpanded = !isExpanded
+                        updateDescriptionText()
+                    }
+                    binding.textViewDescription.maxLines = 5
+                    binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
+                }
             }
         }
     }
