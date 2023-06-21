@@ -35,11 +35,11 @@ class FirebaseDB {
        docRef.get()
            .addOnSuccessListener { document ->
                if (document != null) {
-                   Log.d("/FirebaseDB", "DocumentSnapshot data: ${document.data}")
+                   //Log.d("/FirebaseDB", "DocumentSnapshot data: ${document.data}")
                    userInfoLiveData.value = document
 
                } else {
-                  Log.d("/FirebaseDB", "Documento vuoto")
+                 // Log.d("/FirebaseDB", "Documento vuoto")
                }
            }
            .addOnFailureListener { exception ->
@@ -102,4 +102,26 @@ class FirebaseDB {
             }
         return userAllLiveData
     } */
+
+
+
+    var bookInfoLiveData: MutableLiveData<DocumentSnapshot> =  MutableLiveData()
+    fun getAllBookInfoFromId(idLibro: String): MutableLiveData<DocumentSnapshot> {
+
+        val docRef = db.collection("libri").document("ID_LIBRO")
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d("/FirebaseDB", "DocumentSnapshot data: ${document.data}")
+                    bookInfoLiveData.value = document
+
+                } else {
+                    Log.d("/FirebaseDB", "Documento vuoto")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("/FirebaseDB", "Errore lettura dati !!!")
+            }
+        return bookInfoLiveData
+    }
 }

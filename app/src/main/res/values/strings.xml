@@ -34,6 +34,9 @@
     <string name="profile_updated">Profile Updated!</string>
     <string name="profile_succesfully_updated">Your profile has been updated successfully!</string>
     <string name="back_to_profile">Back to profile</string>
+    <string name="write_review">Write a review</string>
+    <string name="reviews">Reviews</string>
+    <string name="logout">Logout</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

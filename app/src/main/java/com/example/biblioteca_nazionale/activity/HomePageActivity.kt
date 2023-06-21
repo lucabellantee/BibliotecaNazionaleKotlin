@@ -62,6 +62,7 @@ class HomePageActivity : AppCompatActivity() {
         val userInfoObserver = Observer<DocumentSnapshot> { currentUserInfo ->
             // Update the UI, in this case, a TextView.
             //Log.d("/HomePageActivity", currentUserInfo.data.toString())
+           // Log.d("/HomePageActivityIMPORTANTE",firebaseViewModel.getCurrentUser("provaUser").toString())
 
             //firebaseViewModel.getCurrentUser("provaUser").toString()
            // Log.d("/HomePageActivity",firebaseViewModel.getCurrentUser("provaUser").toString())
@@ -70,6 +71,20 @@ class HomePageActivity : AppCompatActivity() {
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         // model.currentName.observe(this, nameObserver)
         firebaseViewModel.getUserInfo("1cK02hokWHS1Ivnr1iKr34JKe4q1").observe(this,userInfoObserver)
+
+
+        val BookInfoObserver = Observer<DocumentSnapshot> { currentBookInfo ->
+            // Update the UI, in this case, a TextView.
+            //Log.d("/HomePageActivity", currentUserInfo.data.toString())
+            Log.d("/HomePageActivity",firebaseViewModel.getBookInfo("ID_LIBRO").toString())
+
+            //firebaseViewModel.getCurrentUser("provaUser").toString()
+            // Log.d("/HomePageActivity",firebaseViewModel.getCurrentUser("provaUser").toString())
+        }
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        // model.currentName.observe(this, nameObserver)
+        firebaseViewModel.getBookInfoResponseFromDB("ID_LIBRO").observe(this,BookInfoObserver)
 
 // FINE PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
 
