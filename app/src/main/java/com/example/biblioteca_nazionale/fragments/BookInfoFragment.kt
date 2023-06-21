@@ -116,14 +116,13 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         val mapView: MapView = binding.mapView
         mapView.onCreate(savedInstanceState)
 
-        println(libraries)
-        Log.d("dio",libraries[0].shelfmarks[0].shelfmark)
+        /*Log.d("dio",libraries[0].shelfmarks[0].shelfmark)
 
         lateinit var librariesNames : MutableList<String>
 
         libraries.forEach {
             librariesNames.add(it.shelfmarks[0].shelfmark)
-        }
+        }*/
 
         val cityName = "Teramo"
 
