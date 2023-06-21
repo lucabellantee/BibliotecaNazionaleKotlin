@@ -16,7 +16,8 @@ import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
 import android.location.Geocoder
 import android.util.Log
-import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
+import com.example.biblioteca_nazionale.model.RequestBookName
+import com.example.biblioteca_nazionale.model.RequestCode
 import com.example.biblioteca_nazionale.viewmodel.OPACViewModel
 import java.util.Locale
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,6 +26,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.gson.Gson
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
@@ -42,6 +47,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentBookInfoBinding.bind(view)
+
+        fetchDataBook().start()
+
+
+
 
         opacModel.searchIdentificativoLibro("Animal Farm")
 
@@ -166,6 +176,61 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             }
         }
     }
+    private fun fetchDataBook(): Thread {
+        return Thread {
+            try {
+                val url = URL("http://opac.sbn.it/opacmobilegw/search.json?any=harry+potter")
+                val connection = url.openConnection() as HttpURLConnection
+
+                if (connection.responseCode == 200) {
+                    val inputStream = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
+                    val request = Gson().fromJson(inputStreamReader, RequestBookName::class.java)
+                    Log.d("cacca", request.toString())
+                    inputStream.close()
+
+                    fetchDataCode(request).start()
+                } else {
+                    // Gestisci la risposta non riuscita (es. responseCode diverso da 200)
+                }
+                connection.disconnect()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                // Gestisci l'eccezione
+            }
+        }
+    }
+
+    private fun fetchDataCode(request: RequestBookName): Thread {
+        val code = request.briefRecords[0].codiceIdentificativo.replace("\\", "")
+        Log.d("codice", code)
+        return Thread {
+            try {
+                val url = URL("http://opac.sbn.it/opacmobilegw/full.json?bid=ITICCURL10093707")
+                val connection = url.openConnection() as HttpURLConnection
+
+                if (connection.responseCode == 200) {
+                    val inputStream = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
+                    val requestCode = Gson().fromJson(inputStreamReader, RequestCode::class.java)
+                    println(requestCode.localizzazioni[0].shelfmarks[0].shelfmark)
+                    Log.d("hhhhhhhhhhhhhh", requestCode.localizzazioni[0].shelfmarks[0].shelfmark)
+
+                    binding.descrizioneText.text = requestCode.localizzazioni[0].shelfmarks[0].shelfmark
+
+                    inputStream.close()
+                } else {
+                    Log.d("else", "Error: " + connection.responseMessage)
+                }
+                connection.disconnect()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                // Gestisci l'eccezione
+            }
+        }
+    }
+
+
 
     override fun onResume() {
         super.onResume()
