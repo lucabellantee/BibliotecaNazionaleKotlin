@@ -1,5 +1,6 @@
 package com.example.biblioteca_nazionale.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -36,6 +37,21 @@ class ProfileFragment : Fragment() {
         binding.updateButtonFrag.setOnClickListener {
             updateAll()
         }
+
+        binding.logoutButton.setOnClickListener {
+            showLogoutConfirmationDialog()
+        }
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirm Logout")
+            .setMessage("Are you sure you want to disconnect?")
+            .setPositiveButton("Confirm") { dialog, which ->
+                logout()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     fun updateAll() {
@@ -98,4 +114,9 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    fun logout(){
+        auth.signOut()
+        val navController = Navigation.findNavController(binding.root)
+        navController.navigate(R.id.action_profileInfoFragment_to_mainActivity)
+    }
 }
