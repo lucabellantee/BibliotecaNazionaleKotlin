@@ -31,12 +31,13 @@ class FirebaseDB {
     var userInfoLiveData: MutableLiveData<DocumentSnapshot> =  MutableLiveData()
    fun getAllUserInfoFromUid(uid: String): MutableLiveData<DocumentSnapshot> {
 
-       val docRef = db.collection("utenti").document("provaUser")
+       val docRef = db.collection("utenti").document(uid)
        docRef.get()
            .addOnSuccessListener { document ->
                if (document != null) {
-                   //Log.d("/FirebaseDB", "DocumentSnapshot data: ${document.data}")
+                 //  Log.d("/IMPORTANTE", "DocumentSnapshot data: ${document.data}")
                    userInfoLiveData.value = document
+                  // Log.d("/IMPORTANTEEE", "DocumentSnapshot data: ${userInfoLiveData.value.toString()}")
 
                } else {
                  // Log.d("/FirebaseDB", "Documento vuoto")
@@ -104,6 +105,17 @@ class FirebaseDB {
     } */
 
 
+    fun updateBookPrenoted(newUser: Users){
+        db.collection("utenti").document("provaUser").delete()
+        db.collection("utenti").document(newUser.UID).set(newUser)
+       // db.collection("utenti").document(newUser.UID).update("libri prenotati", newUser.userSettings.libriPrenotati)
+    }
+
+    fun deleteBookPrenoted(newUser: Users){
+        // TODO LUCA: In futuro vedere se si riesce a trovare un metodo per fare direttamente l'update
+        db.collection("utenti").document(newUser.UID).delete()
+        db.collection("utenit").add(newUser)
+    }
 
     var bookInfoLiveData: MutableLiveData<DocumentSnapshot> =  MutableLiveData()
     fun getAllBookInfoFromId(idLibro: String): MutableLiveData<DocumentSnapshot> {

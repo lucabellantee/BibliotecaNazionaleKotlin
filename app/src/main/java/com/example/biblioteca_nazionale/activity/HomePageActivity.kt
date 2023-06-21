@@ -76,10 +76,10 @@ class HomePageActivity : AppCompatActivity() {
         val BookInfoObserver = Observer<DocumentSnapshot> { currentBookInfo ->
             // Update the UI, in this case, a TextView.
             //Log.d("/HomePageActivity", currentUserInfo.data.toString())
-            Log.d("/HomePageActivity",firebaseViewModel.getBookInfo("ID_LIBRO").toString())
+            //Log.d("/HomePageActivity",firebaseViewModel.getBookInfo("ID_LIBRO").toString())
 
             //firebaseViewModel.getCurrentUser("provaUser").toString()
-            // Log.d("/HomePageActivity",firebaseViewModel.getCurrentUser("provaUser").toString())
+             Log.d("/HomePageActivity",firebaseViewModel.getCurrentUser("provaUser").toString())
         }
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
@@ -87,6 +87,7 @@ class HomePageActivity : AppCompatActivity() {
         firebaseViewModel.getBookInfoResponseFromDB("ID_LIBRO").observe(this,BookInfoObserver)
 
 // FINE PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
+       // firebaseViewModel.addNewBookBooked("123","Il libro di Luca","Biblioteca comunale di termoli, Termoli 86039"," Link al immagine")
 
 
     }
