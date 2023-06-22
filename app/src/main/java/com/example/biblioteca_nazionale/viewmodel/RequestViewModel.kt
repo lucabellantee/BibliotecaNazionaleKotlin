@@ -6,6 +6,7 @@ import com.example.biblioteca_nazionale.model.BooksResponse
 import com.example.biblioteca_nazionale.model.RequestBookName
 import com.example.biblioteca_nazionale.model.RequestCode
 import com.example.biblioteca_nazionale.model.RequestCodeLocation
+import com.google.android.gms.fido.fido2.api.common.ResidentKeyRequirement.UnsupportedResidentKeyRequirementException
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -18,9 +19,11 @@ import java.net.URL
 class RequestViewModel : ViewModel() {
 
     private var libraries: List<RequestCodeLocation> = emptyList()
+    private lateinit var book: Book
 
     fun fetchDataBook(book: Book) {
-        val bookName = book.info?.title?.replace(" ", "+") ?: ""
+        this.book = book
+        val bookName = this.book.info?.title?.replace(" ", "+") ?: ""
         val url = URL("http://opac.sbn.it/opacmobilegw/search.json?any=$bookName")
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -49,8 +52,20 @@ class RequestViewModel : ViewModel() {
     }
 
     private fun fetchDataCode(request: RequestBookName) {
-        val bookCode = request.briefRecords[0].codiceIdentificativo.replace("\\", "")
-        val url = URL("http://opac.sbn.it/opacmobilegw/full.json?bid=$bookCode")
+        var bookCode: String = request.briefRecords[0].codiceIdentificativo.replace("\\", "")
+        var url = URL("http://opac.sbn.it/opacmobilegw/full.json?bid=$bookCode")
+
+        var i = 0
+        while (i < request.briefRecords.size) {
+            val record = request.briefRecords[i]
+            val bool = record.titolo.contains(book.info.title ?: "", ignoreCase = true)
+            if (bool) {
+                bookCode = record.codiceIdentificativo.replace("\\", "")
+                url = URL("http://opac.sbn.it/opacmobilegw/full.json?bid=$bookCode")
+                break
+            }
+            i++
+        }
 
         try {
             val connection = url.openConnection() as HttpURLConnection
@@ -63,12 +78,12 @@ class RequestViewModel : ViewModel() {
                 val shelfmark = requestCode.localizzazioni[0].shelfmarks[0].shelfmark
                 if (shelfmark != null) {
                     println(shelfmark)
-                    Log.d("dio",shelfmark)
+                    Log.d("dio", shelfmark)
                 } else {
                     println("Il valore dello shelfmark è null")
                 }
 
-                libraries= requestCode.localizzazioni
+                libraries = requestCode.localizzazioni
                 println(libraries[0].shelfmarks[0].shelfmark)
             } else {
                 Log.d("else", "Error: " + connection.responseMessage)
@@ -78,6 +93,7 @@ class RequestViewModel : ViewModel() {
             e.printStackTrace()
             // Gestisci l'eccezione
         }
+
     }
 
     fun getLibraries(): List<RequestCodeLocation> {
