@@ -3,6 +3,8 @@ package com.example.biblioteca_nazionale.fragments
 
 import RequestViewModel
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
+import android.location.Address
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextUtils
@@ -34,6 +36,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+import java.security.KeyStore.TrustedCertificateEntry
 
 
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
@@ -41,8 +50,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     lateinit var binding: FragmentBookInfoBinding
     private lateinit var toolbar: MaterialToolbar
 
-    //private lateinit var libraries: List<RequestCodeLocation>
     private val modelRequest: RequestViewModel = RequestViewModel()
+    val db = Firebase.firestore
 
 
     private var isExpanded = false
@@ -53,6 +62,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding = FragmentBookInfoBinding.bind(view)
 
+        opacModel.searchIdentificativoLibro("Animal Farm")
 
         toolbar = binding.toolbar
 

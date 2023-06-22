@@ -22,6 +22,7 @@ import com.example.biblioteca_nazionale.fragments.MyBooksFragment
 import com.example.biblioteca_nazionale.fragments.NotificationsFragment
 import com.example.biblioteca_nazionale.fragments.ProfileFragment
 import com.example.biblioteca_nazionale.fragments.SettingsFragment
+import com.example.biblioteca_nazionale.model.Users
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -58,28 +59,30 @@ class HomePageActivity : AppCompatActivity() {
 
 
         val firebaseViewModel: FirebaseViewModel by viewModels()
-        // Create the observer which updates the UI.
-        val userInfoObserver = Observer<DocumentSnapshot> { currentUserInfo ->
-            // Update the UI, in this case, a TextView.
-            //Log.d("/HomePageActivity", currentUserInfo.data.toString())
-           // Log.d("/HomePageActivityIMPORTANTE",firebaseViewModel.getCurrentUser("provaUser").toString())
 
-            //firebaseViewModel.getCurrentUser("provaUser").toString()
-           // Log.d("/HomePageActivity",firebaseViewModel.getCurrentUser("provaUser").toString())
+        val uid = "provaUser" // L'UID dell'utente di interesse
+        val currentUser = firebaseViewModel.getCurrentUser(uid)
+        currentUser.thenAccept { user ->
+            // Qui puoi utilizzare il valore dell'utente ottenuto
+            Log.d("/HomePageActivity", user.toString())
+
+        }.exceptionally { throwable ->
+            // Gestione di eventuali errori nel recupero dell'utente
+            Log.e("/HomePageActivity", "Errore nel recupero dell'utente: ${throwable.message}")
+            null
         }
 
-        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        // model.currentName.observe(this, nameObserver)
-        firebaseViewModel.getUserInfo("1cK02hokWHS1Ivnr1iKr34JKe4q1").observe(this,userInfoObserver)
-
+        // AGGIUNTA NUOVO LIBRO PRENOTATO
+       // firebaseViewModel.addNewBookBooked("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
+        firebaseViewModel.removeBookBooked("Libro di Luca")
 
         val BookInfoObserver = Observer<DocumentSnapshot> { currentBookInfo ->
             // Update the UI, in this case, a TextView.
             //Log.d("/HomePageActivity", currentUserInfo.data.toString())
-            Log.d("/HomePageActivity",firebaseViewModel.getBookInfo("ID_LIBRO").toString())
+            //Log.d("/HomePageActivity",firebaseViewModel.getBookInfo("ID_LIBRO").toString())
 
             //firebaseViewModel.getCurrentUser("provaUser").toString()
-            // Log.d("/HomePageActivity",firebaseViewModel.getCurrentUser("provaUser").toString())
+             //Log.d("/HomePageActivity",firebaseViewModel.getCurrentUser("provaUser").toString())
         }
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
@@ -87,6 +90,7 @@ class HomePageActivity : AppCompatActivity() {
         firebaseViewModel.getBookInfoResponseFromDB("ID_LIBRO").observe(this,BookInfoObserver)
 
 // FINE PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
+       // firebaseViewModel.addNewBookBooked("123","Il libro di Luca","Biblioteca comunale di termoli, Termoli 86039"," Link al immagine")
 
 
     }
