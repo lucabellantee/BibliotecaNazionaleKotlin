@@ -27,7 +27,7 @@ class MyBooksFragment : Fragment() {
         //val firebaseViewModel: FirebaseViewModel by viewModels()
         val firebaseViewModel: FirebaseViewModel = ViewModelProvider(requireActivity()).get(FirebaseViewModel::class.java)
         // In provaUser dovrebbe andarci l'uid o l'email del utente
-        val utente: Users =  firebaseViewModel.getCurrentUser("provaUser")
+        val utente: Users = firebaseViewModel.getCurrentUser("provaUser").get()
 
         val libriPrenotati: HashMap<String,ArrayList<String>>? = utente.userSettings.libriPrenotati
 
