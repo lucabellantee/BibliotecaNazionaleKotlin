@@ -11,6 +11,9 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.LoginBinding
+import com.example.biblioteca_nazionale.firebase.FirebaseDB
+import com.example.biblioteca_nazionale.model.UserSettings
+import com.example.biblioteca_nazionale.model.Users
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -25,7 +28,8 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: LoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
-
+    private var firebase: FirebaseDB = FirebaseDB()
+    private val firebaseViewModel: FirebaseViewModel by viewModels()
     // login google
     private lateinit var googleSignInClient : GoogleSignInClient
     // login google
@@ -66,6 +70,28 @@ class LoginActivity : AppCompatActivity() {
 
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
+
+                        val allUser = firebaseViewModel.getAllUser()
+
+                        allUser.thenAccept { arrayOfUser ->
+                           var userIsPresent = false
+                        //    Log.d("arrayOfUser", arrayOfUser.size.toString())
+                           for(utente in arrayOfUser){
+                               Log.d("ECCOMI","SONO QUI")
+                               Log.d("/LoginActivity",utente.toString())
+                               if((utente.email.equals(firebaseAuth.currentUser?.email.toString()))) userIsPresent = true
+                           }
+                            if(userIsPresent == false) {
+                                Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
+                                val newUser = Users(firebaseAuth.uid.toString(),email,null)
+                                firebase.saveNewUser(newUser)
+                            }
+                        }.exceptionally { throwable ->
+                            // Gestione di eventuali errori nel recupero dell'utente
+                            Log.e("/LoginActivity", "Errore di tutti gli utenti: ${throwable.message}")
+                            null
+                        }
+
                         val intent = Intent(this, HomePageActivity::class.java)
                         startActivity(intent)
                     } else {

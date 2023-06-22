@@ -28,10 +28,10 @@ class MyBooksFragment : Fragment() {
         // In provaUser dovrebbe andarci l'uid o l'email del utente
         val utente: Users = firebaseViewModel.getCurrentUser("provaUser").get()
 
-        val libriPrenotati: HashMap<String,ArrayList<String>>? = utente.userSettings.libriPrenotati
+        val libriPrenotati: HashMap<String,ArrayList<String>>? = utente.userSettings?.libriPrenotati
 
         // titoliLibri mi restituisce tutti i nomi dei libri, che a loro volta sono degli array
-        val titoliLibri = utente.userSettings.libriPrenotati?.keys?.toList()
+        val titoliLibri = utente.userSettings?.libriPrenotati?.keys?.toList()
 
         val listaStringa = listOf("stringa1", "stringa2")
         val imagelinkss = ImageLinks("thumbnail", "")
@@ -40,7 +40,7 @@ class MyBooksFragment : Fragment() {
 
 
 
-        val id1 = utente.userSettings.libriPrenotati?.get(titoliLibri?.get(0).toString())?.get(0)
+        val id1 = utente.userSettings?.libriPrenotati?.get(titoliLibri?.get(0).toString())?.get(0)
 
         val libro1 = Book(id1.toString(),info1)
         val list = listOf(libro1)
