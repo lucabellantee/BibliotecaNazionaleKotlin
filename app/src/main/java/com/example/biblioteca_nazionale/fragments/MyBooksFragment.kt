@@ -34,8 +34,8 @@ class MyBooksFragment : Fragment() {
         // titoliLibri mi restituisce tutti i nomi dei libri, che a loro volta sono degli array
         val titoliLibri = utente.userSettings?.libriPrenotati?.keys?.toList()
         //val titoliLibri = utente.userSettings.libriPrenotati?.keys?.toList()
-        val titoliLibri = utente.userSettings.libriPrenotati?.get("HarryPotter")
-        Log.d("titoliLibri:", titoliLibri.toString())
+       // val titoliLibri = utente.userSettings.libriPrenotati?.get("HarryPotter")
+        //Log.d("titoliLibri:", titoliLibri.toString())
 
         val listaStringa = listOf("stringa1", "stringa2")
         val imagelinkss = ImageLinks("thumbnail", "")
