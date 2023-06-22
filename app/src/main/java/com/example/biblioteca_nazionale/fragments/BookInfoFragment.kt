@@ -62,8 +62,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding = FragmentBookInfoBinding.bind(view)
 
-        opacModel.searchIdentificativoLibro("Animal Farm")
-
         toolbar = binding.toolbar
 
         toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
