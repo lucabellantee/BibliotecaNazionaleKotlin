@@ -1,6 +1,7 @@
 package com.example.biblioteca_nazionale.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +32,9 @@ class MyBooksFragment : Fragment() {
         val libriPrenotati: HashMap<String,ArrayList<String>>? = utente.userSettings.libriPrenotati
 
         // titoliLibri mi restituisce tutti i nomi dei libri, che a loro volta sono degli array
-        val titoliLibri = utente.userSettings.libriPrenotati?.keys?.toList()
+        //val titoliLibri = utente.userSettings.libriPrenotati?.keys?.toList()
+        val titoliLibri = utente.userSettings.libriPrenotati?.get("HarryPotter")
+        Log.d("titoliLibri:", titoliLibri.toString())
 
         val listaStringa = listOf("stringa1", "stringa2")
         val imagelinkss = ImageLinks("thumbnail", "")
