@@ -59,41 +59,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding = FragmentBookInfoBinding.bind(view)
 
-        val book = hashMapOf(
-            "titolo" to "Il nome del libro",
-            "autore" to "L'autore del libro",
-            "anno" to 2023
-        )
-
-        /*Possiamo creare una classe UserBook che contiene per ogni libro identificato da isbn/nome/altro, il corrispettivo uid dell'utente*/
-
-        /*val book1 = listOf<BookUser>(
-            "isbn" to "valore_isbn_libro_acquisitodaAPI"
-            "utente" to "uid_utente_acquisito_dall'utente_corrente"
-        )*/
-
-        binding.button2.setOnClickListener {
-            db.collection("books")
-                .add(book)
-                .addOnSuccessListener { documentReference ->
-                    Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-                }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "Error adding document", e)
-                }
-        }
-
-        db.collection("books")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d("Stringaaa", "${document.id} => ${document.data}")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-
         opacModel.searchIdentificativoLibro("Animal Farm")
 
             toolbar = binding.toolbar
