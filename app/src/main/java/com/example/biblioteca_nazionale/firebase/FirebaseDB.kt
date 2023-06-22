@@ -37,7 +37,7 @@ class FirebaseDB {
                if (document != null) {
                  //  Log.d("/IMPORTANTE", "DocumentSnapshot data: ${document.data}")
                    userInfoLiveData.value = document
-                  // Log.d("/IMPORTANTEEE", "DocumentSnapshot data: ${userInfoLiveData.value.toString()}")
+
 
                } else {
                  // Log.d("/FirebaseDB", "Documento vuoto")
@@ -46,6 +46,7 @@ class FirebaseDB {
            .addOnFailureListener { exception ->
             Log.d("/FirebaseDB", "Errore lettura dati !!!")
            }
+
         return userInfoLiveData
    }
 
