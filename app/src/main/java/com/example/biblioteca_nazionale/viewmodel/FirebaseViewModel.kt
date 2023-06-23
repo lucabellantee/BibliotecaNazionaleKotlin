@@ -119,10 +119,11 @@ class FirebaseViewModel: ViewModel() {
 
 
     fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String){
-        val uid = "provaUser" // TODO METTERE: firebase.getCurrentUid()
+        //val uid = "provaUser" // TODO METTERE: firebase.getCurrentUid()
+        val uid = firebase.getCurrentUid()
         val currentUser = this.getCurrentUser(uid)
         currentUser.thenAccept { user ->
-            user.userSettings?.addNewBook("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
+            user.userSettings?.addNewBook(idLibro, isbn,placeBooked,image)
             firebase.updateBookPrenoted(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
@@ -174,8 +175,6 @@ class FirebaseViewModel: ViewModel() {
         }
 
     }
-
-
 
 }
 

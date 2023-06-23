@@ -1,5 +1,7 @@
 package com.example.biblioteca_nazionale.model
 
+import java.time.LocalDate
+
 data class UserSettings(
     val libriPrenotati: HashMap<String, ArrayList<String>>?,
     val commenti: HashMap<String, HashMap<String, String>>?
@@ -14,6 +16,7 @@ data class UserSettings(
         newElement.add(isbn)
         newElement.add(bookedPlace)
         newElement.add(image)
+        newElement.add(LocalDate.now().plusDays(14).toString()) //dataScadenza 14 giorni dopo
         libriPrenotati?.set(bookName,newElement)
     }
 

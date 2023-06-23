@@ -21,8 +21,9 @@ import android.location.Location
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.example.biblioteca_nazionale.model.RequestCodeLocation
+import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.gms.location.LocationServices
 import java.util.Locale
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -100,6 +101,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 .load(book.info.imageLinks?.thumbnail.toString())
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
+            
+            binding.buttonPrenota.setOnClickListener {
+                fbViewModel.addNewBookBooked(it.id.toString(), it.id.toString(), binding.textViewNomeBiblioteca.text.toString(), book.info.imageLinks?.thumbnail.toString())
+            }
+        }
 
             val spannableString = SpannableString("Leggi di più")
             spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
