@@ -42,14 +42,14 @@ class FirebaseViewModel: ViewModel() {
         firebase.saveNewUser(Users(uid,email))
     }*/
 
-    fun getEmailLoggedUser(): String = firebase.getCurrentEmail()
+    fun getEmailLoggedUser(): String = firebase.getCurrentEmail().toString()
 
-    fun getUidLoggedUser(): String = firebase.getCurrentUid()
+    fun getUidLoggedUser(): String = firebase.getCurrentUid().toString()
 
     fun getCurrentUser(uid: String): CompletableFuture<Users> {
         val futureResult = CompletableFuture<Users>()
         // TODO METTERE: firebase.getCurrentUid()
-        this.getUserInfo("provaUser").observeForever { documentSnapshot ->
+        this.getUserInfo(getUidLoggedUser()).observeForever { documentSnapshot ->
             val data = documentSnapshot
            // Log.d("/IMPORTANTE", data.toString())
             val impostazioniData = data?.get("userSettings") as? HashMap<String, Any>
@@ -122,18 +122,18 @@ class FirebaseViewModel: ViewModel() {
 
 
     fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String){
-        //val uid = "provaUser" // TODO METTERE: firebase.getCurrentUid()
         val uid = firebase.getCurrentUid()
-        val currentUser = this.getCurrentUser(uid)
+        val currentUser = this.getCurrentUser(uid.toString())
         currentUser.thenAccept { user ->
-            user.userSettings?.addNewBook(idLibro, isbn,placeBooked,image)
+            user.userSettings?.addNewBook(idLibro, isbn, placeBooked,image)
+            Log.d("USERRR", user.email)
+            Log.d("UIDDD", user.UID)
             firebase.updateBookPrenoted(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             null
         }
-
     }
 
     fun newExpirationDate(isbn: String) {
@@ -156,7 +156,7 @@ class FirebaseViewModel: ViewModel() {
 
     fun removeBookBooked(idLibro: String){
 
-        val uid = "provaUser" // TODO METTERE: firebase.getCurrentUid()
+        val uid = getUidLoggedUser() // TODO METTERE: firebase.getCurrentUid()
         val currentUser = this.getCurrentUser(uid)
         currentUser.thenAccept { user ->
             user.userSettings?.removeBook(idLibro)
@@ -171,7 +171,7 @@ class FirebaseViewModel: ViewModel() {
 
 
     fun addNewCommentUserSide(commentDate: String, comment: String){
-        val currentUser = this.getCurrentUser("provaUser")  // TODO METTERE: firebase.getCurrentUid()
+        val currentUser = this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
             user.userSettings?.addNewComment(commentDate,comment)
             firebase.addCommentUserSide(user)
@@ -184,7 +184,7 @@ class FirebaseViewModel: ViewModel() {
     }
 
     fun removeCommentUserSide(idComment: String, currentUser: Users){
-        val currentUser = this.getCurrentUser("provaUser")  // TODO METTERE: firebase.getCurrentUid()
+        val currentUser = this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
             user.userSettings?.removeComment(idComment)
             firebase.removeCommentUserSide(user)

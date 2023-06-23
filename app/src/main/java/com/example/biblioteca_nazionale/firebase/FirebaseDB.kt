@@ -9,6 +9,7 @@ import com.example.biblioteca_nazionale.model.UserSettings
 import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 
 
@@ -87,9 +88,9 @@ class FirebaseDB {
 
     }
 
-    fun getCurrentEmail(): String = user?.email.toString()
+    fun getCurrentEmail(): String? = firebaseAuth.currentUser?.email
 
-    fun getCurrentUid(): String = user?.uid.toString()
+    fun getCurrentUid(): String? = firebaseAuth.currentUser?.uid
 
     /*
     fun updateSettings(currentUser: Users){
@@ -132,11 +133,21 @@ class FirebaseDB {
     } */
 
 
-    fun updateBookPrenoted(newUser: Users){
-        db.collection("utenti").document("provaUser").delete()
-        db.collection("utenti").document(newUser.UID).set(newUser)
-       // db.collection("utenti").document(newUser.UID).update("libri prenotati", newUser.userSettings.libriPrenotati)
+    fun updateBookPrenoted(newUser: Users) {
+        val uid = firebaseAuth.currentUser?.uid
+        if (uid != null) {
+            db.collection("utenti")
+                .document(uid)
+                .set(newUser, SetOptions.merge())
+                .addOnSuccessListener {
+                    Log.d("/FirebaseViewModel", "Documento utente aggiornato correttamente.")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("/FirebaseViewModel", "Errore nell'aggiornamento del documento utente: ${e.message}")
+                }
+        }
     }
+
 
     fun deleteBookPrenoted(newUser: Users){
         // TODO LUCA: In futuro vedere se si riesce a trovare un metodo per fare direttamente l'update
