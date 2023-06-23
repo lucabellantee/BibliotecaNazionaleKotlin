@@ -1,6 +1,7 @@
 package com.example.biblioteca_nazionale.firebase
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.biblioteca_nazionale.model.UserSettings
 import com.example.biblioteca_nazionale.model.Users
@@ -53,26 +54,25 @@ class FirebaseDB {
 
 
     var allUserInfoLiveData: MutableLiveData<ArrayList<DocumentSnapshot>> = MutableLiveData()
-    fun getAllUserFromDB(): MutableLiveData<ArrayList<DocumentSnapshot>> {
-        val allDoc = db.collection("utenti").get()
-            .addOnSuccessListener { allDocument ->
-            for (document in allDocument) {
-                //  Log.d("/IMPORTANTE", "DocumentSnapshot data: ${document.data}")
-                allUserInfoLiveData.value?.add(document)
-                // TODO LUCA: PROBLEMA DB CHECK SE UN UTENTE E' GIA REGISTRATO OPPURE NO
-                Log.d("size allUserInfoLiveData", allUserInfoLiveData.value?.size.toString())
 
+    fun getAllUserFromDB(): MutableLiveData<ArrayList<DocumentSnapshot>> {
+        val allDoc = db.collection("utenti")
+
+        allDoc.get()
+            .addOnSuccessListener { allDocument ->
+                val documentList = ArrayList<DocumentSnapshot>()
+                for (document in allDocument) {
+                    documentList.add(document)
+                }
+                allUserInfoLiveData.value = documentList
+                //Log.d("getAllUserFromDB", allUserInfoLiveData.value.toString())
             }
-        }
             .addOnFailureListener {
-                Log.e(
-                    "/FirebaseDB",
-                    "Errore nella lettura di tutti i document"
-                )
+                Log.e("/FirebaseDB",it.toString())
             }
+
         return allUserInfoLiveData
     }
-
 
 
 

@@ -3,6 +3,7 @@ package com.example.biblioteca_nazionale.viewmodel
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,9 @@ import com.example.biblioteca_nazionale.model.UserSettings
 import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.auth.User
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
 
@@ -71,31 +75,29 @@ class FirebaseViewModel: ViewModel() {
     }
 
 
-    fun getAllUser(): CompletableFuture<ArrayList<Users>>{
-        val futureResult = CompletableFuture<ArrayList<Users>>()
-        val allUser = ArrayList<Users>()
 
-        this.getAllDocument().observeForever {
-            allDocument ->
-            Log.d("ALL DOCUMENT SIZE:",allDocument.size.toString())
-            for(document in allDocument){
-                var impostazioniData = document?.get("userSettings") as? HashMap<String, Any>
-                var libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
-                var commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
-                var uid = document?.get("uid") as? String
-                var email = document?.get("email") as? String
+    fun getAllUser(): LiveData<ArrayList<Users>> {
+        val allUserLiveData = MutableLiveData<ArrayList<Users>>()
 
-                var userSettings = UserSettings(libriPrenotatiData,commentiData)
-                var tmpUser = Users(uid.toString(), email.toString(), userSettings)
-               // Log.d("SINGOLO USER: ", tmpUser.toString())
+        this.getAllDocument().observeForever { allDocument ->
+            val allUser = ArrayList<Users>()
+            for (document in allDocument) {
+                val impostazioniData = document?.get("userSettings") as? HashMap<String, Any>
+                val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
+                val commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
+                val uid = document?.get("uid") as? String
+                val email = document?.get("email") as? String
+
+                val userSettings = UserSettings(libriPrenotatiData, commentiData)
+                val tmpUser = Users(uid.toString(), email.toString(), userSettings)
                 allUser.add(tmpUser)
             }
-        }
-        //Log.d("SIZE allUser ", allUser.size.toString())
-        futureResult.complete(allUser)
-        return futureResult
-    }
 
+            allUserLiveData.value = allUser
+        }
+
+        return allUserLiveData
+    }
 
 
     fun getBookInfoResponseFromDB(idLibro: String): MutableLiveData<DocumentSnapshot>{

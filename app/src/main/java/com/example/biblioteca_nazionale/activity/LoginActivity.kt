@@ -71,18 +71,32 @@ class LoginActivity : AppCompatActivity() {
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
 
-                        val allUser = firebaseViewModel.getAllUser()
-
-                        allUser.thenAccept { arrayOfUser ->
+                       // val allUser = firebaseViewModel.getAllUser()
+                        firebaseViewModel.getAllUser().observe(this, { arrayOfUser ->
+                            var userIsPresent = false
+                            Log.d("arrayOfUser", arrayOfUser.size.toString())
+                            for(utente in arrayOfUser){
+                                //Log.d("ECCOMI","SONO QUI")
+                                // Log.d("/LoginActivity",utente.toString())
+                                Log.d("userIsPresent",userIsPresent.toString())
+                                if((utente.UID.equals(firebaseAuth.currentUser?.uid.toString()))) userIsPresent = true
+                            }
+                            if(userIsPresent == false) {
+                                Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
+                                val newUser = Users(firebaseAuth.uid.toString(),email,null)
+                                firebase.saveNewUser(newUser)
+                            }
+                        })
+                       /* firebaseViewModel.getAllUser().thenAccept { arrayOfUser ->
                            var userIsPresent = false
-                        //    Log.d("arrayOfUser", arrayOfUser.size.toString())
+                            Log.d("arrayOfUser", arrayOfUser.size.toString())
                            for(utente in arrayOfUser){
-                               Log.d("ECCOMI","SONO QUI")
-                               Log.d("/LoginActivity",utente.toString())
+                               //Log.d("ECCOMI","SONO QUI")
+                              // Log.d("/LoginActivity",utente.toString())
                                if((utente.email.equals(firebaseAuth.currentUser?.email.toString()))) userIsPresent = true
                            }
                             if(userIsPresent == false) {
-                                Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
+                               // Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
                                 val newUser = Users(firebaseAuth.uid.toString(),email,null)
                                 firebase.saveNewUser(newUser)
                             }
@@ -90,7 +104,7 @@ class LoginActivity : AppCompatActivity() {
                             // Gestione di eventuali errori nel recupero dell'utente
                             Log.e("/LoginActivity", "Errore di tutti gli utenti: ${throwable.message}")
                             null
-                        }
+                        }*/
 
                         val intent = Intent(this, HomePageActivity::class.java)
                         startActivity(intent)
@@ -162,9 +176,21 @@ class LoginActivity : AppCompatActivity() {
                 if (it.isSuccessful){
                     // Salvo i miei dati su FireBase nella collection "Utenti"
                     val firebaseViewModel: FirebaseViewModel by viewModels()
-                    // TODO LUCA: riattivare questa funziona e modificarla
-                   // firebaseViewModel.saveNewUser(account.idToken.toString(),account.email.toString())
 
+                    firebaseViewModel.getAllUser().observe(this, { arrayOfUser ->
+                        var userIsPresent = false
+                        val app = ArrayList<Boolean>()
+                        Log.d("arrayOfUser", arrayOfUser.size.toString())
+                        for(utente in arrayOfUser){
+                            if((utente.UID.equals(account.idToken.toString()))) userIsPresent = true
+                            app.add(userIsPresent)
+                        }
+                        if(userIsPresent == false) {
+                            Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
+                            val newUser = Users(account.idToken.toString(),account.email.toString(),null)
+                            firebase.saveNewUser(newUser)
+                        }
+                    })
                     // Se corretto entro nella HomePageActivity, attivandola con questo comadno
                     startActivity(Intent(this , HomePageActivity::class.java))
                 }else{
