@@ -359,10 +359,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
     }
 
-    fun setButtonTitle(marker:Marker){
-
-    }
-
     override fun onResume() {
         super.onResume()
         val mapView: MapView = binding.mapView
