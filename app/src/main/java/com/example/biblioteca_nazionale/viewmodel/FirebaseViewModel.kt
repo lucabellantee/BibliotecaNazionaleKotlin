@@ -1,13 +1,17 @@
 package com.example.biblioteca_nazionale.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.biblioteca_nazionale.firebase.FirebaseDB
 import com.example.biblioteca_nazionale.model.BookFirebase
 import com.example.biblioteca_nazionale.model.UserSettings
 import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.auth.User
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
 
@@ -24,6 +28,10 @@ class FirebaseViewModel: ViewModel() {
       return firebase.getAllUserInfoFromUid(uid)
     }
 
+    fun getAllDocument(): MutableLiveData<ArrayList<DocumentSnapshot>>{
+        return firebase.getAllUserFromDB()
+    }
+
 
  /*   fun saveNewUser(uid: String, email: String){
         firebase.saveNewUser(Users(uid,email))
@@ -35,7 +43,7 @@ class FirebaseViewModel: ViewModel() {
 
     fun getCurrentUser(uid: String): CompletableFuture<Users> {
         val futureResult = CompletableFuture<Users>()
-
+        // TODO METTERE: firebase.getCurrentUid()
         this.getUserInfo("provaUser").observeForever { documentSnapshot ->
             val data = documentSnapshot
            // Log.d("/IMPORTANTE", data.toString())
@@ -62,6 +70,34 @@ class FirebaseViewModel: ViewModel() {
         return futureResult
     }
 
+
+    fun getAllUser(): CompletableFuture<ArrayList<Users>>{
+        val futureResult = CompletableFuture<ArrayList<Users>>()
+        val allUser = ArrayList<Users>()
+
+        this.getAllDocument().observeForever {
+            allDocument ->
+            Log.d("ALL DOCUMENT SIZE:",allDocument.size.toString())
+            for(document in allDocument){
+                var impostazioniData = document?.get("userSettings") as? HashMap<String, Any>
+                var libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
+                var commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
+                var uid = document?.get("uid") as? String
+                var email = document?.get("email") as? String
+
+                var userSettings = UserSettings(libriPrenotatiData,commentiData)
+                var tmpUser = Users(uid.toString(), email.toString(), userSettings)
+               // Log.d("SINGOLO USER: ", tmpUser.toString())
+                allUser.add(tmpUser)
+            }
+        }
+        //Log.d("SIZE allUser ", allUser.size.toString())
+        futureResult.complete(allUser)
+        return futureResult
+    }
+
+
+
     fun getBookInfoResponseFromDB(idLibro: String): MutableLiveData<DocumentSnapshot>{
         return firebase.getAllBookInfoFromId(idLibro)
     }
@@ -83,10 +119,10 @@ class FirebaseViewModel: ViewModel() {
 
 
     fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String){
-        val uid = "provaUser" // L'UID dell'utente di interesse
+        val uid = "provaUser" // TODO METTERE: firebase.getCurrentUid()
         val currentUser = this.getCurrentUser(uid)
         currentUser.thenAccept { user ->
-            user.userSettings.addNewBook("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
+            user.userSettings?.addNewBook("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
             firebase.updateBookPrenoted(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
@@ -96,12 +132,13 @@ class FirebaseViewModel: ViewModel() {
 
     }
 
+
     fun removeBookBooked(idLibro: String){
 
-        val uid = "provaUser" // L'UID dell'utente di interesse
+        val uid = "provaUser" // TODO METTERE: firebase.getCurrentUid()
         val currentUser = this.getCurrentUser(uid)
         currentUser.thenAccept { user ->
-            user.userSettings.removeBook(idLibro)
+            user.userSettings?.removeBook(idLibro)
             firebase.updateBookPrenoted(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
@@ -111,4 +148,34 @@ class FirebaseViewModel: ViewModel() {
 
     }
 
+
+    fun addNewCommentUserSide(commentDate: String, comment: String){
+        val currentUser = this.getCurrentUser("provaUser")  // TODO METTERE: firebase.getCurrentUid()
+        currentUser.thenAccept { user ->
+            user.userSettings?.addNewComment(commentDate,comment)
+            firebase.addCommentUserSide(user)
+        }.exceptionally { throwable ->
+            // Gestione di eventuali errori nel recupero dell'utente
+            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
+            null
+        }
+
+    }
+
+    fun removeCommentUserSide(idComment: String, currentUser: Users){
+        val currentUser = this.getCurrentUser("provaUser")  // TODO METTERE: firebase.getCurrentUid()
+        currentUser.thenAccept { user ->
+            user.userSettings?.removeComment(idComment)
+            firebase.removeCommentUserSide(user)
+        }.exceptionally { throwable ->
+            // Gestione di eventuali errori nel recupero dell'utente
+            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
+            null
+        }
+
+    }
+
+
+
 }
+

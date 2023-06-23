@@ -12,43 +12,67 @@ import com.google.firebase.firestore.ktx.firestore
 class FirebaseDB {
 
 
-    companion object{
+    companion object {
         val firebaseAuth = FirebaseAuth.getInstance()
         val db = com.google.firebase.ktx.Firebase.firestore
+
         // Prendo il riferimento allo user corrente -> codice UID
         val user = firebaseAuth.currentUser
     }
 
-    fun writeUidAndEmail(){
+    fun writeUidAndEmail() {
 
-        val newUser = Users(user?.uid.toString()  , user?.email.toString(), UserSettings(null,null))
+        val newUser = Users(user?.uid.toString(), user?.email.toString(), UserSettings(null, null))
         db.collection("utenti").document(user?.uid.toString())
             .set(newUser)
             .addOnSuccessListener { /*Log.d("/HomePageActivity", "DocumentSnapshot successfully written!")*/ }
             .addOnFailureListener { /*Log.d("/HomePageActivity", "Error writing document")*/ }
     }
 
-    var userInfoLiveData: MutableLiveData<DocumentSnapshot> =  MutableLiveData()
-   fun getAllUserInfoFromUid(uid: String): MutableLiveData<DocumentSnapshot> {
+    var userInfoLiveData: MutableLiveData<DocumentSnapshot> = MutableLiveData()
+    fun getAllUserInfoFromUid(uid: String): MutableLiveData<DocumentSnapshot> {
 
-       val docRef = db.collection("utenti").document(uid)
-       docRef.get()
-           .addOnSuccessListener { document ->
-               if (document != null) {
-                 //  Log.d("/IMPORTANTE", "DocumentSnapshot data: ${document.data}")
-                   userInfoLiveData.value = document
+        val docRef = db.collection("utenti").document(uid)
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    //  Log.d("/IMPORTANTE", "DocumentSnapshot data: ${document.data}")
+                    userInfoLiveData.value = document
 
 
-               } else {
-                 // Log.d("/FirebaseDB", "Documento vuoto")
-               }
-           }
-           .addOnFailureListener { exception ->
-            Log.d("/FirebaseDB", "Errore lettura dati !!!")
-           }
+                } else {
+                    // Log.d("/FirebaseDB", "Documento vuoto")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("/FirebaseDB", "Errore lettura dati !!!")
+            }
 
         return userInfoLiveData
-   }
+    }
+
+
+    var allUserInfoLiveData: MutableLiveData<ArrayList<DocumentSnapshot>> = MutableLiveData()
+    fun getAllUserFromDB(): MutableLiveData<ArrayList<DocumentSnapshot>> {
+        val allDoc = db.collection("utenti").get()
+            .addOnSuccessListener { allDocument ->
+            for (document in allDocument) {
+                //  Log.d("/IMPORTANTE", "DocumentSnapshot data: ${document.data}")
+                allUserInfoLiveData.value?.add(document)
+                // TODO LUCA: PROBLEMA DB CHECK SE UN UTENTE E' GIA REGISTRATO OPPURE NO
+                Log.d("size allUserInfoLiveData", allUserInfoLiveData.value?.size.toString())
+
+            }
+        }
+            .addOnFailureListener {
+                Log.e(
+                    "/FirebaseDB",
+                    "Errore nella lettura di tutti i document"
+                )
+            }
+        return allUserInfoLiveData
+    }
+
 
 
 
@@ -115,7 +139,18 @@ class FirebaseDB {
     fun deleteBookPrenoted(newUser: Users){
         // TODO LUCA: In futuro vedere se si riesce a trovare un metodo per fare direttamente l'update
         db.collection("utenti").document(newUser.UID).delete()
-        db.collection("utenit").add(newUser)
+        //db.collection("utenti").add(newUser)
+        db.collection("utenti").document(newUser.UID).set(newUser)
+    }
+
+    fun addCommentUserSide(newUser: Users){
+        db.collection("utenti").document(newUser.UID).delete()
+        db.collection("utenti").document(newUser.UID).set(newUser)
+    }
+
+    fun removeCommentUserSide(newUser: Users){
+        db.collection("utenti").document(newUser.UID).delete()
+        db.collection("utenti").document(newUser.UID).set(newUser)
     }
 
     var bookInfoLiveData: MutableLiveData<DocumentSnapshot> =  MutableLiveData()

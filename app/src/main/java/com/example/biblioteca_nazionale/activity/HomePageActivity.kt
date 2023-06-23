@@ -33,6 +33,8 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class HomePageActivity : AppCompatActivity() {
 
@@ -65,6 +67,7 @@ class HomePageActivity : AppCompatActivity() {
         currentUser.thenAccept { user ->
             // Qui puoi utilizzare il valore dell'utente ottenuto
             Log.d("/HomePageActivity", user.toString())
+           // firebaseViewModel.removeCommentUserSide("0",user)
 
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
@@ -73,8 +76,9 @@ class HomePageActivity : AppCompatActivity() {
         }
 
         // AGGIUNTA NUOVO LIBRO PRENOTATO
-       // firebaseViewModel.addNewBookBooked("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
-        firebaseViewModel.removeBookBooked("Libro di Luca")
+        firebaseViewModel.addNewBookBooked("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
+        //firebaseViewModel.removeBookBooked("Libro di Luca")
+         //firebaseViewModel.addNewCommentUserSide("23/06/2023" , "2 COMMENTO")
 
         val BookInfoObserver = Observer<DocumentSnapshot> { currentBookInfo ->
             // Update the UI, in this case, a TextView.
