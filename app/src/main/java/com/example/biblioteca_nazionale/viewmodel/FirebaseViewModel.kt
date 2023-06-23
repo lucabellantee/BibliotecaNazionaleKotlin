@@ -63,9 +63,11 @@ class FirebaseViewModel: ViewModel() {
             val email = data?.get("email") as? String
            // Log.d("EMAIL: ", email.toString())
 
-            if (impostazioniData != null && libriPrenotatiData != null && commentiData != null && uid != null && email != null) {
+//          impostazioniData != null && libriPrenotatiData != null && commentiData != null && uid != null && email != null
+            if (uid != null && email != null) {
                 val users = Users(uid, email, UserSettings(libriPrenotatiData, commentiData))
                 futureResult.complete(users)
+                Log.d("Future Result: ", futureResult.isDone.toString())
             } else {
                 // Gestisci il caso in cui i dati siano nulli o mancanti
                 futureResult.completeExceptionally(Exception("Dati mancanti o nulli"))
@@ -123,11 +125,17 @@ class FirebaseViewModel: ViewModel() {
 
     fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String){
         val uid = firebase.getCurrentUid()
+        Log.d("UID: ", firebase.getCurrentUid().toString())
+
         val currentUser = this.getCurrentUser(uid.toString())
         currentUser.thenAccept { user ->
+            Log.d("PRIMA" ,  idLibro + " " + isbn + " " + placeBooked + " " + image)
             user.userSettings?.addNewBook(idLibro, isbn, placeBooked,image)
-            Log.d("USERRR", user.email)
-            Log.d("UIDDD", user.UID)
+            Log.d("DOPO" , idLibro + " " + isbn + " " + placeBooked + " " + image)
+            Log.d("USER", user.toString())
+           // Log.d("USERRR", user.email)
+            //Log.d("UIDDD", user.UID)
+            Log.d("USER", user.toString())
             firebase.updateBookPrenoted(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente

@@ -3,8 +3,8 @@ package com.example.biblioteca_nazionale.model
 import java.time.LocalDate
 
 data class UserSettings(
-    val libriPrenotati: HashMap<String, ArrayList<String>>?,
-    val commenti: HashMap<String, HashMap<String, String>>?
+    var libriPrenotati: HashMap<String, ArrayList<String>>?,
+    var commenti: HashMap<String, HashMap<String, String>>?
 ) {
     companion object{
         var idComment: String = "0"
@@ -12,17 +12,20 @@ data class UserSettings(
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
 
     fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String){
+
+        if(libriPrenotati == null) libriPrenotati = HashMap<String, ArrayList<String>>()
+
         val newElement = ArrayList<String>()
-        newElement.add(isbn)
-        newElement.add(bookedPlace)
-        newElement.add(image)
-        newElement.add(LocalDate.now().plusDays(14).toString()) //dataScadenza 14 giorni dopo
+        newElement.add(0,isbn)
+        newElement.add(1,bookedPlace)
+        newElement.add(2,image)
+        newElement.add(3,LocalDate.now().plusDays(14).toString()) //dataScadenza 14 giorni dopo
         libriPrenotati?.set(bookName,newElement)
     }
 
     fun removeBook(bookName: String){
         if(libriPrenotati?.containsKey(bookName) == true) {
-            libriPrenotati.remove(bookName)
+            libriPrenotati!!.remove(bookName)
         }
     }
 
@@ -35,7 +38,7 @@ data class UserSettings(
 
     fun removeComment(idComment: String){
         if(commenti?.containsKey(idComment) == true){
-            commenti.remove(idComment)
+            commenti!!.remove(idComment)
         }
     }
 }
