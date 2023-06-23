@@ -156,12 +156,14 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                     val address = addressList[0]
                     val initialLatLng = LatLng(address.latitude, address.longitude)
-                    // Imposta la posizione iniziale della mappa
+                    val markerOptions = MarkerOptions()
+                        .position(initialLatLng)
+                        .title("teramo")
+                        .snippet("Seleziona questa biblioteca") // Descrizione opzionale
+                    googleMap.addMarker(markerOptions)
 
                     val cameraUpdate = CameraUpdateFactory.newLatLngZoom(initialLatLng, 12f)
                     googleMap.moveCamera(cameraUpdate)
-
-                    val librariesNames: MutableList<String> = mutableListOf()
 
                     val geoApiContext = GeoApiContext.Builder()
                         .apiKey("AIzaSyCtTj2ohggFHtNX2asYNXL1kj31pO8wO_Y") // Replace with your actual API key
@@ -169,24 +171,15 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                     modelRequest.getLibraries().observe(viewLifecycleOwner) { libraries ->
                         libraries?.let { libraryList ->
-                            // Utilizza una coroutine per attendere il completamento dell'operazione di riempimento di librariesNames
-                            lifecycleScope.launch(Dispatchers.Main){
+                            lifecycleScope.launch(Dispatchers.Main) {
 
-                                for (library in libraryList) {
-                                    val shelfmark = library.shelfmarks.firstOrNull()?.shelfmark
-                                    if (shelfmark != null) {
-                                        librariesNames.add(shelfmark)
-                                        println(shelfmark)
-                                    }
+                                val librariesNames = libraryList.flatMap { library ->
+                                    library.shelfmarks.mapNotNull { it.shelfmark }
                                 }
 
-                                for (libraryName in librariesNames) {
-                                    if (libraryName.isNotEmpty()) {
-                                        val shelfmark = libraryName
-
-                                        val geocodingResult = withContext(Dispatchers.IO) {
-                                            GeocodingApi.geocode(geoApiContext, shelfmark).await()
-                                        }
+                                withContext(Dispatchers.IO) {
+                                    for (libraryName in librariesNames) {
+                                        val geocodingResult = GeocodingApi.geocode(geoApiContext, libraryName).await()
 
                                         if (geocodingResult.isNotEmpty()) {
                                             val location = geocodingResult[0].geometry.location
@@ -195,17 +188,20 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                             println(libraryLatLng.latitude)
 
                                             // Aggiungi un marker per la biblioteca sulla mappa
-                                            val markerOptions = MarkerOptions()
-                                                .position(libraryLatLng)
-                                                .title(shelfmark)
-                                                .snippet("Seleziona questa biblioteca") // Descrizione opzionale
-                                            googleMap.addMarker(markerOptions)
+                                            withContext(Dispatchers.Main) {
+                                                val markerOptions = MarkerOptions()
+                                                    .position(libraryLatLng)
+                                                    .title(libraryName)
+                                                    .snippet("Seleziona questa biblioteca") // Descrizione opzionale
+                                                googleMap.addMarker(markerOptions)
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
+
                 }
             }
         }
