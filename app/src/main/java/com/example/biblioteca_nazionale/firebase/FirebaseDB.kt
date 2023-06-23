@@ -1,5 +1,6 @@
 package com.example.biblioteca_nazionale.firebase
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.util.Log
 import android.widget.Toast
@@ -134,7 +135,9 @@ class FirebaseDB {
 
 
     fun updateBookPrenoted(newUser: Users) {
-        val uid = firebaseAuth.currentUser?.uid
+        /*firebaseAuth.currentUser?.let { db.collection("utenti").document(it.uid).delete() }
+        db.collection("utenti").document(newUser.UID).set(newUser)*/
+    val uid = firebaseAuth.currentUser?.uid
         if (uid != null) {
             db.collection("utenti")
                 .document(uid)

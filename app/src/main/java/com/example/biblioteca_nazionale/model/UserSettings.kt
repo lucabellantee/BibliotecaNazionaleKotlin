@@ -11,17 +11,21 @@ data class UserSettings(
     }
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
 
-    fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String){
-
-        if(libriPrenotati == null) libriPrenotati = HashMap<String, ArrayList<String>>()
-
+    fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String) {
         val newElement = ArrayList<String>()
-        newElement.add(0,isbn)
-        newElement.add(1,bookedPlace)
-        newElement.add(2,image)
-        newElement.add(3,LocalDate.now().plusDays(14).toString()) //dataScadenza 14 giorni dopo
-        libriPrenotati?.set(bookName,newElement)
+        newElement.add(isbn)
+        newElement.add(bookedPlace)
+        newElement.add(image)
+        newElement.add(LocalDate.now().plusDays(14).toString()) //dataScadenza 14 giorni dopo
+
+        if (libriPrenotati == null) {
+            libriPrenotati = HashMap()
+        }
+
+        libriPrenotati!![bookName] = newElement
     }
+
+
 
     fun removeBook(bookName: String){
         if(libriPrenotati?.containsKey(bookName) == true) {
