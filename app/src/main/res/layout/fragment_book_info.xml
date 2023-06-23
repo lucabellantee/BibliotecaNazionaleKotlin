@@ -251,8 +251,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
+                        android:elegantTextHeight="true"
+                        android:paddingHorizontal="10dp"
                         android:text="Biblioteca univpm"
-                        android:textColor="#FB0707"
+                        android:textAlignment="center"
+                        android:textColor="@color/primary_color"
                         android:textSize="18sp" />
 
                     <TextView
