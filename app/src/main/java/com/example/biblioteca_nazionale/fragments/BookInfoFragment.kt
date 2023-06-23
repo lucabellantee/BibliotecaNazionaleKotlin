@@ -109,98 +109,107 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             }
         }
 
-        val spannableString = SpannableString("Leggi di più")
-        spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
-        binding.textMoreDescription.text = spannableString
+            val spannableString = SpannableString("Leggi di più")
+            spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
+            binding.textMoreDescription.text = spannableString
 
-        binding.textViewDescription.post {
-            if (binding.textViewDescription.lineCount < 5) {
-                binding.textMoreDescription.visibility = View.GONE
-            } else {
-                binding.textMoreDescription.visibility = View.VISIBLE
-                binding.textMoreDescription.setOnClickListener {
-                    isExpanded = !isExpanded
-                    updateDescriptionText()
+            binding.textViewDescription.post {
+                if (binding.textViewDescription.lineCount < 5) {
+                    binding.textMoreDescription.visibility = View.GONE
+                } else {
+                    binding.textMoreDescription.visibility = View.VISIBLE
+                    binding.textMoreDescription.setOnClickListener {
+                        isExpanded = !isExpanded
+                        updateDescriptionText()
+                    }
+                    binding.textViewDescription.maxLines = 5
+                    binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
                 }
-                binding.textViewDescription.maxLines = 5
-                binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
             }
-        }
 
-        val mapView: MapView = binding.mapView
-        mapView.onCreate(savedInstanceState)
+            val mapView: MapView = binding.mapView
+            mapView.onCreate(savedInstanceState)
 
 
-        val cityName = "Teramo"
+            val cityName = "Teramo"
 
-        val geocoder = context?.let { Geocoder(it, Locale.getDefault()) }
+            val geocoder = context?.let { Geocoder(it, Locale.getDefault()) }
 
-        val addressList = geocoder?.getFromLocationName(cityName, 1)
+            val addressList = geocoder?.getFromLocationName(cityName, 1)
 
-        val fusedLocationClient =
-            LocationServices.getFusedLocationProviderClient(requireContext())
+            val fusedLocationClient =
+                LocationServices.getFusedLocationProviderClient(requireContext())
 
-        if (addressList != null) {
-            if (addressList.isNotEmpty()) {
-                mapView.getMapAsync { googleMap ->
-                    // Personalizzazione e visualizzazione della mappa
-                    googleMap.uiSettings.isZoomControlsEnabled =
-                        true // Abilita i controlli di zoom
-                    googleMap.uiSettings.isMyLocationButtonEnabled =
-                        true // Abilita il pulsante "La mia posizione"
-                    googleMap.uiSettings.isScrollGesturesEnabled =
-                        true // Abilita il gesto di scorrimento sulla mappa
-                    googleMap.uiSettings.isRotateGesturesEnabled = true
-                    googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
+            if (addressList != null) {
+                if (addressList.isNotEmpty()) {
+                    mapView.getMapAsync { googleMap ->
+                        // Personalizzazione e visualizzazione della mappa
+                        googleMap.uiSettings.isZoomControlsEnabled =
+                            true // Abilita i controlli di zoom
+                        googleMap.uiSettings.isMyLocationButtonEnabled =
+                            true // Abilita il pulsante "La mia posizione"
+                        googleMap.uiSettings.isScrollGesturesEnabled =
+                            true // Abilita il gesto di scorrimento sulla mappa
+                        googleMap.uiSettings.isRotateGesturesEnabled = true
+                        googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
 
-                    googleMap.setMapStyle(context?.let {
-                        MapStyleOptions.loadRawResourceStyle(
-                            it,
-                            R.raw.map_style
-                        )
-                    }) // Carica lo stile personalizzato della mappa
+                        googleMap.setMapStyle(context?.let {
+                            MapStyleOptions.loadRawResourceStyle(
+                                it,
+                                R.raw.map_style
+                            )
+                        }) // Carica lo stile personalizzato della mappa
 
-                    val address = addressList[0]
-                    val initialLatLng = LatLng(address.latitude, address.longitude)
-                    val markerOptions = MarkerOptions()
-                        .position(initialLatLng)
-                        .title("teramo")
-                        .snippet("Seleziona questa biblioteca") // Descrizione opzionale
-                    googleMap.addMarker(markerOptions)
+                        val address = addressList[0]
+                        val initialLatLng = LatLng(address.latitude, address.longitude)
+                        val markerOptions = MarkerOptions()
+                            .position(initialLatLng)
+                            .title("teramo")
+                            .snippet("Seleziona questa biblioteca") // Descrizione opzionale
+                        googleMap.addMarker(markerOptions)
 
-                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(initialLatLng, 12f)
-                    googleMap.moveCamera(cameraUpdate)
+                        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(initialLatLng, 12f)
+                        googleMap.moveCamera(cameraUpdate)
 
-                    val geoApiContext = GeoApiContext.Builder()
-                        .apiKey("AIzaSyCtTj2ohggFHtNX2asYNXL1kj31pO8wO_Y") // Replace with your actual API key
-                        .build()
+                        val geoApiContext = GeoApiContext.Builder()
+                            .apiKey("AIzaSyCtTj2ohggFHtNX2asYNXL1kj31pO8wO_Y") // Replace with your actual API key
+                            .build()
 
-                    modelRequest.getLibraries().observe(viewLifecycleOwner) { libraries ->
-                        libraries?.let { libraryList ->
-                            lifecycleScope.launch(Dispatchers.Main) {
+                        modelRequest.getLibraries().observe(viewLifecycleOwner) { libraries ->
+                            libraries?.let { libraryList ->
+                                lifecycleScope.launch(Dispatchers.Main) {
 
-                                val librariesNames = libraryList.flatMap { library ->
-                                    library.shelfmarks.mapNotNull { it.shelfmark }
-                                }
+                                    val librariesNames = libraryList.flatMap { library ->
+                                        library.shelfmarks.mapNotNull { it.shelfmark }
+                                    }
 
-                                withContext(Dispatchers.IO) {
-                                    for (libraryName in librariesNames) {
-                                        val geocodingResult =
-                                            GeocodingApi.geocode(geoApiContext, libraryName).await()
+                                    withContext(Dispatchers.IO) {
+                                        for (libraryName in librariesNames) {
+                                            val geocodingResult =
+                                                GeocodingApi.geocode(geoApiContext, libraryName)
+                                                    .await()
 
-                                        if (geocodingResult.isNotEmpty()) {
-                                            val location = geocodingResult[0].geometry.location
-                                            val libraryLatLng = LatLng(location.lat, location.lng)
+                                            if (geocodingResult.isNotEmpty()) {
+                                                val location = geocodingResult[0].geometry.location
+                                                val libraryLatLng =
+                                                    LatLng(location.lat, location.lng)
 
-                                            println(libraryLatLng.latitude)
+                                                println(libraryLatLng.latitude)
 
-                                            // Aggiungi un marker per la biblioteca sulla mappa
-                                            withContext(Dispatchers.Main) {
-                                                val markerOptions = MarkerOptions()
-                                                    .position(libraryLatLng)
-                                                    .title(libraryName)
-                                                    .snippet("Seleziona questa biblioteca") // Descrizione opzionale
-                                                googleMap.addMarker(markerOptions)
+                                                // Aggiungi un marker per la biblioteca sulla mappa
+                                                withContext(Dispatchers.Main) {
+                                                    val markerOptions = MarkerOptions()
+                                                        .position(libraryLatLng)
+                                                        .title(libraryName)
+                                                        .snippet("Seleziona questa biblioteca") // Descrizione opzionale
+                                                    googleMap.addMarker(markerOptions)
+
+                                                    googleMap.setOnMarkerClickListener { marker ->
+                                                        binding.textViewNomeBiblioteca.text =
+                                                            marker.title
+                                                        true
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -208,7 +217,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                             }
                         }
                     }
-
                 }
             }
         }
@@ -244,6 +252,5 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         spannableString.setSpan(UnderlineSpan(), 0, buttonText.length, 0)
         binding.textMoreDescription.text = spannableString
     }
-
 }
 
