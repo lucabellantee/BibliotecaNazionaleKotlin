@@ -149,12 +149,15 @@ class FirebaseViewModel: ViewModel() {
 
         firebase.getExpirationDate(isbn) { dataScadenza ->
             if (dataScadenza != null) {
+                Log.d("DATAAA", dataScadenza)
+                Log.d("DATAAA1", expirationDate.toString())
                 expirationDate = dataScadenza
             } else {
                 println("Libro non trovato o errore durante il recupero della data di scadenza.")
             }
         }
         if (expirationDate != null) {
+            Log.d("DATAAA12", expirationDate.toString())
             println("Data di scadenza: $expirationDate")
         }
     }
