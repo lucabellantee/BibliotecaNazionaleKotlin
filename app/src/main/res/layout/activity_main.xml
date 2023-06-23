@@ -14,7 +14,7 @@
         android:layout_height="60dp"
         android:layout_marginTop="4dp"
         android:backgroundTint="@color/primary_color"
-        android:text="Login"
+        android:text="@string/login"
         android:textSize="18sp"
         app:cornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="@+id/loginButtonWelcPage2"
@@ -28,7 +28,7 @@
         android:layout_height="60dp"
         android:layout_marginTop="4dp"
         android:backgroundTint="@color/primary_color"
-        android:text="Register"
+        android:text="@string/register"
         android:textSize="18sp"
         app:cornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,21 +41,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="340dp"
-        android:background="@color/ic_launcher_background"
         android:src="@drawable/ic_launcher_foreground"
         app:layout_constraintBottom_toTopOf="@+id/name_app"
         app:layout_constraintEnd_toEndOf="@+id/name_app"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="@+id/name_app"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.5"
+        android:background="@drawable/round_background" />
+
 
     <TextView
         android:id="@+id/name_app"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Biblioteca Nazionale"
+        android:text="@string/app_name"
         android:textColor="#000000"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="@+id/loginButtonWelcPage"

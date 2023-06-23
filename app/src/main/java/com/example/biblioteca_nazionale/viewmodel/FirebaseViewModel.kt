@@ -1,5 +1,6 @@
 package com.example.biblioteca_nazionale.viewmodel
 
+import android.content.ContentValues
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -121,10 +122,11 @@ class FirebaseViewModel: ViewModel() {
 
 
     fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String){
-        val uid = "provaUser" // TODO METTERE: firebase.getCurrentUid()
+        //val uid = "provaUser" // TODO METTERE: firebase.getCurrentUid()
+        val uid = firebase.getCurrentUid()
         val currentUser = this.getCurrentUser(uid)
         currentUser.thenAccept { user ->
-            user.userSettings?.addNewBook("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
+            user.userSettings?.addNewBook(idLibro, isbn,placeBooked,image)
             firebase.updateBookPrenoted(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
@@ -133,6 +135,23 @@ class FirebaseViewModel: ViewModel() {
         }
 
     }
+
+    fun newExpirationDate(isbn: String) {
+        var expirationDate: String? = null
+
+        firebase.getExpirationDate(isbn) { dataScadenza ->
+            if (dataScadenza != null) {
+                expirationDate = dataScadenza
+            } else {
+                println("Libro non trovato o errore durante il recupero della data di scadenza.")
+            }
+        }
+        if (expirationDate != null) {
+            println("Data di scadenza: $expirationDate")
+        }
+    }
+
+
 
 
     fun removeBookBooked(idLibro: String){
@@ -176,8 +195,6 @@ class FirebaseViewModel: ViewModel() {
         }
 
     }
-
-
 
 }
 
