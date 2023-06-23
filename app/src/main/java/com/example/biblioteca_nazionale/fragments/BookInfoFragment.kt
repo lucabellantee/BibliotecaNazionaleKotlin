@@ -3,8 +3,7 @@ package com.example.biblioteca_nazionale.fragments
 
 import RequestViewModel
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
-import android.location.Address
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextUtils
@@ -18,31 +17,28 @@ import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
 import android.location.Geocoder
+import android.location.Location
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.biblioteca_nazionale.model.RequestCodeLocation
+import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.util.Locale
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.maps.GeoApiContext
 import com.google.maps.GeocodingApi
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-import java.security.KeyStore.TrustedCertificateEntry
 
 
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
@@ -51,7 +47,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     private lateinit var toolbar: MaterialToolbar
 
     private val modelRequest: RequestViewModel = RequestViewModel()
+    private val fbViewModel: FirebaseViewModel = FirebaseViewModel()
     val db = Firebase.firestore
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
 
     private var isExpanded = false
@@ -124,97 +123,122 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             mapView.onCreate(savedInstanceState)
 
 
-            val cityName = "Teramo"
 
-            val geocoder = context?.let { Geocoder(it, Locale.getDefault()) }
+            mapView.getMapAsync { googleMap ->
+                // Personalizzazione e visualizzazione della mappa
+                googleMap.uiSettings.isZoomControlsEnabled =
+                    true // Abilita i controlli di zoom
+                googleMap.uiSettings.isMyLocationButtonEnabled =
+                    true // Abilita il pulsante "La mia posizione"
+                googleMap.uiSettings.isScrollGesturesEnabled =
+                    true // Abilita il gesto di scorrimento sulla mappa
+                googleMap.uiSettings.isRotateGesturesEnabled = true
+                googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
 
-            val addressList = geocoder?.getFromLocationName(cityName, 1)
+                googleMap.setMapStyle(context?.let {
+                    MapStyleOptions.loadRawResourceStyle(
+                        it,
+                        R.raw.map_style
+                    )
+                }) // Carica lo stile personalizzato della mappa
 
-            val fusedLocationClient =
-                LocationServices.getFusedLocationProviderClient(requireContext())
+                val geoApiContext = GeoApiContext.Builder()
+                    .apiKey("AIzaSyCtTj2ohggFHtNX2asYNXL1kj31pO8wO_Y") // Replace with your actual API key
+                    .build()
 
-            if (addressList != null) {
-                if (addressList.isNotEmpty()) {
-                    mapView.getMapAsync { googleMap ->
-                        // Personalizzazione e visualizzazione della mappa
-                        googleMap.uiSettings.isZoomControlsEnabled =
-                            true // Abilita i controlli di zoom
-                        googleMap.uiSettings.isMyLocationButtonEnabled =
-                            true // Abilita il pulsante "La mia posizione"
-                        googleMap.uiSettings.isScrollGesturesEnabled =
-                            true // Abilita il gesto di scorrimento sulla mappa
-                        googleMap.uiSettings.isRotateGesturesEnabled = true
-                        googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
+                modelRequest.getLibraries().observe(viewLifecycleOwner) { libraries ->
+                    libraries?.let { libraryList ->
+                        lifecycleScope.launch(Dispatchers.Main) {
 
-                        googleMap.setMapStyle(context?.let {
-                            MapStyleOptions.loadRawResourceStyle(
-                                it,
-                                R.raw.map_style
-                            )
-                        }) // Carica lo stile personalizzato della mappa
+                            val librariesNames = libraryList.flatMap { library ->
+                                library.shelfmarks.mapNotNull { it.shelfmark }
+                            }
 
-                        val address = addressList[0]
-                        val initialLatLng = LatLng(address.latitude, address.longitude)
-                        val markerOptions = MarkerOptions()
-                            .position(initialLatLng)
-                            .title("teramo")
-                            .snippet("Seleziona questa biblioteca") // Descrizione opzionale
-                        googleMap.addMarker(markerOptions)
+                            val markerList = mutableListOf<Marker>()
 
-                        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(initialLatLng, 12f)
-                        googleMap.moveCamera(cameraUpdate)
+                            withContext(Dispatchers.IO) {
 
-                        val geoApiContext = GeoApiContext.Builder()
-                            .apiKey("AIzaSyCtTj2ohggFHtNX2asYNXL1kj31pO8wO_Y") // Replace with your actual API key
-                            .build()
+                                for (libraryName in librariesNames) {
+                                    val geocodingResult =
+                                        GeocodingApi.geocode(geoApiContext, libraryName)
+                                            .await()
 
-                        modelRequest.getLibraries().observe(viewLifecycleOwner) { libraries ->
-                            libraries?.let { libraryList ->
-                                lifecycleScope.launch(Dispatchers.Main) {
+                                    if (geocodingResult.isNotEmpty()) {
+                                        val location = geocodingResult[0].geometry.location
+                                        val libraryLatLng =
+                                            LatLng(location.lat, location.lng)
 
-                                    val librariesNames = libraryList.flatMap { library ->
-                                        library.shelfmarks.mapNotNull { it.shelfmark }
-                                    }
+                                        println(libraryLatLng.latitude)
 
-                                    withContext(Dispatchers.IO) {
-                                        for (libraryName in librariesNames) {
-                                            val geocodingResult =
-                                                GeocodingApi.geocode(geoApiContext, libraryName)
-                                                    .await()
+                                        withContext(Dispatchers.Main) {
+                                            val markerOptions = MarkerOptions()
+                                                .position(libraryLatLng)
+                                                .title(libraryName)
+                                                .snippet("Seleziona questa biblioteca") // Descrizione opzionale
+                                            val marker = googleMap.addMarker(markerOptions)
 
-                                            if (geocodingResult.isNotEmpty()) {
-                                                val location = geocodingResult[0].geometry.location
-                                                val libraryLatLng =
-                                                    LatLng(location.lat, location.lng)
+                                            if (marker != null) {
+                                                markerList.add(marker)
+                                            }
 
-                                                println(libraryLatLng.latitude)
+                                            googleMap.setOnMarkerClickListener { marker ->
+                                                binding.textViewNomeBiblioteca.text =
+                                                    marker.title
 
-                                                // Aggiungi un marker per la biblioteca sulla mappa
-                                                withContext(Dispatchers.Main) {
-                                                    val markerOptions = MarkerOptions()
-                                                        .position(libraryLatLng)
-                                                        .title(libraryName)
-                                                        .snippet("Seleziona questa biblioteca") // Descrizione opzionale
-                                                    googleMap.addMarker(markerOptions)
-
-                                                    googleMap.setOnMarkerClickListener { marker ->
-                                                        binding.textViewNomeBiblioteca.text =
-                                                            marker.title
-                                                        true
-                                                    }
+                                                binding.buttonPrenota.setOnClickListener {
+                                                    fbViewModel.addNewBookBooked(it.id.toString(), it.id.toString(), binding.textViewNomeBiblioteca.text.toString(), book?.info?.imageLinks?.thumbnail.toString())
+                                                    Toast.makeText(requireContext(), "Your book has booked succesfully!", Toast.LENGTH_SHORT).show()
+                                                    binding.buttonPrenota.isEnabled = false
                                                 }
+                                                true
                                             }
                                         }
                                     }
                                 }
                             }
+                            /*if (ActivityCompat.checkSelfPermission(
+                                    requireContext(),
+                                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                                    requireContext(),
+                                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                                ) != PackageManager.PERMISSION_GRANTED
+                            )
+                                fusedLocationClient.lastLocation
+                                    .addOnSuccessListener { location: Location? ->
+                                        if (location != null) {
+                                            val latitude = location.latitude
+                                            val longitude = location.longitude
+
+                                            val nearestMarker =
+                                                findNearestMarker(latitude, longitude, markerList)
+
+                                            if (nearestMarker != null) {
+                                                val startLatLng = LatLng(
+                                                    nearestMarker.position.latitude,
+                                                    nearestMarker.position.latitude
+                                                )
+
+                                                val cameraUpdate =
+                                                    CameraUpdateFactory.newLatLngZoom(
+                                                        startLatLng,
+                                                        12f
+                                                    )
+                                                googleMap.moveCamera(cameraUpdate)
+                                            }
+
+                                        }
+                                    }
+                                    .addOnFailureListener { exception ->
+                                        // Gestisci eventuali errori nella richiesta della posizione
+                                        // ...
+                                    }*/
                         }
                     }
                 }
             }
         }
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -228,6 +252,30 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         val mapView: MapView = binding.mapView
         mapView.onPause()
     }
+
+    fun findNearestMarker(a: Double, b: Double, markerList: List<Marker>): Marker? {
+        val targetLocation = Location("")
+        targetLocation.latitude = a
+        targetLocation.longitude = b
+
+        var nearestMarker: Marker? = null
+        var shortestDistance = Float.MAX_VALUE
+
+        for (marker in markerList) {
+            val markerLocation = Location("")
+            markerLocation.latitude = marker.position.latitude
+            markerLocation.longitude = marker.position.longitude
+
+            val distance = targetLocation.distanceTo(markerLocation)
+            if (distance < shortestDistance) {
+                shortestDistance = distance
+                nearestMarker = marker
+            }
+        }
+
+        return nearestMarker
+    }
+
 
     private fun updateDescriptionText() {
         val maxLines = if (isExpanded) Integer.MAX_VALUE else 5
