@@ -20,6 +20,7 @@ import com.example.biblioteca_nazionale.model.Book
 import android.location.Geocoder
 import androidx.lifecycle.lifecycleScope
 import com.example.biblioteca_nazionale.model.RequestCodeLocation
+import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.gms.location.LocationServices
 import java.util.Locale
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -53,6 +54,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     private val modelRequest: RequestViewModel = RequestViewModel()
     val db = Firebase.firestore
 
+    private val fbViewModel: FirebaseViewModel = FirebaseViewModel()
 
     private var isExpanded = false
 
@@ -101,6 +103,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 .load(book.info.imageLinks?.thumbnail.toString())
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
+            
+            binding.buttonPrenota.setOnClickListener {
+                fbViewModel.addNewBookBooked(it.id.toString(), it.id.toString(), binding.textViewNomeBiblioteca.text.toString(), book.info.imageLinks?.thumbnail.toString())
+            }
         }
 
         val spannableString = SpannableString("Leggi di più")
@@ -179,7 +185,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                                 withContext(Dispatchers.IO) {
                                     for (libraryName in librariesNames) {
-                                        val geocodingResult = GeocodingApi.geocode(geoApiContext, libraryName).await()
+                                        val geocodingResult =
+                                            GeocodingApi.geocode(geoApiContext, libraryName).await()
 
                                         if (geocodingResult.isNotEmpty()) {
                                             val location = geocodingResult[0].geometry.location
@@ -208,34 +215,35 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     }
 
 
-override fun onResume() {
-    super.onResume()
-    val mapView: MapView = binding.mapView
+    override fun onResume() {
+        super.onResume()
+        val mapView: MapView = binding.mapView
 
-    mapView.onResume()
-}
-
-override fun onPause() {
-    super.onPause()
-    val mapView: MapView = binding.mapView
-    mapView.onPause()
-}
-
-private fun updateDescriptionText() {
-    val maxLines = if (isExpanded) Integer.MAX_VALUE else 5
-    binding.textViewDescription.maxLines = maxLines
-
-    var buttonText = ""
-    if (isExpanded) {
-        buttonText = "Leggi meno"
-        binding.textViewDescription.ellipsize = null
-    } else {
-        buttonText = "Leggi di più"
-        binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
+        mapView.onResume()
     }
-    val spannableString = SpannableString(buttonText)
-    spannableString.setSpan(UnderlineSpan(), 0, buttonText.length, 0)
-    binding.textMoreDescription.text = spannableString
-}
+
+    override fun onPause() {
+        super.onPause()
+        val mapView: MapView = binding.mapView
+        mapView.onPause()
+    }
+
+    private fun updateDescriptionText() {
+        val maxLines = if (isExpanded) Integer.MAX_VALUE else 5
+        binding.textViewDescription.maxLines = maxLines
+
+        var buttonText = ""
+        if (isExpanded) {
+            buttonText = "Leggi meno"
+            binding.textViewDescription.ellipsize = null
+        } else {
+            buttonText = "Leggi di più"
+            binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
+        }
+        val spannableString = SpannableString(buttonText)
+        spannableString.setSpan(UnderlineSpan(), 0, buttonText.length, 0)
+        binding.textMoreDescription.text = spannableString
+    }
+
 }
 
