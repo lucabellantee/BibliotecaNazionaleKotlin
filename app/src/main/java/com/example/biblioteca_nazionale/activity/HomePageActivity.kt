@@ -39,7 +39,6 @@ import java.time.format.DateTimeFormatter
 class HomePageActivity : AppCompatActivity() {
 
     lateinit var binding: HomePageBinding
-    private lateinit var firebaseAuth: FirebaseAuth
     var model:BooksViewModel = BooksViewModel()
     lateinit var adapter:BookListAdapter
     private lateinit var navController: NavController
@@ -62,7 +61,7 @@ class HomePageActivity : AppCompatActivity() {
 
         val firebaseViewModel: FirebaseViewModel by viewModels()
 
-        val uid = "provaUser" // L'UID dell'utente di interesse
+        val uid = FirebaseAuth.getInstance().uid.toString()
         val currentUser = firebaseViewModel.getCurrentUser(uid)
         currentUser.thenAccept { user ->
             // Qui puoi utilizzare il valore dell'utente ottenuto
