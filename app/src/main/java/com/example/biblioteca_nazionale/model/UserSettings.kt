@@ -35,6 +35,11 @@ data class UserSettings(
 
     fun addNewComment(commentDate: String, comment: String){
         val addNewComment = HashMap<String,String>()
+
+        if (commenti == null) {
+            commenti = HashMap()
+        }
+
         idComment.toInt().plus(1).toString()
         addNewComment.set(commentDate,comment)
         commenti?.set(idComment,addNewComment)
