@@ -1,5 +1,6 @@
 package com.example.biblioteca_nazionale.viewmodel
 
+import android.content.ContentValues
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -132,6 +133,23 @@ class FirebaseViewModel: ViewModel() {
         }
 
     }
+
+    fun newExpirationDate(isbn: String) {
+        var expirationDate: String? = null
+
+        firebase.getExpirationDate(isbn) { dataScadenza ->
+            if (dataScadenza != null) {
+                expirationDate = dataScadenza
+            } else {
+                println("Libro non trovato o errore durante il recupero della data di scadenza.")
+            }
+        }
+        if (expirationDate != null) {
+            println("Data di scadenza: $expirationDate")
+        }
+    }
+
+
 
 
     fun removeBookBooked(idLibro: String){

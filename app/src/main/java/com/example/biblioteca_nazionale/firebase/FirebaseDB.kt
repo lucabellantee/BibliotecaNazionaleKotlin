@@ -1,6 +1,9 @@
 package com.example.biblioteca_nazionale.firebase
 
+import android.content.ContentValues
 import android.util.Log
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import com.example.biblioteca_nazionale.model.UserSettings
 import com.example.biblioteca_nazionale.model.Users
@@ -171,5 +174,28 @@ class FirebaseDB {
                 Log.d("/FirebaseDB", "Errore lettura dati !!!")
             }
         return bookInfoLiveData
+    }
+
+    fun getExpirationDate(isbn: String, callback: (String?) -> Unit) {
+        firebaseAuth.currentUser?.let { user ->
+            db.collection("utenti").document(user.uid).get().addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val libriPrenotati = documentSnapshot.get("userSettings.libriPrenotati") as? Map<String, Any>
+                    libriPrenotati?.forEach { (_, libroValue) ->
+                        val libro = libroValue as? List<Any>
+                        val libroIsbn = libro?.get(0) as? String
+                        val dataScadenza = libro?.get(3) as? String
+                        if (libroIsbn == isbn) {
+                            callback(dataScadenza)
+                            return@addOnSuccessListener
+                        }
+                    }
+                }
+                // Se non viene trovato un libro con l'ISBN corrispondente, la callback viene chiamata con il valore null
+                callback(null)
+            }.addOnFailureListener {
+                callback(null)
+            }
+        }
     }
 }

@@ -44,6 +44,11 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.security.KeyStore.TrustedCertificateEntry
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.os.Bundle
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 
 
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
@@ -103,10 +108,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 .load(book.info.imageLinks?.thumbnail.toString())
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
-            
-            binding.buttonPrenota.setOnClickListener {
+
+            /*binding.buttonPrenota.setOnClickListener {
                 fbViewModel.addNewBookBooked(it.id.toString(), it.id.toString(), binding.textViewNomeBiblioteca.text.toString(), book.info.imageLinks?.thumbnail.toString())
-            }
+            }*/
         }
 
             val spannableString = SpannableString("Leggi di più")
@@ -207,6 +212,15 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                     googleMap.setOnMarkerClickListener { marker ->
                                                         binding.textViewNomeBiblioteca.text =
                                                             marker.title
+                                                        binding.buttonPrenota.setOnClickListener {
+                                                            fbViewModel.addNewBookBooked(it.id.toString(), it.id.toString(), binding.textViewNomeBiblioteca.text.toString(), book?.info?.imageLinks?.thumbnail.toString())
+                                                            Toast.makeText(requireContext(), "Your book has booked succesfully!", Toast.LENGTH_SHORT).show()
+                                                            binding.buttonPrenota.isEnabled = false
+
+                                                            binding.textViewDataRiconsegna.setOnClickListener {
+                                                                fbViewModel.newExpirationDate(it.id.toString())
+                                                            }
+                                                        }
                                                         true
                                                     }
                                                 }
@@ -252,5 +266,4 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         spannableString.setSpan(UnderlineSpan(), 0, buttonText.length, 0)
         binding.textMoreDescription.text = spannableString
     }
-}
 
