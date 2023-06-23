@@ -244,7 +244,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 }
             }
         }
-    }
 
     override fun onResume() {
         super.onResume()
