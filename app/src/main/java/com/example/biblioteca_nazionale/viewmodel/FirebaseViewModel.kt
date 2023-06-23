@@ -126,8 +126,8 @@ class FirebaseViewModel: ViewModel() {
         val currentUser = this.getCurrentUser(uid.toString())
         currentUser.thenAccept { user ->
             user.userSettings?.addNewBook(idLibro, isbn, placeBooked,image)
-            Log.d("USERRR", user.email)
-            Log.d("UIDDD", user.UID)
+            //Log.d("USERRR", user.email)
+            //Log.d("UIDDD", user.UID)
             firebase.updateBookPrenoted(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
