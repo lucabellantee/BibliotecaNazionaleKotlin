@@ -5,43 +5,44 @@ import RequestViewModel
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.drawable.AnimationDrawable
+import android.location.Location
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
+import com.example.biblioteca_nazionale.cache.GeocodingCache
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
-import android.location.Location
-import android.util.Log
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
-import com.example.biblioteca_nazionale.cache.GeocodingCache
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.Marker
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.maps.GeoApiContext
-import com.google.maps.GeocodingApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.maps.GeoApiContext
+import com.google.maps.GeocodingApi
 import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.model.GeocodingResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
@@ -55,6 +56,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
 
     private var isExpanded = false
+
+    private lateinit var progressBar: ProgressBar
+
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,6 +78,16 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         )
 
         binding = FragmentBookInfoBinding.bind(view)
+
+        binding.scrollViewInfo.visibility = View.GONE
+
+        progressBar=binding.progressBar
+
+        progressBar.visibility =View.VISIBLE
+
+        progressBar.getProgressDrawable().setColorFilter(resources.getColor(R.color.primary_color),android.graphics.PorterDuff.Mode.SRC_IN)
+
+
 
         toolbar = binding.toolbar
 
@@ -182,6 +196,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
             modelRequest.getLibraries().observe(viewLifecycleOwner) { libraries ->
                 libraries?.let { libraryList ->
+
+                    progressBar.visibility = View.GONE
+                    binding.scrollViewInfo.visibility = View.VISIBLE
+
                     println(libraries)
                     lifecycleScope.launch(Dispatchers.Main) {
 
