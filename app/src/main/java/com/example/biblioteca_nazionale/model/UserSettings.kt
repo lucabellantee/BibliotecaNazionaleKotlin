@@ -1,9 +1,11 @@
 package com.example.biblioteca_nazionale.model
 
+import android.util.Log
 import java.time.LocalDate
 
 data class UserSettings(
-    var libriPrenotati: HashMap<String, ArrayList<String>>?,
+    //var libriPrenotati: HashMap<String, ArrayList<String>>?,
+    var libriPrenotati: HashMap<String, ArrayList<miniBook>>?,
     var commenti: HashMap<String, HashMap<String, String>>?
 ) {
     companion object{
@@ -12,19 +14,26 @@ data class UserSettings(
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
 
     fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String) {
-        val newElement = ArrayList<String>()
-        newElement.add(isbn)
-        newElement.add(bookedPlace)
-        newElement.add(image)
-        newElement.add(LocalDate.now().plusDays(14).toString()) //dataScadenza 14 giorni dopo
+        val newElement = miniBook(isbn, bookedPlace, image, LocalDate.now().plusDays(14).toString())
 
         if (libriPrenotati == null) {
             libriPrenotati = HashMap()
         }
 
-        libriPrenotati!![bookName] = newElement
-    }
+        /*if (!libriPrenotati!!.containsKey(isbn)) {
+            val bookElements = ArrayList<miniBook>()
+            bookElements.add(newElement)
+            libriPrenotati?.set(bookName, bookElements)
+        } else {
+            val bookElements = libriPrenotati!![isbn]
+            bookElements?.add(newElement)
+        }*/
+        val newElement2 = ArrayList<miniBook>()
+        newElement2.add(newElement)
+        libriPrenotati!!.set(bookName, newElement2)
 
+        Log.d("LIBRIII", libriPrenotati.toString())
+    }
 
 
     fun removeBook(bookName: String){
@@ -46,3 +55,10 @@ data class UserSettings(
         }
     }
 }
+
+data class miniBook (
+    var isbn: String,
+    var bookPlace: String,
+    var image: String,
+    var date: String
+)

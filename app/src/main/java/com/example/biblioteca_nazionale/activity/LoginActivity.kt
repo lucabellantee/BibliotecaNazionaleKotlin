@@ -32,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
     private val firebaseViewModel: FirebaseViewModel by viewModels()
     // login google
     private lateinit var googleSignInClient : GoogleSignInClient
+    private var isLoggingIn = false
     // login google
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,31 +64,43 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.loginButton.setOnClickListener {
-            val email = binding.EditTextSearch.text.toString()
-            val pass = binding.password.text.toString()
+            if (!isLoggingIn) {
+                isLoggingIn = true
+                val email = binding.EditTextSearch.text.toString()
+                val pass = binding.password.text.toString()
 
-            if (email.isNotEmpty() && pass.isNotEmpty()) {
+                if (email.isNotEmpty() && pass.isNotEmpty()) {
+                    firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
+                        isLoggingIn = false
+                        if (task.isSuccessful) {
+                            firebaseViewModel.getAllUser().observe(this, { arrayOfUser ->
+                                var userIsPresent = false
+                                Log.d("arrayOfUser", arrayOfUser.size.toString())
+                                for (utente in arrayOfUser) {
+                                    if (utente.UID == firebaseAuth.currentUser?.uid.toString()) {
+                                        userIsPresent = true
+                                    }
+                                }
+                                if (!userIsPresent) {
+                                    Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
+                                    val newUser = Users(firebaseAuth.uid.toString(), email, null)
+                                    firebase.saveNewUser(newUser)
+                                }
+                            })
+                            val intent = Intent(this, HomePageActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
-                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
-                    if (it.isSuccessful) {
-
-                       // val allUser = firebaseViewModel.getAllUser()
-                        firebaseViewModel.getAllUser().observe(this, { arrayOfUser ->
-                            var userIsPresent = false
-                            Log.d("arrayOfUser", arrayOfUser.size.toString())
-                            for(utente in arrayOfUser){
-                                //Log.d("ECCOMI","SONO QUI")
-                                // Log.d("/LoginActivity",utente.toString())
-                                Log.d("userIsPresent",userIsPresent.toString())
-                                if((utente.UID.equals(firebaseAuth.currentUser?.uid.toString()))) userIsPresent = true
-                            }
-                            if(userIsPresent == false) {
-                                Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
-                                val newUser = Users(firebaseAuth.uid.toString(),email,null)
-                                firebase.saveNewUser(newUser)
-                            }
-                        })
-                       /* firebaseViewModel.getAllUser().thenAccept { arrayOfUser ->
+    }
+    /* firebaseViewModel.getAllUser().thenAccept { arrayOfUser ->
                            var userIsPresent = false
                             Log.d("arrayOfUser", arrayOfUser.size.toString())
                            for(utente in arrayOfUser){
@@ -105,19 +118,6 @@ class LoginActivity : AppCompatActivity() {
                             Log.e("/LoginActivity", "Errore di tutti gli utenti: ${throwable.message}")
                             null
                         }*/
-
-                        val intent = Intent(this, HomePageActivity::class.java)
-                        startActivity(intent)
-                    } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
-
-                    }
-                }
-            } else {
-                Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     override fun onStart() {
         super.onStart()

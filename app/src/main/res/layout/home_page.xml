@@ -49,7 +49,10 @@
             android:animateLayoutChanges="false"
             android:longClickable="false"
             app:itemHorizontalTranslationEnabled="false"
-            app:menu="@menu/bottom_navigation_menu" />
+            app:menu="@menu/bottom_navigation_menu"
+            app:itemIconTint="@color/primary_color"
+            app:itemTextColor="@color/primary_color"
+            app:backgroundTint="@color/white"/>
 
     </LinearLayout>
 

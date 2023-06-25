@@ -1,12 +1,19 @@
 package com.example.biblioteca_nazionale.fragments
 
+import android.Manifest
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.biblioteca_nazionale.R
@@ -15,14 +22,17 @@ import com.google.firebase.auth.FirebaseAuth
 
 class ProfileFragment : Fragment() {
 
+    private val REQUEST_CODE = 100
+    private val GALLERY_REQUEST_CODE = 200
+
     lateinit var binding: FragmentProfileBinding
     val auth = FirebaseAuth.getInstance()
+    private lateinit var selectImageButton: Button
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-     //   val firebaseViewModel: FirebaseViewModel by viewModels()
-     //   binding.currentEmail.text = firebaseViewModel.getEmailLoggedUser()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+        selectImageButton = binding.buttonTextViewModificaFoto
+        selectImageButton.setOnClickListener { openGallery() }
         return binding.root
     }
 
@@ -40,6 +50,50 @@ class ProfileFragment : Fragment() {
 
         binding.logoutButton.setOnClickListener {
             showLogoutConfirmationDialog()
+        }
+
+        checkStoragePermission()
+    }
+
+    private fun checkStoragePermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE)
+        } else {
+            // Il permesso è già stato concesso, puoi procedere con l'accesso all'archiviazione esterna
+            selectImageButton.isEnabled = true
+        }
+    }
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, GALLERY_REQUEST_CODE)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Il permesso è stato concesso, puoi procedere con l'accesso all'archiviazione esterna
+                selectImageButton.isEnabled = true
+            } else {
+                // Il permesso è stato negato dall'utente, gestisci di conseguenza
+                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
+                selectImageButton.isEnabled = false
+            }
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Ottieni l'URI dell'immagine selezionata dalla galleria
+            val selectedImageUri = data?.data
+            // Fai qualcosa con l'URI dell'immagine, ad esempio visualizzala nell'ImageView
+            // imageImageView.setImageURI(selectedImageUri)
+            binding.imageView2.setImageURI(selectedImageUri)
         }
     }
 
