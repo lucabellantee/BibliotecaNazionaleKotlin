@@ -43,7 +43,6 @@ class RequestViewModel : ViewModel() {
                     val request = Gson().fromJson(inputStreamReader, RequestBookName::class.java)
                     inputStream.close()
 
-                    Log.d("merda", request.briefRecords[0].titolo)
                     fetchDataCode(request)
 
                 } else {
@@ -58,54 +57,60 @@ class RequestViewModel : ViewModel() {
         }
     }
 
-    private fun fetchDataCode(request: RequestBookName) {
-        var bookCode: String = request.briefRecords[0].codiceIdentificativo.replace("\\", "")
-        var url = URL("http://opac.sbn.it/opacmobilegw/full.json?bid=$bookCode")
+    /*var i = 0
+                while (i < request.briefRecords.size) {
+                    val record = request.briefRecords[i]
+                    val formattedRecordTitolo = record.titolo.replace("\\s".toRegex(), "")
+                    val formattedBookTitolo = book.info.title?.replace("\\s".toRegex(), "") ?: ""
 
-        var i = 0
-        while (i < request.briefRecords.size) {
-            val record = request.briefRecords[i]
-            val formattedRecordTitolo = record.titolo.replace("\\s".toRegex(), "")
-            val formattedBookTitolo = book.info.title?.replace("\\s".toRegex(), "") ?: ""
-
-            val bool = formattedRecordTitolo.contains(formattedBookTitolo, ignoreCase = true)
-            if (bool) {
-                bookCode = record.codiceIdentificativo.replace("\\", "")
-                url = URL("http://opac.sbn.it/opacmobilegw/full.json?bid=$bookCode")
-                break
-            }
-            i++
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val connection = url.openConnection() as HttpURLConnection
-                if (connection.responseCode == 200) {
-                    val inputStream = connection.inputStream
-                    val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
-                    val requestCode = Gson().fromJson(inputStreamReader, RequestCode::class.java)
-                    inputStream.close()
-
-                    val shelfmark = requestCode.localizzazioni[0].shelfmarks[0].shelfmark
-                    if (shelfmark != null) {
-                        println(shelfmark)
-                        Log.d("suss", shelfmark)
-                    } else {
-                        println("Il valore dello shelfmark è null")
+                    val bool = formattedRecordTitolo.contains(formattedBookTitolo, ignoreCase = true)
+                    if (bool) {
+                        bookCode = record.codiceIdentificativo.replace("\\", "")
+                        url = URL("http://opac.sbn.it/opacmobilegw/full.json?bid=$bookCode")
+                        break
                     }
+                    i++
+                }*/
 
-                    libraries.postValue(requestCode.localizzazioni)
+    private fun fetchDataCode(request: RequestBookName) {
+        val localizzazioniList = mutableListOf<RequestCodeLocation>()
+        var completedRequests = 0
+        val totalRequests = request.briefRecords.size
 
-                } else {
-                    // Gestisci la risposta non riuscita (es. responseCode diverso da 200)
+        for (briefRecord in request.briefRecords) {
+            val bookCode: String = briefRecord.codiceIdentificativo.replace("\\", "")
+            val url = URL("http://opac.sbn.it/opacmobilegw/full.json?bid=$bookCode")
+
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    val connection = url.openConnection() as HttpURLConnection
+                    if (connection.responseCode == 200) {
+                        val inputStream = connection.inputStream
+                        val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
+                        val requestCode = Gson().fromJson(inputStreamReader, RequestCode::class.java)
+                        inputStream.close()
+
+                        localizzazioniList.addAll(requestCode.localizzazioni)
+                    } else {
+                        // Gestisci la risposta non riuscita (es. responseCode diverso da 200)
+                    }
+                    connection.disconnect()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    println(e)
+                    // Gestisci l'eccezione
+                } finally {
+                    completedRequests++
+                    if (completedRequests == totalRequests) {
+                        // Aggiorna libraries nel ViewModel dopo il completamento di tutte le richieste
+                        withContext(Dispatchers.Main) {
+                            libraries.value = localizzazioniList
+                        }
+                    }
                 }
-                connection.disconnect()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                println(e)
-                // Gestisci l'eccezione
             }
         }
     }
 }
+
 

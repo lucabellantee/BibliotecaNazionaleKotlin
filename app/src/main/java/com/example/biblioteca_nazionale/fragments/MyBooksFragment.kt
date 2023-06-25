@@ -33,10 +33,10 @@ class MyBooksFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_my_books, container, false)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerViewMyBooks)
-        val adapter = BookAdapter(titoliLibri) // Quì ci va la lista dei libri dell'utente, acquisibile dal database
+        //val adapter = BookAdapter(titoliLibri) // Quì ci va la lista dei libri dell'utente, acquisibile dal database
 
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext()) // o LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false) se desideri un layout orizzontale
+        //recyclerView.adapter = adapter
+        //recyclerView.layoutManager = LinearLayoutManager(requireContext()) // o LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false) se desideri un layout orizzontale
 
         return view
         //return inflater.inflate(R.layout.fragment_my_books, container, false)
