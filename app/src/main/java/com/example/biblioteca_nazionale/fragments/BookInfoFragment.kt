@@ -31,7 +31,6 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.maps.GeoApiContext
 import com.google.maps.GeocodingApi
@@ -40,6 +39,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.maps.android.clustering.ClusterItem
+import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.model.GeocodingResult
 
 
@@ -141,6 +142,12 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         mapView.onCreate(savedInstanceState)
 
         mapView.getMapAsync { googleMap ->
+
+            val clusterManager = ClusterManager<MyItem>(requireContext(), googleMap)
+
+            googleMap.setOnCameraIdleListener(clusterManager)
+            googleMap.setOnMarkerClickListener(clusterManager)
+
             // Personalizzazione e visualizzazione della mappa
             googleMap.uiSettings.isZoomControlsEnabled =
                 true // Abilita i controlli di zoom
@@ -150,6 +157,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 true // Abilita il gesto di scorrimento sulla mappa
             googleMap.uiSettings.isRotateGesturesEnabled = true
             googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
+
+
 
             googleMap.setMapStyle(context?.let {
                 MapStyleOptions.loadRawResourceStyle(
@@ -173,31 +182,33 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
             modelRequest.getLibraries().observe(viewLifecycleOwner) { libraries ->
                 libraries?.let { libraryList ->
+                    println(libraries)
                     lifecycleScope.launch(Dispatchers.Main) {
 
                         val librariesNames = libraryList.flatMap { library ->
                             library.shelfmarks.mapNotNull { it.shelfmark }
                         }
 
-                        val markerList = mutableListOf<Marker>()
+                        val markerList = mutableListOf<MyItem>()
                         var counter = 0
 
                         withContext(Dispatchers.IO) {
 
-                            for (libraryName in librariesNames) {
+                            val uniqueLibraryNames = librariesNames.distinct()
+
+
+                            for (libraryName in uniqueLibraryNames) {
                                 val cacheKey = GeocodingCache.getCacheKey(libraryName)
                                 val cachedResult = GeocodingCache.getResult(cacheKey)
-                                var geocodingResult: Array<GeocodingResult> = emptyArray()
+                                var geocodingResult: Array<GeocodingResult>
 
                                 if (cachedResult != null) {
 
                                     geocodingResult = arrayOf(cachedResult)
 
                                 } else {
-                                    // Effettua la chiamata API di geocoding e memorizza il risultato nella cache
                                     geocodingResult =
-                                        GeocodingApi.geocode(geoApiContext, libraryName)
-                                            .await()
+                                        GeocodingApi.geocode(geoApiContext, libraryName).await()
                                     if (geocodingResult.isNotEmpty()) {
                                         GeocodingCache.putResult(cacheKey, geocodingResult[0])
                                     }
@@ -208,48 +219,46 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                     val libraryLatLng =
                                         LatLng(location.lat, location.lng)
 
-
                                     withContext(Dispatchers.Main) {
-                                        val markerOptions = MarkerOptions()
-                                            .position(libraryLatLng)
-                                            .title(libraryName)
-                                            .snippet("Seleziona questa biblioteca") // Descrizione opzionale
-                                        val marker = googleMap.addMarker(markerOptions)
+                                        val markerOptions = MyItem(libraryLatLng,libraryName,"Biblioteca")  // Descrizione opzionale
+                                        clusterManager.addItem(markerOptions)
+                                        clusterManager.cluster()
 
                                         counter++
 
                                         Log.d("conto", counter.toString())
 
-                                        if (marker != null) {
-                                            markerList.add(marker)
+                                        markerList.add(markerOptions)
 
-                                            Log.d("Marker", "M${markerList.size}")
-
+                                        Log.d("Marker", "M${markerList.size}")
 
 
-                                            googleMap.setOnMarkerClickListener { marker ->
-                                                binding.textViewNomeBiblioteca.text =
-                                                    marker.title
-                                                binding.buttonPrenota.setOnClickListener {
-                                                    fbViewModel.addNewBookBooked(
-                                                        it.id.toString(),
-                                                        it.id.toString(),
-                                                        binding.textViewNomeBiblioteca.text.toString(),
-                                                        book?.info?.imageLinks?.thumbnail.toString()
-                                                    )
-                                                    Toast.makeText(
-                                                        requireContext(),
-                                                        "Your book has booked succesfully!",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                    binding.buttonPrenota.isEnabled = false
+                                        clusterManager.setOnClusterItemClickListener { marker ->
+                                            binding.textViewNomeBiblioteca.text =
+                                                marker.title
 
-                                                    binding.textViewDataRiconsegna.setOnClickListener {
-                                                        fbViewModel.newExpirationDate(it.id.toString())
-                                                    }
+                                            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(marker.position, 15f)
+                                            googleMap.animateCamera(cameraUpdate)
+
+                                            binding.buttonPrenota.setOnClickListener {
+                                                fbViewModel.addNewBookBooked(
+                                                    it.id.toString(),
+                                                    it.id.toString(),
+                                                    binding.textViewNomeBiblioteca.text.toString(),
+                                                    book?.info?.imageLinks?.thumbnail.toString()
+                                                )
+                                                Toast.makeText(
+                                                    requireContext(),
+                                                    "Your book has booked succesfully!",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                binding.buttonPrenota.isEnabled = false
+
+                                                binding.textViewDataRiconsegna.setOnClickListener {
+                                                    fbViewModel.newExpirationDate(it.id.toString())
                                                 }
-                                                true
                                             }
+                                            true
                                         }
                                     }
                                 }
@@ -278,7 +287,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                     startLatLng,
                                     12f
                                 )
-                            googleMap.moveCamera(cameraUpdate)
+                            googleMap.animateCamera(cameraUpdate)
 
                             binding.textViewNomeBiblioteca.text =
                                 markerList[0].title
@@ -327,7 +336,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                         startLatLng,
                                                         12f
                                                     )
-                                                googleMap.moveCamera(
+                                                googleMap.animateCamera(
                                                     cameraUpdate
                                                 )
 
@@ -378,7 +387,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                         startLatLng,
                                                         12f
                                                     )
-                                                googleMap.moveCamera(cameraUpdate)
+                                                googleMap.animateCamera(cameraUpdate)
 
                                                 binding.textViewNomeBiblioteca.text =
                                                     markerList[0].title
@@ -436,12 +445,46 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         mapView.onPause()
     }
 
-    fun findNearestMarker(a: Double, b: Double, markerList: List<Marker>): Marker? {
+    inner class MyItem(
+        latLng: LatLng,
+        title: String,
+        snippet: String
+    ) : ClusterItem {
+
+        private val position: LatLng
+        private val title: String
+        private val snippet: String
+
+        override fun getPosition(): LatLng {
+            return position
+        }
+
+        override fun getTitle(): String {
+            return title
+        }
+
+        override fun getSnippet(): String {
+            return snippet
+        }
+
+        fun getZIndex(): Float {
+            return 0f
+        }
+
+        init {
+            position = latLng
+            this.title = title
+            this.snippet = snippet
+        }
+    }
+
+
+    fun findNearestMarker(a: Double, b: Double, markerList: MutableList<MyItem>): MyItem? {
         val targetLocation = Location("")
         targetLocation.latitude = a
         targetLocation.longitude = b
 
-        var nearestMarker: Marker? = null
+        var nearestMarker: MyItem? = null
         var shortestDistance = Float.MAX_VALUE
 
         for (marker in markerList) {
