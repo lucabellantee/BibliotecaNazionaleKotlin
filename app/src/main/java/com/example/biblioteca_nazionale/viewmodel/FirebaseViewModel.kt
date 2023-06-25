@@ -19,6 +19,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
+import com.example.biblioteca_nazionale.model.miniBook
+
 
 class FirebaseViewModel: ViewModel() {
 
@@ -54,8 +56,8 @@ class FirebaseViewModel: ViewModel() {
            // Log.d("/IMPORTANTE", data.toString())
             val impostazioniData = data?.get("userSettings") as? HashMap<String, Any>
             //Log.d("IMPOSTAZIONI: ", impostazioniData.toString())
-            val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
-           // Log.d("LIBRI PRENOTATI",libriPrenotatiData.toString())
+            val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<miniBook>>
+            // Log.d("LIBRI PRENOTATI",libriPrenotatiData.toString())
             val commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
            // Log.d("COMMENTI: ",commentiData.toString())
             val uid = data?.get("uid") as? String
@@ -86,7 +88,8 @@ class FirebaseViewModel: ViewModel() {
             val allUser = ArrayList<Users>()
             for (document in allDocument) {
                 val impostazioniData = document?.get("userSettings") as? HashMap<String, Any>
-                val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
+                //val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
+                val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<miniBook>>
                 val commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
                 val uid = document?.get("uid") as? String
                 val email = document?.get("email") as? String
@@ -130,7 +133,7 @@ class FirebaseViewModel: ViewModel() {
         val currentUser = this.getCurrentUser(uid.toString())
         currentUser.thenAccept { user ->
             Log.d("PRIMA" ,  idLibro + " " + isbn + " " + placeBooked + " " + image)
-            user.userSettings?.addNewBook(idLibro, isbn, placeBooked,image)
+            user.userSettings?.addNewBook(idLibro, isbn, placeBooked, image)
             Log.d("DOPO" , idLibro + " " + isbn + " " + placeBooked + " " + image)
             Log.d("USER", user.toString())
            // Log.d("USERRR", user.email)

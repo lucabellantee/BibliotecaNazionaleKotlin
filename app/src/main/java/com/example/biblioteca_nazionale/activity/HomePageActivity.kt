@@ -16,13 +16,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.databinding.HomePageBinding
-import com.example.biblioteca_nazionale.firebase.FirebaseDB
-import com.example.biblioteca_nazionale.fragments.BookListFragment
-import com.example.biblioteca_nazionale.fragments.MyBooksFragment
-import com.example.biblioteca_nazionale.fragments.NotificationsFragment
-import com.example.biblioteca_nazionale.fragments.ProfileFragment
-import com.example.biblioteca_nazionale.fragments.SettingsFragment
-import com.example.biblioteca_nazionale.model.Users
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView

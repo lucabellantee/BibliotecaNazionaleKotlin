@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Biblioteca_Nazionale</string>
+    <string name="app_name">Biblioteca Nazionale</string>
     <string name="create_new_password">Crea una nuova password</string>
     <string name="description_new_password">Inserisci la nuova password e dopo confermala per resettarla</string>
     <string name="reset_password">Reset password</string>
@@ -37,6 +37,7 @@
     <string name="write_review">Write a review</string>
     <string name="reviews">Reviews</string>
     <string name="logout">Logout</string>
+    <string name="mod_prof_photo">Modify profile photo</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
