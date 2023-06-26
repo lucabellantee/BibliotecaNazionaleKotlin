@@ -1,11 +1,10 @@
 package com.example.biblioteca_nazionale.model
 
-import android.util.Log
 import java.time.LocalDate
 
 data class UserSettings(
     //var libriPrenotati: HashMap<String, ArrayList<String>>?,
-    var libriPrenotati: ArrayList<miniBook>?,
+    var libriPrenotati: ArrayList<MiniBook>?,
     var commenti: HashMap<String, HashMap<String, String>>?
 ) {
     companion object{
@@ -14,7 +13,7 @@ data class UserSettings(
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
 
     fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String) {
-        val newElement = miniBook(isbn, bookedPlace, image, LocalDate.now().plusDays(14).toString())
+        val newElement = MiniBook(isbn, bookedPlace, image, LocalDate.now().plusDays(14).toString())
 
         if (libriPrenotati == null) {
             libriPrenotati = ArrayList()
@@ -24,7 +23,7 @@ data class UserSettings(
 
 
         println(newElement)
-        
+
     }
 
 
@@ -56,7 +55,7 @@ data class UserSettings(
     }
 }
 
-data class miniBook (
+data class MiniBook (
     var isbn: String,
     var bookPlace: String,
     var image: String,

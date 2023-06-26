@@ -11,9 +11,8 @@ import com.example.biblioteca_nazionale.adapter.BookAdapter
 import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.ImageLinks
 import com.example.biblioteca_nazionale.model.InfoBook
-import com.example.biblioteca_nazionale.model.Users
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
-import com.example.biblioteca_nazionale.model.miniBook
+import com.example.biblioteca_nazionale.model.MiniBook
 
 class MyBooksFragment : Fragment() {
 
@@ -24,7 +23,7 @@ class MyBooksFragment : Fragment() {
         val firebaseViewModel: FirebaseViewModel = ViewModelProvider(requireActivity()).get(FirebaseViewModel::class.java)
         val currentUser = firebaseViewModel.getCurrentUser(firebaseViewModel.firebase.getCurrentUid().toString()).get()
         //val libriPrenotati: HashMap<String, ArrayList<String>>? = currentUser.userSettings?.libriPrenotati
-        val libriPrenotati: ArrayList<miniBook>? = currentUser.userSettings?.libriPrenotati
+        val libriPrenotati: ArrayList<MiniBook>? = currentUser.userSettings?.libriPrenotati
 
 
         val bookList: List<Book> = libriPrenotati?.map { bookData ->

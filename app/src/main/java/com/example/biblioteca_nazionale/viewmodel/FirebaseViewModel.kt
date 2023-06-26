@@ -1,25 +1,16 @@
 package com.example.biblioteca_nazionale.viewmodel
 
-import android.content.ContentValues
 import android.util.Log
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.biblioteca_nazionale.firebase.FirebaseDB
 import com.example.biblioteca_nazionale.model.BookFirebase
 import com.example.biblioteca_nazionale.model.UserSettings
 import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.auth.User
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
-import com.example.biblioteca_nazionale.model.miniBook
+import com.example.biblioteca_nazionale.model.MiniBook
 
 
 class FirebaseViewModel: ViewModel() {
@@ -56,7 +47,7 @@ class FirebaseViewModel: ViewModel() {
            // Log.d("/IMPORTANTE", data.toString())
             val impostazioniData = data?.get("userSettings") as? HashMap<String, Any>
             //Log.d("IMPOSTAZIONI: ", impostazioniData.toString())
-            val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<miniBook>
+            val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<MiniBook>
             // Log.d("LIBRI PRENOTATI",libriPrenotatiData.toString())
             val commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
            // Log.d("COMMENTI: ",commentiData.toString())
@@ -89,7 +80,7 @@ class FirebaseViewModel: ViewModel() {
             for (document in allDocument) {
                 val impostazioniData = document?.get("userSettings") as? HashMap<String, Any>
                 //val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
-                val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<miniBook>
+                val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<MiniBook>
                 val commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
                 val uid = document?.get("uid") as? String
                 val email = document?.get("email") as? String
