@@ -5,7 +5,6 @@ import RequestViewModel
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.graphics.drawable.AnimationDrawable
 import android.location.Location
 import android.os.Bundle
 import android.text.SpannableString
@@ -14,6 +13,7 @@ import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.RatingBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -84,6 +84,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         progressBar = binding.progressBar
 
         progressBar.visibility = View.VISIBLE
+
+        val ratingBar: RatingBar = binding.ratingBarInserimento
+
+        val buttonReview= binding.buttonScriviRecensione
 
 
         toolbar = binding.toolbar
@@ -174,6 +178,27 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                         progressBar.visibility = View.GONE
                         binding.scrollViewInfo.visibility = View.VISIBLE
+                        buttonReview.visibility = View.GONE
+
+                        ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+
+                            val ratingValue = rating.toFloat()
+                            buttonReview.visibility = View.VISIBLE
+
+                            buttonReview.setOnClickListener{
+
+                                val bundle = Bundle()
+                                bundle.putFloat("reviewVote", ratingValue)
+                                bundle.putParcelable("book", book)
+
+                                val destination = R.id.writeReviewFragment
+                                findNavController().navigate(destination, bundle)
+                            }
+
+                            Toast.makeText(requireContext(), "Hai votato: $ratingValue", Toast.LENGTH_SHORT).show()
+
+                        }
+
 
                         val spannableString = SpannableString("Leggi di più")
                         spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)

@@ -497,7 +497,7 @@
                     android:background="@android:color/darker_gray" />
 
                 <RatingBar
-                    android:id="@+id/ratingBar_5stella3"
+                    android:id="@+id/ratingBarInserimento"
                     style="@android:style/Widget.Material.Light.RatingBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

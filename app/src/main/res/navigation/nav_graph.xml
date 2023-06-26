@@ -9,12 +9,12 @@
         android:id="@+id/bookListFragment"
         android:name="com.example.biblioteca_nazionale.fragments.BookListFragment"
         android:label="fragment_book_list"
-        tools:layout="@layout/fragment_book_list" >
+        tools:layout="@layout/fragment_book_list">
         <action
             android:id="@+id/action_bookListFragment_to_bookInfoFragment"
             app:destination="@id/bookInfoFragment"
             app:popUpTo="@id/bookInfoFragment"
-            app:popUpToInclusive="true" >
+            app:popUpToInclusive="true">
             <argument
                 android:name="book"
                 app:argType="com.example.biblioteca_nazionale.model.Book" />
@@ -26,7 +26,7 @@
         android:id="@+id/bookInfoFragment"
         android:name="com.example.biblioteca_nazionale.fragments.BookInfoFragment"
         android:label="fragment_book_info"
-        tools:layout="@layout/fragment_book_info" >
+        tools:layout="@layout/fragment_book_info">
         <action
             android:id="@+id/action_bookInfoFragment_to_bookListFragment"
             app:destination="@id/bookListFragment"
@@ -34,16 +34,23 @@
             app:popUpToInclusive="true">
             <argument
                 android:name="focusSearchView"
-                app:argType="boolean"
-                android:defaultValue="false" /> <!-- Assicurati di specificare un valore di default -->
+                android:defaultValue="false"
+                app:argType="boolean" /> <!-- Assicurati di specificare un valore di default -->
         </action>
+        <action
+            android:id="@+id/action_bookInfoFragment_to_writeReviewFragment"
+            app:destination="@id/writeReviewFragment"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/slide_down">
+        </action>
+
     </fragment>
 
     <fragment
         android:id="@+id/profileInfoFragment"
         android:name="com.example.biblioteca_nazionale.fragments.ProfileFragment"
         android:label="fragment_profile_info"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileInfoFragment_to_credentialUpdated"
             app:destination="@id/credentialUpdated" />
@@ -56,7 +63,7 @@
         android:id="@+id/credentialUpdated"
         android:name="com.example.biblioteca_nazionale.fragments.CredentialUpdated"
         android:label="fragment_credential_updated"
-        tools:layout="@layout/fragment_credential_updated" >
+        tools:layout="@layout/fragment_credential_updated">
         <action
             android:id="@+id/action_credentialUpdated_to_profileInfoFragment"
             app:destination="@id/profileInfoFragment" />
@@ -84,4 +91,14 @@
         android:name="com.example.biblioteca_nazionale.MainActivity"
         android:label="activity_main"
         tools:layout="@layout/activity_main" />
+
+    <fragment
+        android:id="@+id/writeReviewFragment"
+        android:name="com.example.biblioteca_nazionale.fragments.WriteReviewFragment"
+        android:label="fragment_write_review"
+        tools:layout="@layout/fragment_write_review">
+        <action
+            android:id="@+id/action_writeReviewFragment_to_bookInfoFragment"
+            app:destination="@id/bookInfoFragment" />
+    </fragment>
 </navigation>
