@@ -49,17 +49,14 @@ import kotlinx.coroutines.withContext
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
     lateinit var binding: FragmentBookInfoBinding
-    private lateinit var toolbar: MaterialToolbar
 
     private val modelRequest: RequestViewModel = RequestViewModel()
     private val fbViewModel: FirebaseViewModel = FirebaseViewModel()
     val db = Firebase.firestore
 
-
     private var isExpanded = false
 
     private lateinit var progressBar: ProgressBar
-
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,29 +83,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         progressBar.visibility = View.VISIBLE
 
-        val ratingBar: RatingBar = binding.ratingBarInserimento
+        val buttonReview = binding.buttonScriviRecensione
 
-        val buttonReview= binding.buttonScriviRecensione
-
-
-        toolbar = binding.toolbar
-
-        toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
-        toolbar.setNavigationOnClickListener {
-            val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
-            findNavController().navigate(action)
-        }
-
-        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                val action =
-                    BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(
-                        focusSearchView = true
-                    )
-                findNavController().navigate(action)
-            }
-        }
-
+        manageToolbar()
 
         val book = arguments?.getParcelable<Book>("book")
 
@@ -181,31 +158,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         binding.scrollViewInfo.visibility = View.VISIBLE
                         buttonReview.visibility = View.GONE
 
-                        ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+                        manageRatingBar(book)
 
-                            val ratingValue = rating.toFloat()
-                            buttonReview.visibility = View.VISIBLE
+                        manageDescription()
 
-                            buttonReview.setOnClickListener{
-
-                                val bundle = Bundle().apply {
-                                    putFloat("reviewVote", ratingValue)
-                                    putParcelable("book", book)
-                                }
-
-                                findNavController().navigate(
-                                    R.id.action_bookInfoFragment_to_writeReviewFragment,
-                                    bundle
-                                )
-                            }
-
-                            Toast.makeText(requireContext(), "Hai votato: $ratingValue", Toast.LENGTH_SHORT).show()
-
-                        }
-
-                        gestisciDescrizione()
-
-                        println(libraries)
                         lifecycleScope.launch(Dispatchers.Main) {
 
                             val librariesNames = libraryList.flatMap { library ->
@@ -218,7 +174,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                             withContext(Dispatchers.IO) {
 
                                 val uniqueLibraryNames = librariesNames.distinct()
-
 
                                 for (libraryName in uniqueLibraryNames) {
                                     val cacheKey = GeocodingCache.getCacheKey(libraryName)
@@ -261,44 +216,15 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                                             println(book.id)
 
-
                                             clusterManager.setOnClusterItemClickListener { marker ->
-                                                binding.textViewNomeBiblioteca.text =
-                                                    marker.title
-
-
-                                                val cameraUpdate =
-                                                    CameraUpdateFactory.newLatLngZoom(
-                                                        marker.position,
-                                                        15f
-                                                    )
-                                                googleMap.animateCamera(cameraUpdate)
-
-                                                binding.buttonPrenota.setOnClickListener {
-                                                    println(it.id.toString())
-                                                    fbViewModel.addNewBookBooked(
-                                                        book.id.toString(),
-                                                        book.id.toString(),
-                                                        binding.textViewNomeBiblioteca.text.toString(),
-                                                        book?.info?.imageLinks?.thumbnail.toString()
-                                                    )
-                                                    Toast.makeText(
-                                                        requireContext(),
-                                                        "Your book has booked succesfully!",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                    binding.buttonPrenota.isEnabled = false
-
-                                                    binding.textViewDataRiconsegna.setOnClickListener {
-                                                        fbViewModel.newExpirationDate(it.id.toString())
-                                                    }
-                                                }
+                                                setDefaultLibrary(marker, book, googleMap)
                                                 true
                                             }
                                         }
                                     }
                                 }
                             }
+
                             val fusedLocationClient =
                                 LocationServices.getFusedLocationProviderClient(
                                     requireContext()
@@ -312,38 +238,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                     Manifest.permission.ACCESS_COARSE_LOCATION
                                 ) != PackageManager.PERMISSION_GRANTED
                             ) {
-                                val startLatLng = LatLng(
-                                    markerList[0].position.latitude,
-                                    markerList[0].position.longitude
-                                )
-
-                                val cameraUpdate =
-                                    CameraUpdateFactory.newLatLngZoom(
-                                        startLatLng,
-                                        12f
-                                    )
-                                googleMap.animateCamera(cameraUpdate)
-
-                                binding.textViewNomeBiblioteca.text =
-                                    markerList[0].title
-                                binding.buttonPrenota.setOnClickListener {
-                                    fbViewModel.addNewBookBooked(
-                                        it.id.toString(),
-                                        it.id.toString(),
-                                        binding.textViewNomeBiblioteca.text.toString(),
-                                        book?.info?.imageLinks?.thumbnail.toString()
-                                    )
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Your book has booked succesfully!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    binding.buttonPrenota.isEnabled = false
-
-                                    binding.textViewDataRiconsegna.setOnClickListener {
-                                        fbViewModel.newExpirationDate(it.id.toString())
-                                    }
-                                }
+                                setDefaultLibrary(markerList[0], book, googleMap)
                             } else {
                                 withContext(Dispatchers.IO) {
                                     fusedLocationClient.lastLocation
@@ -361,13 +256,21 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                     )
 
                                                 if (nearestMarker != null) {
-                                                    setDefaultLibrary(nearestMarker,book, googleMap)
+                                                    setDefaultLibrary(
+                                                        nearestMarker,
+                                                        book,
+                                                        googleMap
+                                                    )
                                                 } else {
                                                     noLibraryFound()
                                                 }
                                             } else {
                                                 if (!markerList.isEmpty()) {
-                                                    setDefaultLibrary(markerList[0],book, googleMap)
+                                                    setDefaultLibrary(
+                                                        markerList[0],
+                                                        book,
+                                                        googleMap
+                                                    )
                                                 } else {
                                                     noLibraryFound()
                                                 }
@@ -428,7 +331,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
     }
 
-    fun setDefaultLibrary(marker:MyItem,book:Book,googleMap:GoogleMap){
+    private fun setDefaultLibrary(marker: MyItem, book: Book, googleMap: GoogleMap) {
 
         val startLatLng = LatLng(
             marker.position.latitude,
@@ -468,7 +371,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
     }
 
-    fun noLibraryFound(){
+    private fun noLibraryFound() {
         binding.textViewNomeBiblioteca.text =
             "Nessuna biblioteca trovata"
 
@@ -479,7 +382,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             false
     }
 
-    fun findNearestMarker(a: Double, b: Double, markerList: MutableList<MyItem>): MyItem? {
+    private fun findNearestMarker(a: Double, b: Double, markerList: MutableList<MyItem>): MyItem? {
         val targetLocation = Location("")
         targetLocation.latitude = a
         targetLocation.longitude = b
@@ -500,8 +403,60 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
         return nearestMarker
     }
+        private fun manageToolbar(){
+            val toolbar = binding.toolbar
 
-    private fun gestisciDescrizione(){
+            toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
+
+            toolbar.setNavigationOnClickListener {
+                val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
+                findNavController().navigate(action)
+            }
+
+            binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    val action =
+                        BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(
+                            focusSearchView = true
+                        )
+                    findNavController().navigate(action)
+                }
+            }
+        }
+
+        private fun manageRatingBar(book: Book){
+
+        val ratingBar: RatingBar = binding.ratingBarInserimento
+
+        val buttonReview = binding.buttonScriviRecensione
+
+        ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+
+            val ratingValue = rating.toFloat()
+            buttonReview.visibility = View.VISIBLE
+
+            buttonReview.setOnClickListener {
+
+                val bundle = Bundle().apply {
+                    putFloat("reviewVote", ratingValue)
+                    putParcelable("book", book)
+                }
+
+                findNavController().navigate(
+                    R.id.action_bookInfoFragment_to_writeReviewFragment,
+                    bundle
+                )
+            }
+
+            Toast.makeText(
+                requireContext(),
+                "Hai votato: $ratingValue",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun manageDescription() {
 
         val spannableString = SpannableString("Leggi di più")
         spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
