@@ -27,17 +27,11 @@ import com.google.firebase.auth.FirebaseAuth
 
 class ProfileFragment : Fragment() {
 
-    private val REQUEST_CODE = 100
-    private val GALLERY_REQUEST_CODE = 200
-
     lateinit var binding: FragmentProfileBinding
     val auth = FirebaseAuth.getInstance()
-    private lateinit var selectImageButton: Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-        selectImageButton = binding.buttonTextViewModificaFoto
-        selectImageButton.setOnClickListener { openGallery() }
         return binding.root
     }
 
@@ -55,54 +49,6 @@ class ProfileFragment : Fragment() {
 
         binding.logoutButton.setOnClickListener {
             showLogoutConfirmationDialog()
-        }
-
-        checkStoragePermission()
-    }
-
-    private fun checkStoragePermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE)
-        } else {
-            // Il permesso è già stato concesso, puoi procedere con l'accesso all'archiviazione esterna
-            selectImageButton.isEnabled = true
-        }
-    }
-
-    private fun openGallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, GALLERY_REQUEST_CODE)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Il permesso è stato concesso, puoi procedere con l'accesso all'archiviazione esterna
-                selectImageButton.isEnabled = true
-            } else {
-                // Il permesso è stato negato dall'utente, gestisci di conseguenza
-                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
-                selectImageButton.isEnabled = false
-            }
-        }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
-            val selectedImageUri = data?.data
-            if (selectedImageUri != null) {
-                Glide.with(requireContext())
-                    .load(selectedImageUri)
-                    .into(binding.imageView2)
-                Log.d("IMMAGINEE", selectedImageUri.toString())
-            } else {
-                Toast.makeText(requireContext(), "Impossible to load image", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 
