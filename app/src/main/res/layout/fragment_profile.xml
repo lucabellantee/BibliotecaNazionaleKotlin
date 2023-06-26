@@ -33,12 +33,12 @@
                 app:layout_constraintBottom_toBottomOf="@+id/imageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/imageView"
-                app:srcCompat="@drawable/baseline_person_24"
-                android:background="@drawable/round_background"
-                android:backgroundTint="@color/white"
-                app:tint="@color/primary_color" />
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
+            <!--app:srcCompat="@drawable/baseline_person_24"
+            android:background="@drawable/round_background"
+            android:backgroundTint="@color/white"
+            app:tint="@color/primary_color"-->
             <Button
                 android:id="@+id/buttonTextViewModificaFoto"
                 android:layout_width="wrap_content"
