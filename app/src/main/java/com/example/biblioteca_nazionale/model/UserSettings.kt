@@ -3,7 +3,8 @@ package com.example.biblioteca_nazionale.model
 import java.time.LocalDate
 
 data class UserSettings(
-    var libriPrenotati: HashMap<String, ArrayList<String>>?,
+    //var libriPrenotati: HashMap<String, ArrayList<String>>?,
+    var libriPrenotati: ArrayList<MiniBook>?,
     var commenti: HashMap<String, HashMap<String, String>>?
 ) {
     companion object{
@@ -12,24 +13,31 @@ data class UserSettings(
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
 
     fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String) {
-        val newElement = ArrayList<String>()
-        newElement.add(isbn)
-        newElement.add(bookedPlace)
-        newElement.add(image)
-        newElement.add(LocalDate.now().plusDays(14).toString()) //dataScadenza 14 giorni dopo
+        val newElement = MiniBook(isbn, bookedPlace, image, LocalDate.now().plusDays(14).toString())
 
         if (libriPrenotati == null) {
-            libriPrenotati = HashMap()
+            libriPrenotati = ArrayList()
         }
 
-        libriPrenotati!![bookName] = newElement
+        libriPrenotati?.add(newElement)
+
+
+        println(newElement)
+
     }
 
 
+    fun removeBook(bookName: String) {
+        val iterator = libriPrenotati?.iterator()
 
-    fun removeBook(bookName: String){
-        if(libriPrenotati?.containsKey(bookName) == true) {
-            libriPrenotati!!.remove(bookName)
+        if (iterator != null) {
+            while (iterator.hasNext()) {
+                val book = iterator.next()
+                if (book.isbn == bookName) {
+                    iterator.remove()
+                    break
+                }
+            }
         }
     }
 
@@ -51,3 +59,10 @@ data class UserSettings(
         }
     }
 }
+
+data class MiniBook (
+    var isbn: String,
+    var bookPlace: String,
+    var image: String,
+    var date: String
+)

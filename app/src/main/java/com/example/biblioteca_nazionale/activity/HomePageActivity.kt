@@ -16,13 +16,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.databinding.HomePageBinding
-import com.example.biblioteca_nazionale.firebase.FirebaseDB
-import com.example.biblioteca_nazionale.fragments.BookListFragment
-import com.example.biblioteca_nazionale.fragments.MyBooksFragment
-import com.example.biblioteca_nazionale.fragments.NotificationsFragment
-import com.example.biblioteca_nazionale.fragments.ProfileFragment
-import com.example.biblioteca_nazionale.fragments.SettingsFragment
-import com.example.biblioteca_nazionale.model.Users
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -75,7 +68,7 @@ class HomePageActivity : AppCompatActivity() {
         }
 
         // AGGIUNTA NUOVO LIBRO PRENOTATO
-        firebaseViewModel.addNewBookBooked("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
+        //firebaseViewModel.addNewBookBooked("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
         //firebaseViewModel.removeBookBooked("Libro di Luca")
          //firebaseViewModel.addNewCommentUserSide("23/06/2023" , "2 COMMENTO")
 
@@ -93,7 +86,7 @@ class HomePageActivity : AppCompatActivity() {
         firebaseViewModel.getBookInfoResponseFromDB("ID_LIBRO").observe(this,BookInfoObserver)
 
 // FINE PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
-       // firebaseViewModel.addNewBookBooked("123","Il libro di Luca","Biblioteca comunale di termoli, Termoli 86039"," Link al immagine")
+        //firebaseViewModel.addNewBookBooked("123","Il libro di Luca","Biblioteca comunale di termoli, Termoli 86039"," Link al immagine")
 
 
     }

@@ -10,4 +10,7 @@
     <color name="lavender">#E6E6FA</color>
     <color name="grey">#ECEAEA</color>
     <color name="primary_color">#6D77FB</color>
+    <color name="lemonchiffon">#fffacd</color>
+    <color name="edit_text_background_color">#F2F2F2</color>
+    <color name="edit_text_border_color">#CCCCCC</color>
 </resources>

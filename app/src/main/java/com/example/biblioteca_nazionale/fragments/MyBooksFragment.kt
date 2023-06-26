@@ -1,11 +1,8 @@
-package com.example.biblioteca_nazionale.fragments
-
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,33 +11,41 @@ import com.example.biblioteca_nazionale.adapter.BookAdapter
 import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.ImageLinks
 import com.example.biblioteca_nazionale.model.InfoBook
-import com.example.biblioteca_nazionale.model.Users
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
+import com.example.biblioteca_nazionale.model.MiniBook
 
 class MyBooksFragment : Fragment() {
 
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: BookAdapter
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //val firebaseViewModel: FirebaseViewModel by viewModels()
         val firebaseViewModel: FirebaseViewModel = ViewModelProvider(requireActivity()).get(FirebaseViewModel::class.java)
+        val currentUser = firebaseViewModel.getCurrentUser(firebaseViewModel.firebase.getCurrentUid().toString()).get()
+        //val libriPrenotati: HashMap<String, ArrayList<String>>? = currentUser.userSettings?.libriPrenotati
+        val libriPrenotati: ArrayList<MiniBook>? = currentUser.userSettings?.libriPrenotati
 
-        val utente: Users = firebaseViewModel.getCurrentUser(firebaseViewModel.firebase.getCurrentUid().toString()).get()
 
-        val libriPrenotati: HashMap<String,ArrayList<String>>? = utente.userSettings?.libriPrenotati
+        val bookList: List<Book> = libriPrenotati?.map { bookData ->
+            val isbn = bookData.isbn
+            val titolo = bookData.bookPlace
+            val linkImmagine = bookData.image
+            val dataScadenza = bookData.date
 
-        val titoliLibri = utente.userSettings?.libriPrenotati?.keys?.toList()
+            val infoBook = InfoBook(titolo, null, null, null, null, ImageLinks(null.toString(), linkImmagine))
+
+            Book(isbn, infoBook)
+        } ?: listOf()
 
 
         val view = inflater.inflate(R.layout.fragment_my_books, container, false)
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerViewMyBooks)
-        val adapter = BookAdapter(titoliLibri) // Quì ci va la lista dei libri dell'utente, acquisibile dal database
+        recyclerView = view.findViewById(R.id.recyclerViewMyBooks)
+        adapter = BookAdapter(bookList)
 
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext()) // o LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false) se desideri un layout orizzontale
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         return view
-        //return inflater.inflate(R.layout.fragment_my_books, container, false)
     }
-
-
 }

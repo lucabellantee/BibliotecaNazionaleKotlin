@@ -72,6 +72,9 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
                         val libri = model.getLibriLiveData()
                         val libro  =libri.value?.items?.get(position)
                         if (libro != null) {
+                            println(libro.id)
+                        }
+                        if (libro != null) {
                             val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
                             findNavController().navigate(action)
                         } else {
@@ -93,6 +96,7 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
                     override fun onBookClick(position: Int) {
                         val libri = model.getLibriLiveData()
                         val libro  =libri.value?.items?.get(position)
+
                         if (libro != null) {
                             val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
                             findNavController().navigate(action)

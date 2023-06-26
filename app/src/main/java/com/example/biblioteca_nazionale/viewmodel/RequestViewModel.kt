@@ -3,22 +3,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.biblioteca_nazionale.model.Book
-import com.example.biblioteca_nazionale.model.BooksResponse
 import com.example.biblioteca_nazionale.model.RequestBookName
 import com.example.biblioteca_nazionale.model.RequestCode
 import com.example.biblioteca_nazionale.model.RequestCodeLocation
-import com.google.android.gms.fido.fido2.api.common.ResidentKeyRequirement.UnsupportedResidentKeyRequirementException
 import com.google.gson.Gson
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 class RequestViewModel : ViewModel() {
 
@@ -32,80 +26,62 @@ class RequestViewModel : ViewModel() {
     fun fetchDataBook(book: Book) {
         this.book = book
         val bookName = this.book.info?.title?.replace(" ", "+") ?: ""
-        val url = URL("http://opac.sbn.it/opacmobilegw/search.json?any=$bookName")
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://opac.sbn.it/opacmobilegw/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val connection = url.openConnection() as HttpURLConnection
-                if (connection.responseCode == 200) {
-                    val inputStream = connection.inputStream
-                    val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
-                    val request = Gson().fromJson(inputStreamReader, RequestBookName::class.java)
-                    inputStream.close()
-
-                    Log.d("merda", request.briefRecords[0].titolo)
-                    fetchDataCode(request)
-
-                } else {
-                    // Gestisci la risposta non riuscita (es. responseCode diverso da 200)
-                }
-                connection.disconnect()
+                val request = apiService.searchBooks(bookName)
+                fetchDataCode(request)
             } catch (e: Exception) {
                 e.printStackTrace()
-                println(e)
                 // Gestisci l'eccezione
             }
         }
     }
 
-    private fun fetchDataCode(request: RequestBookName) {
-        var bookCode: String = request.briefRecords[0].codiceIdentificativo.replace("\\", "")
-        var url = URL("http://opac.sbn.it/opacmobilegw/full.json?bid=$bookCode")
+    private suspend fun fetchDataCode(request: RequestBookName) {
+        val localizzazioniList = mutableListOf<RequestCodeLocation>()
+        val formattedBookTitolo = book.info?.title?.replace("\\s".toRegex(), "") ?: ""
 
-        var i = 0
-        while (i < request.briefRecords.size) {
-            val record = request.briefRecords[i]
+        request.briefRecords.forEach { briefRecord ->
+            val record = briefRecord
             val formattedRecordTitolo = record.titolo.replace("\\s".toRegex(), "")
-            val formattedBookTitolo = book.info.title?.replace("\\s".toRegex(), "") ?: ""
-
             val bool = formattedRecordTitolo.contains(formattedBookTitolo, ignoreCase = true)
+
             if (bool) {
-                bookCode = record.codiceIdentificativo.replace("\\", "")
-                url = URL("http://opac.sbn.it/opacmobilegw/full.json?bid=$bookCode")
-                break
-            }
-            i++
-        }
+                val bookCode = record.codiceIdentificativo.replace("\\", "")
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val connection = url.openConnection() as HttpURLConnection
-                if (connection.responseCode == 200) {
-                    val inputStream = connection.inputStream
-                    val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
-                    val requestCode = Gson().fromJson(inputStreamReader, RequestCode::class.java)
-                    inputStream.close()
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://opac.sbn.it/opacmobilegw/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
 
-                    val shelfmark = requestCode.localizzazioni[0].shelfmarks[0].shelfmark
-                    if (shelfmark != null) {
-                        println(shelfmark)
-                        Log.d("suss", shelfmark)
-                    } else {
-                        println("Il valore dello shelfmark è null")
-                    }
+                val apiService = retrofit.create(ApiService::class.java)
 
-                    libraries.postValue(requestCode.localizzazioni)
-
-                } else {
-                    // Gestisci la risposta non riuscita (es. responseCode diverso da 200)
+                try {
+                    val requestCode = apiService.getBookDetails(bookCode)
+                    localizzazioniList.addAll(requestCode.localizzazioni)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    // Gestisci l'eccezione
                 }
-                connection.disconnect()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                println(e)
-                // Gestisci l'eccezione
             }
         }
+
+        libraries.postValue(localizzazioniList)
+    }
+
+    interface ApiService {
+        @GET("search.json")
+        suspend fun searchBooks(@Query("any") bookName: String): RequestBookName
+
+        @GET("full.json")
+        suspend fun getBookDetails(@Query("bid") bookCode: String): RequestCode
     }
 }
-
