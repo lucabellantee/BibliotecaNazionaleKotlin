@@ -85,9 +85,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         progressBar.visibility =View.VISIBLE
 
-        progressBar.getProgressDrawable().setColorFilter(resources.getColor(R.color.primary_color),android.graphics.PorterDuff.Mode.SRC_IN)
-
-
 
         toolbar = binding.toolbar
 
@@ -134,23 +131,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             }*/
         }
 
-        val spannableString = SpannableString("Leggi di più")
-        spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
-        binding.textMoreDescription.text = spannableString
-
-        binding.textViewDescription.post {
-            if (binding.textViewDescription.lineCount < 5) {
-                binding.textMoreDescription.visibility = View.GONE
-            } else {
-                binding.textMoreDescription.visibility = View.VISIBLE
-                binding.textMoreDescription.setOnClickListener {
-                    isExpanded = !isExpanded
-                    updateDescriptionText()
-                }
-                binding.textViewDescription.maxLines = 5
-                binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
-            }
-        }
 
         val mapView: MapView = binding.mapView
         mapView.onCreate(savedInstanceState)
@@ -199,6 +179,24 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                     progressBar.visibility = View.GONE
                     binding.scrollViewInfo.visibility = View.VISIBLE
+
+                    val spannableString = SpannableString("Leggi di più")
+                    spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
+                    binding.textMoreDescription.text = spannableString
+
+                    binding.textViewDescription.post {
+                        if (binding.textViewDescription.lineCount < 5) {
+                            binding.textMoreDescription.visibility = View.GONE
+                        } else {
+                            binding.textMoreDescription.visibility = View.VISIBLE
+                            binding.textMoreDescription.setOnClickListener {
+                                isExpanded = !isExpanded
+                                updateDescriptionText()
+                            }
+                            binding.textViewDescription.maxLines = 5
+                            binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
+                        }
+                    }
 
                     println(libraries)
                     lifecycleScope.launch(Dispatchers.Main) {
