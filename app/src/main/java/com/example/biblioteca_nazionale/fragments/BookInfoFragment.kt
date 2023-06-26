@@ -187,12 +187,15 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                             buttonReview.setOnClickListener{
 
-                                val bundle = Bundle()
-                                bundle.putFloat("reviewVote", ratingValue)
-                                bundle.putParcelable("book", book)
+                                val bundle = Bundle().apply {
+                                    putFloat("reviewVote", ratingValue)
+                                    putParcelable("book", book)
+                                }
 
-                                val destination = R.id.writeReviewFragment
-                                findNavController().navigate(destination, bundle)
+                                findNavController().navigate(
+                                    R.id.action_bookInfoFragment_to_writeReviewFragment,
+                                    bundle
+                                )
                             }
 
                             Toast.makeText(requireContext(), "Hai votato: $ratingValue", Toast.LENGTH_SHORT).show()
