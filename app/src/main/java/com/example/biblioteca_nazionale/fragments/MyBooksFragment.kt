@@ -24,14 +24,14 @@ class MyBooksFragment : Fragment() {
         val firebaseViewModel: FirebaseViewModel = ViewModelProvider(requireActivity()).get(FirebaseViewModel::class.java)
         val currentUser = firebaseViewModel.getCurrentUser(firebaseViewModel.firebase.getCurrentUid().toString()).get()
         //val libriPrenotati: HashMap<String, ArrayList<String>>? = currentUser.userSettings?.libriPrenotati
-        val libriPrenotati: HashMap<String, ArrayList<miniBook>>? = currentUser.userSettings?.libriPrenotati
+        val libriPrenotati: ArrayList<miniBook>? = currentUser.userSettings?.libriPrenotati
 
 
-        val bookList: List<Book> = libriPrenotati?.values?.map { bookData ->
-            val isbn = bookData[0].isbn
-            val titolo = bookData[0].bookPlace
-            val linkImmagine = bookData[0].image
-            val dataScadenza = bookData[0].date
+        val bookList: List<Book> = libriPrenotati?.map { bookData ->
+            val isbn = bookData.isbn
+            val titolo = bookData.bookPlace
+            val linkImmagine = bookData.image
+            val dataScadenza = bookData.date
 
             val infoBook = InfoBook(titolo, null, null, null, null, ImageLinks(null.toString(), linkImmagine))
 

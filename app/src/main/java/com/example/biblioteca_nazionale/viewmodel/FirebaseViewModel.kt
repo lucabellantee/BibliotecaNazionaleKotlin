@@ -56,7 +56,7 @@ class FirebaseViewModel: ViewModel() {
            // Log.d("/IMPORTANTE", data.toString())
             val impostazioniData = data?.get("userSettings") as? HashMap<String, Any>
             //Log.d("IMPOSTAZIONI: ", impostazioniData.toString())
-            val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<miniBook>>
+            val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<miniBook>
             // Log.d("LIBRI PRENOTATI",libriPrenotatiData.toString())
             val commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
            // Log.d("COMMENTI: ",commentiData.toString())
@@ -89,7 +89,7 @@ class FirebaseViewModel: ViewModel() {
             for (document in allDocument) {
                 val impostazioniData = document?.get("userSettings") as? HashMap<String, Any>
                 //val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
-                val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<miniBook>>
+                val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<miniBook>
                 val commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
                 val uid = document?.get("uid") as? String
                 val email = document?.get("email") as? String
@@ -140,6 +140,7 @@ class FirebaseViewModel: ViewModel() {
             //Log.d("UIDDD", user.UID)
             Log.d("USER", user.toString())
             firebase.updateBookPrenoted(user)
+            println(user.userSettings?.libriPrenotati?.get(user.userSettings?.libriPrenotati!!.size-1))
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")

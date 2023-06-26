@@ -81,9 +81,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding.scrollViewInfo.visibility = View.GONE
 
-        progressBar=binding.progressBar
+        progressBar = binding.progressBar
 
-        progressBar.visibility =View.VISIBLE
+        progressBar.visibility = View.VISIBLE
 
 
         toolbar = binding.toolbar
@@ -126,291 +126,147 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
 
-            /*binding.buttonPrenota.setOnClickListener {
-                fbViewModel.addNewBookBooked(it.id.toString(), it.id.toString(), binding.textViewNomeBiblioteca.text.toString(), book.info.imageLinks?.thumbnail.toString())
-            }*/
-        }
 
+            val mapView: MapView = binding.mapView
+            mapView.onCreate(savedInstanceState)
 
-        val mapView: MapView = binding.mapView
-        mapView.onCreate(savedInstanceState)
+            mapView.getMapAsync { googleMap ->
 
-        mapView.getMapAsync { googleMap ->
+                val clusterManager = ClusterManager<MyItem>(requireContext(), googleMap)
 
-            val clusterManager = ClusterManager<MyItem>(requireContext(), googleMap)
+                googleMap.setOnCameraIdleListener(clusterManager)
+                googleMap.setOnMarkerClickListener(clusterManager)
 
-            googleMap.setOnCameraIdleListener(clusterManager)
-            googleMap.setOnMarkerClickListener(clusterManager)
-
-            // Personalizzazione e visualizzazione della mappa
-            googleMap.uiSettings.isZoomControlsEnabled =
-                true // Abilita i controlli di zoom
-            googleMap.uiSettings.isMyLocationButtonEnabled =
-                true // Abilita il pulsante "La mia posizione"
-            googleMap.uiSettings.isScrollGesturesEnabled =
-                true // Abilita il gesto di scorrimento sulla mappa
-            googleMap.uiSettings.isRotateGesturesEnabled = true
-            googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
+                // Personalizzazione e visualizzazione della mappa
+                googleMap.uiSettings.isZoomControlsEnabled =
+                    true // Abilita i controlli di zoom
+                googleMap.uiSettings.isMyLocationButtonEnabled =
+                    true // Abilita il pulsante "La mia posizione"
+                googleMap.uiSettings.isScrollGesturesEnabled =
+                    true // Abilita il gesto di scorrimento sulla mappa
+                googleMap.uiSettings.isRotateGesturesEnabled = true
+                googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
 
 
 
-            googleMap.setMapStyle(context?.let {
-                MapStyleOptions.loadRawResourceStyle(
-                    it,
-                    R.raw.map_style
+                googleMap.setMapStyle(context?.let {
+                    MapStyleOptions.loadRawResourceStyle(
+                        it,
+                        R.raw.map_style
+                    )
+                })
+
+                val startLatLng = LatLng(
+                    41.87194,
+                    12.56738
                 )
-            })
 
-            val startLatLng = LatLng(
-                41.87194,
-                12.56738
-            )
+                val cameraUpdate =
+                    CameraUpdateFactory.newLatLngZoom(startLatLng, 4.4f)
+                googleMap.moveCamera(cameraUpdate)
 
-            val cameraUpdate =
-                CameraUpdateFactory.newLatLngZoom(startLatLng, 4.4f)
-            googleMap.moveCamera(cameraUpdate)
+                val geoApiContext = GeoApiContext.Builder()
+                    .apiKey("AIzaSyCtTj2ohggFHtNX2asYNXL1kj31pO8wO_Y") // Replace with your actual API key
+                    .build()
 
-            val geoApiContext = GeoApiContext.Builder()
-                .apiKey("AIzaSyCtTj2ohggFHtNX2asYNXL1kj31pO8wO_Y") // Replace with your actual API key
-                .build()
+                modelRequest.getLibraries().observe(viewLifecycleOwner) { libraries ->
+                    libraries?.let { libraryList ->
 
-            modelRequest.getLibraries().observe(viewLifecycleOwner) { libraries ->
-                libraries?.let { libraryList ->
+                        progressBar.visibility = View.GONE
+                        binding.scrollViewInfo.visibility = View.VISIBLE
 
-                    progressBar.visibility = View.GONE
-                    binding.scrollViewInfo.visibility = View.VISIBLE
+                        val spannableString = SpannableString("Leggi di più")
+                        spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
+                        binding.textMoreDescription.text = spannableString
 
-                    val spannableString = SpannableString("Leggi di più")
-                    spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
-                    binding.textMoreDescription.text = spannableString
-
-                    binding.textViewDescription.post {
-                        if (binding.textViewDescription.lineCount < 5) {
-                            binding.textMoreDescription.visibility = View.GONE
-                        } else {
-                            binding.textMoreDescription.visibility = View.VISIBLE
-                            binding.textMoreDescription.setOnClickListener {
-                                isExpanded = !isExpanded
-                                updateDescriptionText()
-                            }
-                            binding.textViewDescription.maxLines = 5
-                            binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
-                        }
-                    }
-
-                    println(libraries)
-                    lifecycleScope.launch(Dispatchers.Main) {
-
-                        val librariesNames = libraryList.flatMap { library ->
-                            library.shelfmarks.mapNotNull { it.shelfmark }
-                        }
-
-                        val markerList = mutableListOf<MyItem>()
-                        var counter = 0
-
-                        withContext(Dispatchers.IO) {
-
-                            val uniqueLibraryNames = librariesNames.distinct()
-
-
-                            for (libraryName in uniqueLibraryNames) {
-                                val cacheKey = GeocodingCache.getCacheKey(libraryName)
-                                val cachedResult = GeocodingCache.getResult(cacheKey)
-                                var geocodingResult: Array<GeocodingResult>
-
-                                if (cachedResult != null) {
-
-                                    geocodingResult = arrayOf(cachedResult)
-
-                                } else {
-                                    geocodingResult =
-                                        GeocodingApi.geocode(geoApiContext, libraryName).await()
-                                    if (geocodingResult.isNotEmpty()) {
-                                        GeocodingCache.putResult(cacheKey, geocodingResult[0])
-                                    }
+                        binding.textViewDescription.post {
+                            if (binding.textViewDescription.lineCount < 5) {
+                                binding.textMoreDescription.visibility = View.GONE
+                            } else {
+                                binding.textMoreDescription.visibility = View.VISIBLE
+                                binding.textMoreDescription.setOnClickListener {
+                                    isExpanded = !isExpanded
+                                    updateDescriptionText()
                                 }
+                                binding.textViewDescription.maxLines = 5
+                                binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
+                            }
+                        }
 
-                                if (geocodingResult.isNotEmpty()) {
-                                    val location = geocodingResult[0].geometry.location
-                                    val libraryLatLng =
-                                        LatLng(location.lat, location.lng)
+                        println(libraries)
+                        lifecycleScope.launch(Dispatchers.Main) {
 
-                                    withContext(Dispatchers.Main) {
-                                        val markerOptions = MyItem(libraryLatLng,libraryName,"Biblioteca")  // Descrizione opzionale
-                                        clusterManager.addItem(markerOptions)
-                                        clusterManager.cluster()
+                            val librariesNames = libraryList.flatMap { library ->
+                                library.shelfmarks.mapNotNull { it.shelfmark }
+                            }
 
-                                        counter++
+                            val markerList = mutableListOf<MyItem>()
+                            var counter = 0
 
-                                        Log.d("conto", counter.toString())
+                            withContext(Dispatchers.IO) {
 
-                                        markerList.add(markerOptions)
-
-                                        Log.d("Marker", "M${markerList.size}")
+                                val uniqueLibraryNames = librariesNames.distinct()
 
 
-                                        clusterManager.setOnClusterItemClickListener { marker ->
-                                            binding.textViewNomeBiblioteca.text =
-                                                marker.title
+                                for (libraryName in uniqueLibraryNames) {
+                                    val cacheKey = GeocodingCache.getCacheKey(libraryName)
+                                    val cachedResult = GeocodingCache.getResult(cacheKey)
+                                    var geocodingResult: Array<GeocodingResult>
 
-                                            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(marker.position, 15f)
-                                            googleMap.animateCamera(cameraUpdate)
+                                    if (cachedResult != null) {
 
-                                            binding.buttonPrenota.setOnClickListener {
-                                                fbViewModel.addNewBookBooked(
-                                                    it.id.toString(),
-                                                    it.id.toString(),
-                                                    binding.textViewNomeBiblioteca.text.toString(),
-                                                    book?.info?.imageLinks?.thumbnail.toString()
-                                                )
-                                                Toast.makeText(
-                                                    requireContext(),
-                                                    "Your book has booked succesfully!",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                                binding.buttonPrenota.isEnabled = false
+                                        geocodingResult = arrayOf(cachedResult)
 
-                                                binding.textViewDataRiconsegna.setOnClickListener {
-                                                    fbViewModel.newExpirationDate(it.id.toString())
-                                                }
-                                            }
-                                            true
+                                    } else {
+                                        geocodingResult =
+                                            GeocodingApi.geocode(geoApiContext, libraryName).await()
+                                        if (geocodingResult.isNotEmpty()) {
+                                            GeocodingCache.putResult(cacheKey, geocodingResult[0])
                                         }
                                     }
-                                }
-                            }
-                        }
-                        val fusedLocationClient =
-                            LocationServices.getFusedLocationProviderClient(
-                                requireContext()
-                            )
 
-                        if (ContextCompat.checkSelfPermission(
-                                requireContext(),
-                                Manifest.permission.ACCESS_FINE_LOCATION
-                            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                                requireContext(),
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                            ) != PackageManager.PERMISSION_GRANTED
-                        ) {
-                            val startLatLng = LatLng(
-                                markerList[0].position.latitude,
-                                markerList[0].position.longitude
-                            )
+                                    if (geocodingResult.isNotEmpty()) {
+                                        val location = geocodingResult[0].geometry.location
+                                        val libraryLatLng =
+                                            LatLng(location.lat, location.lng)
 
-                            val cameraUpdate =
-                                CameraUpdateFactory.newLatLngZoom(
-                                    startLatLng,
-                                    12f
-                                )
-                            googleMap.animateCamera(cameraUpdate)
+                                        withContext(Dispatchers.Main) {
+                                            val markerOptions = MyItem(
+                                                libraryLatLng,
+                                                libraryName,
+                                                "Biblioteca"
+                                            )  // Descrizione opzionale
+                                            clusterManager.addItem(markerOptions)
+                                            clusterManager.cluster()
 
-                            binding.textViewNomeBiblioteca.text =
-                                markerList[0].title
-                            binding.buttonPrenota.setOnClickListener {
-                                fbViewModel.addNewBookBooked(
-                                    it.id.toString(),
-                                    it.id.toString(),
-                                    binding.textViewNomeBiblioteca.text.toString(),
-                                    book?.info?.imageLinks?.thumbnail.toString()
-                                )
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Your book has booked succesfully!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                binding.buttonPrenota.isEnabled = false
+                                            counter++
 
-                                binding.textViewDataRiconsegna.setOnClickListener {
-                                    fbViewModel.newExpirationDate(it.id.toString())
-                                }
-                            }
-                        } else {
-                            withContext(Dispatchers.IO) {
-                                fusedLocationClient.lastLocation
-                                    .addOnSuccessListener { location: Location? ->
-                                        Log.d("Mannaia", "Mannaia$location")
-                                        if (location != null) {
-                                            val latitude = location.latitude
-                                            val longitude = location.longitude
+                                            Log.d("conto", counter.toString())
 
-                                            val nearestMarker =
-                                                findNearestMarker(
-                                                    latitude,
-                                                    longitude,
-                                                    markerList
-                                                )
+                                            markerList.add(markerOptions)
 
-                                            if (nearestMarker != null) {
-                                                val startLatLng = LatLng(
-                                                    nearestMarker.position.latitude,
-                                                    nearestMarker.position.longitude
-                                                )
+                                            Log.d("Marker", "M${markerList.size}")
+
+                                            println(book.id)
+
+
+                                            clusterManager.setOnClusterItemClickListener { marker ->
+                                                binding.textViewNomeBiblioteca.text =
+                                                    marker.title
+
 
                                                 val cameraUpdate =
                                                     CameraUpdateFactory.newLatLngZoom(
-                                                        startLatLng,
-                                                        12f
-                                                    )
-                                                googleMap.animateCamera(
-                                                    cameraUpdate
-                                                )
-
-                                                binding.textViewNomeBiblioteca.text =
-                                                    nearestMarker.title
-                                                binding.buttonPrenota.setOnClickListener {
-                                                    fbViewModel.addNewBookBooked(
-                                                        it.id.toString(),
-                                                        it.id.toString(),
-                                                        binding.textViewNomeBiblioteca.text.toString(),
-                                                        book?.info?.imageLinks?.thumbnail.toString()
-                                                    )
-                                                    Toast.makeText(
-                                                        requireContext(),
-                                                        "Your book has booked succesfully!",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                    binding.buttonPrenota.isEnabled =
-                                                        false
-
-                                                    binding.textViewDataRiconsegna.setOnClickListener {
-                                                        fbViewModel.newExpirationDate(
-                                                            it.id.toString()
-                                                        )
-                                                    }
-                                                }
-                                            } else {
-                                                binding.textViewNomeBiblioteca.text =
-                                                    "Nessuna biblioteca trovata"
-
-                                                binding.textViewDataRiconsegna.visibility =
-                                                    View.GONE
-
-                                                binding.buttonPrenota.isEnabled =
-                                                    false
-                                            }
-                                        } else {
-
-                                            if (!markerList.isEmpty()) {
-
-                                                val startLatLng = LatLng(
-                                                    markerList[0].position.latitude,
-                                                    markerList[0].position.longitude
-                                                )
-
-                                                val cameraUpdate =
-                                                    CameraUpdateFactory.newLatLngZoom(
-                                                        startLatLng,
-                                                        12f
+                                                        marker.position,
+                                                        15f
                                                     )
                                                 googleMap.animateCamera(cameraUpdate)
 
-                                                binding.textViewNomeBiblioteca.text =
-                                                    markerList[0].title
                                                 binding.buttonPrenota.setOnClickListener {
+                                                    println(it.id.toString())
                                                     fbViewModel.addNewBookBooked(
-                                                        it.id.toString(),
-                                                        it.id.toString(),
+                                                        book.id.toString(),
+                                                        book.id.toString(),
                                                         binding.textViewNomeBiblioteca.text.toString(),
                                                         book?.info?.imageLinks?.thumbnail.toString()
                                                     )
@@ -419,27 +275,179 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                         "Your book has booked succesfully!",
                                                         Toast.LENGTH_SHORT
                                                     ).show()
-                                                    binding.buttonPrenota.isEnabled =
-                                                        false
+                                                    binding.buttonPrenota.isEnabled = false
 
                                                     binding.textViewDataRiconsegna.setOnClickListener {
-                                                        fbViewModel.newExpirationDate(
-                                                            it.id.toString()
-                                                        )
+                                                        fbViewModel.newExpirationDate(it.id.toString())
                                                     }
                                                 }
-                                            } else {
-                                                binding.textViewNomeBiblioteca.text =
-                                                    "Nessuna biblioteca trovata"
-
-                                                binding.textViewDataRiconsegna.visibility =
-                                                    View.GONE
-
-                                                binding.buttonPrenota.isEnabled =
-                                                    false
+                                                true
                                             }
                                         }
                                     }
+                                }
+                            }
+                            val fusedLocationClient =
+                                LocationServices.getFusedLocationProviderClient(
+                                    requireContext()
+                                )
+
+                            if (ContextCompat.checkSelfPermission(
+                                    requireContext(),
+                                    Manifest.permission.ACCESS_FINE_LOCATION
+                                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                                    requireContext(),
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                val startLatLng = LatLng(
+                                    markerList[0].position.latitude,
+                                    markerList[0].position.longitude
+                                )
+
+                                val cameraUpdate =
+                                    CameraUpdateFactory.newLatLngZoom(
+                                        startLatLng,
+                                        12f
+                                    )
+                                googleMap.animateCamera(cameraUpdate)
+
+                                binding.textViewNomeBiblioteca.text =
+                                    markerList[0].title
+                                binding.buttonPrenota.setOnClickListener {
+                                    fbViewModel.addNewBookBooked(
+                                        it.id.toString(),
+                                        it.id.toString(),
+                                        binding.textViewNomeBiblioteca.text.toString(),
+                                        book?.info?.imageLinks?.thumbnail.toString()
+                                    )
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Your book has booked succesfully!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    binding.buttonPrenota.isEnabled = false
+
+                                    binding.textViewDataRiconsegna.setOnClickListener {
+                                        fbViewModel.newExpirationDate(it.id.toString())
+                                    }
+                                }
+                            } else {
+                                withContext(Dispatchers.IO) {
+                                    fusedLocationClient.lastLocation
+                                        .addOnSuccessListener { location: Location? ->
+                                            Log.d("Mannaia", "Mannaia$location")
+                                            if (location != null) {
+                                                val latitude = location.latitude
+                                                val longitude = location.longitude
+
+                                                val nearestMarker =
+                                                    findNearestMarker(
+                                                        latitude,
+                                                        longitude,
+                                                        markerList
+                                                    )
+
+                                                if (nearestMarker != null) {
+                                                    val startLatLng = LatLng(
+                                                        nearestMarker.position.latitude,
+                                                        nearestMarker.position.longitude
+                                                    )
+
+                                                    val cameraUpdate =
+                                                        CameraUpdateFactory.newLatLngZoom(
+                                                            startLatLng,
+                                                            12f
+                                                        )
+                                                    googleMap.animateCamera(
+                                                        cameraUpdate
+                                                    )
+
+                                                    binding.textViewNomeBiblioteca.text =
+                                                        nearestMarker.title
+                                                    binding.buttonPrenota.setOnClickListener {
+                                                        fbViewModel.addNewBookBooked(
+                                                            it.id.toString(),
+                                                            it.id.toString(),
+                                                            binding.textViewNomeBiblioteca.text.toString(),
+                                                            book?.info?.imageLinks?.thumbnail.toString()
+                                                        )
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            "Your book has booked succesfully!",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                        binding.buttonPrenota.isEnabled =
+                                                            false
+
+                                                        binding.textViewDataRiconsegna.setOnClickListener {
+                                                            fbViewModel.newExpirationDate(
+                                                                it.id.toString()
+                                                            )
+                                                        }
+                                                    }
+                                                } else {
+                                                    binding.textViewNomeBiblioteca.text =
+                                                        "Nessuna biblioteca trovata"
+
+                                                    binding.textViewDataRiconsegna.visibility =
+                                                        View.GONE
+
+                                                    binding.buttonPrenota.isEnabled =
+                                                        false
+                                                }
+                                            } else {
+
+                                                if (!markerList.isEmpty()) {
+
+                                                    val startLatLng = LatLng(
+                                                        markerList[0].position.latitude,
+                                                        markerList[0].position.longitude
+                                                    )
+
+                                                    val cameraUpdate =
+                                                        CameraUpdateFactory.newLatLngZoom(
+                                                            startLatLng,
+                                                            12f
+                                                        )
+                                                    googleMap.animateCamera(cameraUpdate)
+
+                                                    binding.textViewNomeBiblioteca.text =
+                                                        markerList[0].title
+                                                    binding.buttonPrenota.setOnClickListener {
+                                                        fbViewModel.addNewBookBooked(
+                                                            it.id.toString(),
+                                                            it.id.toString(),
+                                                            binding.textViewNomeBiblioteca.text.toString(),
+                                                            book?.info?.imageLinks?.thumbnail.toString()
+                                                        )
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            "Your book has booked succesfully!",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                        binding.buttonPrenota.isEnabled =
+                                                            false
+
+                                                        binding.textViewDataRiconsegna.setOnClickListener {
+                                                            fbViewModel.newExpirationDate(
+                                                                it.id.toString()
+                                                            )
+                                                        }
+                                                    }
+                                                } else {
+                                                    binding.textViewNomeBiblioteca.text =
+                                                        "Nessuna biblioteca trovata"
+
+                                                    binding.textViewDataRiconsegna.visibility =
+                                                        View.GONE
+
+                                                    binding.buttonPrenota.isEnabled =
+                                                        false
+                                                }
+                                            }
+                                        }
+                                }
                             }
                         }
                     }

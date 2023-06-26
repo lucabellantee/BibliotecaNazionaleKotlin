@@ -68,7 +68,7 @@ class HomePageActivity : AppCompatActivity() {
         }
 
         // AGGIUNTA NUOVO LIBRO PRENOTATO
-        firebaseViewModel.addNewBookBooked("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
+        //firebaseViewModel.addNewBookBooked("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
         //firebaseViewModel.removeBookBooked("Libro di Luca")
          //firebaseViewModel.addNewCommentUserSide("23/06/2023" , "2 COMMENTO")
 
@@ -86,7 +86,7 @@ class HomePageActivity : AppCompatActivity() {
         firebaseViewModel.getBookInfoResponseFromDB("ID_LIBRO").observe(this,BookInfoObserver)
 
 // FINE PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
-       // firebaseViewModel.addNewBookBooked("123","Il libro di Luca","Biblioteca comunale di termoli, Termoli 86039"," Link al immagine")
+        //firebaseViewModel.addNewBookBooked("123","Il libro di Luca","Biblioteca comunale di termoli, Termoli 86039"," Link al immagine")
 
 
     }
