@@ -26,52 +26,15 @@ class DeleteBookingFragment : Fragment(R.layout.fragment_delete_booking) {
         val book = arguments?.getParcelable<MiniBook>("book")
 
         book?.let {
-            binding.textViewBookName.text = it.isbn
+            binding.textViewBookName.text = it.bookPlace
+            binding.textViewAutore.text = it.isbn
+            binding.textViewDataRiconsegna.text = "${binding.textViewDataRiconsegna.text} ${it.date}"
 
             Glide.with(requireContext())
-                .load(book.info.imageLinks?.thumbnail?.toString())
+                .load(book.image)
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
 
-            reviewVote?.let {
-                ratingBar.rating = it
-
-                toolbar.setNavigationOnClickListener {
-                    findNavController().popBackStack()
-                }
-
-                toolbar.setOnMenuItemClickListener { item ->
-                    if (item.itemId == R.id.menu_confirm) {
-                        if (binding.reviewText.text.toString()
-                                .isNotEmpty() && binding.reviewTitle.text.toString().isNotEmpty()
-                        ) {
-                            fbViewModel.addNewCommentUserSide(
-                                binding.reviewText.text.toString(),
-                                binding.reviewTitle.text.toString(),
-                                book.id,
-                                ratingBar.rating
-                            )
-
-                            Toast.makeText(requireContext(), "La recensione è andata a buon fine", Toast.LENGTH_SHORT).show()
-
-                            val action = WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
-                            findNavController().navigate(action)
-
-                            //findNavController().popBackStack()
-
-                        } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "Devi inserire il titolo della recensione e la recensione",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        true
-                    } else {
-                        false
-                    }
-                }
-            }
         }
     }
 }

@@ -53,7 +53,7 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
         recyclerView = view.findViewById(R.id.recyclerViewMyBooks)
         adapter = BookAdapter(appo)
 
-        recyclerView.adapter = adapter
+        //recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         adapter.setOnBookClickListener(object : BookAdapter.OnBookClickListener{
