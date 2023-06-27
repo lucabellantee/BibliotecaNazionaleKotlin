@@ -36,7 +36,9 @@ class FirebaseViewModel: ViewModel() {
         val reviewText = hashMap["reviewText"] as? String ?: ""
         val reviewTitle = hashMap["reviewTitle"] as? String ?: ""
         val isbn = hashMap["isbn"] as? String ?: ""
-        val vote = hashMap["vote"] as? Float ?: 0.0f
+        println(hashMap["vote"])
+        val vote = hashMap["vote"].toString() as? Float ?: 0.0f
+        println(vote)
         val date = hashMap["date"] as? String ?: ""
 
         return Review(idComment, reviewText, reviewTitle, isbn, vote, date)
@@ -81,7 +83,6 @@ class FirebaseViewModel: ViewModel() {
                 futureResult.completeExceptionally(Exception("Dati mancanti o nulli"))
             }
         }
-
         return futureResult
     }
 

@@ -43,6 +43,9 @@ import com.google.maps.model.GeocodingResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
@@ -204,35 +207,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                             clusterManager.cluster()
 
                                             counter++
-
-                                            if (markerList.isNotEmpty()) {
-                                                if (markerList.size == 1) {
-                                                    binding.textViewNomeBiblioteca.text =
-                                                        markerList[0].title
-                                                    binding.buttonPrenota.setOnClickListener {
-                                                        fbViewModel.addNewBookBooked(
-                                                            book.id.toString(),
-                                                            book.id.toString(),
-                                                            binding.textViewNomeBiblioteca.text.toString(),
-                                                            book?.info?.imageLinks?.thumbnail.toString()
-                                                        )
-                                                        Toast.makeText(
-                                                            requireContext(),
-                                                            "Your book has booked succesfully!",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-
-                                                        binding.buttonPrenota.isEnabled =
-                                                            false
-
-                                                        binding.textViewDataRiconsegna.setOnClickListener {
-                                                            fbViewModel.newExpirationDate(
-                                                                it.id.toString()
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            
                                             clusterManager.setOnClusterItemClickListener { marker ->
                                                 setDefaultLibrary(marker, book, googleMap)
                                                 true
@@ -302,16 +277,27 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
             fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
                 println(usersList)
-                for (user in usersList) {
+                outer@ for (user in usersList) {
                     val userSettings = user.userSettings
                     if (userSettings != null) {
                         val commenti = userSettings.commenti
                         if (commenti != null) {
                             for (commento in commenti) {
                                 if (commento.isbn == book.id) {
+                                    binding.ratingReview2.rating = commento.vote
+                                    println(binding.ratingReview2.rating)
+                                    binding.textReviewUtente.text="Valutazione di ${user.email}:"
+
+                                    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                    val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+                                    val date: Date = inputFormat.parse(commento.date)
+                                    val outputDateString: String = outputFormat.format(date)
+
+                                    binding.textReviewDate.text=outputDateString
                                     binding.textTitleReview1.text = commento.reviewTitle
                                     binding.textReview1.text = commento.reviewText
-                                    break
+                                    break@outer
                                 }
                             }
                         }
