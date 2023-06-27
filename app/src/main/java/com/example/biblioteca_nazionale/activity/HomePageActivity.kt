@@ -96,5 +96,4 @@ class HomePageActivity : AppCompatActivity() {
             .replace(R.id.fragmentContainer, fragment)
             .commit()
     }
-
 }

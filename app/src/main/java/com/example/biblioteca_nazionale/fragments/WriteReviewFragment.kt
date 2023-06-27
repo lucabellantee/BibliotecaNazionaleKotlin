@@ -14,6 +14,7 @@ import com.example.biblioteca_nazionale.databinding.FragmentWriteReviewBinding
 import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.UserSettings
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
+import com.google.android.material.appbar.MaterialToolbar
 
 class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
@@ -32,6 +33,9 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
         val ratingBar: RatingBar = binding.ratingBarReview
 
+        val toolbar: MaterialToolbar = binding.toolbar
+
+
         book?.let {
             binding.textViewBookName.text = it.info?.title ?: ""
             binding.textViewAutore.text = it.info?.authors?.toString() ?: ""
@@ -44,14 +48,15 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
             reviewVote?.let {
                 ratingBar.rating = it
 
-                val button = binding.button
+                toolbar.setNavigationOnClickListener {
+                    findNavController().popBackStack()
+                }
 
-                button.setOnClickListener {
-
-                    if (binding.reviewText.text.toString()
-                            .isNotEmpty() && binding.reviewTitle.text.toString().isNotEmpty()
-                    ) {
-
+                toolbar.setOnMenuItemClickListener { item ->
+                    if (item.itemId == R.id.menu_confirm) {
+                        if (binding.reviewText.text.toString()
+                                .isNotEmpty() && binding.reviewTitle.text.toString().isNotEmpty()
+                        ) {
                             fbViewModel.addNewCommentUserSide(
                                 binding.reviewText.text.toString(),
                                 binding.reviewTitle.text.toString(),
@@ -59,20 +64,23 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                                 ratingBar.rating
                             )
 
-                        Toast.makeText(requireContext(), "La recensione è andata a buon fine", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "La recensione è andata a buon fine", Toast.LENGTH_SHORT).show()
 
-                        val action = WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
-                        findNavController().navigate(action)
+                            val action = WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
+                            findNavController().navigate(action)
 
-                        //findNavController().popBackStack()
+                            //findNavController().popBackStack()
 
-
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Devi inserire il titolo della recensione e la recensione",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        true
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Devi inserire il titolo della recensione e la recensione",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        false
                     }
                 }
             }

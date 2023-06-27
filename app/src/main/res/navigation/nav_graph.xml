@@ -98,7 +98,9 @@
         tools:layout="@layout/fragment_write_review">
         <action
             android:id="@+id/action_writeReviewFragment_to_bookInfoFragment"
-            app:destination="@id/bookInfoFragment">
+            app:destination="@id/bookInfoFragment"
+            app:enterAnim="@anim/slide_down"
+            app:exitAnim="@anim/slide_up">
             <argument
                 android:name="book"
                 app:argType="com.example.biblioteca_nazionale.model.Book" />
