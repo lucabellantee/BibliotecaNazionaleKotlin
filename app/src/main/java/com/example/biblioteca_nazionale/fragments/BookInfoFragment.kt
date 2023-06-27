@@ -43,6 +43,9 @@ import com.google.maps.model.GeocodingResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
@@ -203,6 +206,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                             clusterManager.addItem(markerOptions)
                                             clusterManager.cluster()
 
+                                            markerList.add(markerOptions)
+
                                             counter++
 
                                             if (markerList.isNotEmpty()) {
@@ -233,6 +238,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                     }
                                                 }
                                             }
+
                                             clusterManager.setOnClusterItemClickListener { marker ->
                                                 setDefaultLibrary(marker, book, googleMap)
                                                 true
@@ -246,6 +252,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                 LocationServices.getFusedLocationProviderClient(
                                     requireContext()
                                 )
+
 
                             if (ContextCompat.checkSelfPermission(
                                     requireContext(),
@@ -302,16 +309,27 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
             fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
                 println(usersList)
-                for (user in usersList) {
+                outer@ for (user in usersList) {
                     val userSettings = user.userSettings
                     if (userSettings != null) {
                         val commenti = userSettings.commenti
                         if (commenti != null) {
                             for (commento in commenti) {
                                 if (commento.isbn == book.id) {
+                                    binding.ratingReview2.rating = commento.vote
+                                    println(binding.ratingReview2.rating)
+                                    binding.textReviewUtente.text="Valutazione di ${user.email}:"
+
+                                    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                    val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+                                    val date: Date = inputFormat.parse(commento.date)
+                                    val outputDateString: String = outputFormat.format(date)
+
+                                    binding.textReviewDate.text=outputDateString
                                     binding.textTitleReview1.text = commento.reviewTitle
                                     binding.textReview1.text = commento.reviewText
-                                    break
+                                    break@outer
                                 }
                             }
                         }
