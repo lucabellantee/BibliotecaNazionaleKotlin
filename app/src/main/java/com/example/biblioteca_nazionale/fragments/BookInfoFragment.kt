@@ -206,8 +206,53 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                             clusterManager.addItem(markerOptions)
                                             clusterManager.cluster()
 
+                                            markerList.add(markerOptions)
+
                                             counter++
-                                            
+
+                                            if (markerList.isNotEmpty()) {
+                                                if (markerList.size == 1) {
+                                                    binding.textViewNomeBiblioteca.text =
+                                                        markerList[0].title
+                                                    binding.buttonPrenota.setOnClickListener {
+                                                        fbViewModel.bookIsBooked(
+                                                            book.id.toString(),
+                                                            binding.textViewNomeBiblioteca.text.toString()
+                                                        ).thenAccept { isBooked ->
+                                                            if (isBooked == true) {
+                                                                Toast.makeText(
+                                                                    requireContext(),
+                                                                    "Book already reserved for the same library",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            } else if (isBooked == false) {
+                                                                fbViewModel.addNewBookBooked(
+                                                                    book.id.toString(),
+                                                                    book.id.toString(),
+                                                                    binding.textViewNomeBiblioteca.text.toString(),
+                                                                    book?.info?.imageLinks?.thumbnail.toString()
+                                                                )
+                                                                Toast.makeText(
+                                                                    requireContext(),
+                                                                    "Your book has booked succesfully!",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            }
+
+                                                        }
+
+                                                        /*binding.buttonPrenota.isEnabled =
+                                                            false */
+
+                                                        binding.textViewDataRiconsegna.setOnClickListener {
+                                                            fbViewModel.newExpirationDate(
+                                                                it.id.toString()
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+
                                             clusterManager.setOnClusterItemClickListener { marker ->
                                                 setDefaultLibrary(marker, book, googleMap)
                                                 true
@@ -221,6 +266,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                 LocationServices.getFusedLocationProviderClient(
                                     requireContext()
                                 )
+
 
                             if (ContextCompat.checkSelfPermission(
                                     requireContext(),
@@ -286,15 +332,17 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                 if (commento.isbn == book.id) {
                                     binding.ratingReview2.rating = commento.vote
                                     println(binding.ratingReview2.rating)
-                                    binding.textReviewUtente.text="Valutazione di ${user.email}:"
+                                    binding.textReviewUtente.text = "Valutazione di ${user.email}:"
 
-                                    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                    val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                    val inputFormat =
+                                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                    val outputFormat =
+                                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
                                     val date: Date = inputFormat.parse(commento.date)
                                     val outputDateString: String = outputFormat.format(date)
 
-                                    binding.textReviewDate.text=outputDateString
+                                    binding.textReviewDate.text = outputDateString
                                     binding.textTitleReview1.text = commento.reviewTitle
                                     binding.textReview1.text = commento.reviewText
                                     break@outer
@@ -370,20 +418,34 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         binding.textViewNomeBiblioteca.text =
             marker.title
         binding.buttonPrenota.setOnClickListener {
-            fbViewModel.addNewBookBooked(
+            fbViewModel.bookIsBooked(
                 book.id.toString(),
-                book.id.toString(),
-                binding.textViewNomeBiblioteca.text.toString(),
-                book?.info?.imageLinks?.thumbnail.toString()
-            )
-            Toast.makeText(
-                requireContext(),
-                "Your book has booked succesfully!",
-                Toast.LENGTH_SHORT
-            ).show()
+                binding.textViewNomeBiblioteca.text.toString()
+            ).thenAccept { isBooked ->
+                if (isBooked == true) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Book already reserved for the same library",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else if (isBooked == false) {
+                    fbViewModel.addNewBookBooked(
+                        book.id.toString(),
+                        book.id.toString(),
+                        binding.textViewNomeBiblioteca.text.toString(),
+                        book?.info?.imageLinks?.thumbnail.toString()
+                    )
+                    Toast.makeText(
+                        requireContext(),
+                        "Your book has booked succesfully!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
-            binding.buttonPrenota.isEnabled =
-                false
+            }
+
+            /*binding.buttonPrenota.isEnabled =
+                false */
 
             binding.textViewDataRiconsegna.text = fbViewModel.newExpirationDate(it.id.toString()).toString()
         }
