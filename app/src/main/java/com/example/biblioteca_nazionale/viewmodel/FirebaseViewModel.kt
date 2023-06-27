@@ -22,7 +22,26 @@ class FirebaseViewModel: ViewModel() {
         return firebase.getAllUserInfo()
     } */
 
+    private fun convertHashMapToMiniBook(hashMap: HashMap<*, *>): MiniBook {
+        val isbn = hashMap["isbn"] as? String ?: ""
+        val bookPlace = hashMap["bookPlace"] as? String ?: ""
+        val image = hashMap["image"] as? String ?: ""
+        val date = hashMap["date"] as? String ?: ""
 
+        return MiniBook(isbn, bookPlace, image, date)
+    }
+
+    private fun convertHashMapToReview(hashMap: HashMap<*, *>): Review {
+        val idComment = hashMap["idComment"] as? String ?: ""
+        val reviewText = hashMap["reviewText"] as? String ?: ""
+        val reviewTitle = hashMap["reviewTitle"] as? String ?: ""
+        val isbn = hashMap["isbn"] as? String ?: ""
+        val vote = hashMap["vote"] as? Float ?: 0.0f
+        val date = hashMap["date"] as? String ?: ""
+
+        return Review(idComment, reviewText, reviewTitle, isbn, vote, date)
+    }
+    
     fun getUserInfo(uid: String): MutableLiveData<DocumentSnapshot>{
       return firebase.getAllUserInfoFromUid(uid)
     }
@@ -96,28 +115,6 @@ class FirebaseViewModel: ViewModel() {
         }
         return allUserLiveData
     }
-
-    private fun convertHashMapToMiniBook(hashMap: HashMap<*, *>): MiniBook {
-        val isbn = hashMap["isbn"] as? String ?: ""
-        val bookPlace = hashMap["bookPlace"] as? String ?: ""
-        val image = hashMap["image"] as? String ?: ""
-        val date = hashMap["date"] as? String ?: ""
-
-        return MiniBook(isbn, bookPlace, image, date)
-    }
-
-    private fun convertHashMapToReview(hashMap: HashMap<*, *>): Review {
-        val idComment = hashMap["idComment"] as? String ?: ""
-        val reviewText = hashMap["reviewText"] as? String ?: ""
-        val reviewTitle = hashMap["reviewTitle"] as? String ?: ""
-        val isbn = hashMap["isbn"] as? String ?: ""
-        val vote = hashMap["vote"] as? Float ?: 0.0f
-        val date = hashMap["date"] as? String ?: ""
-
-        return Review(idComment, reviewText, reviewTitle, isbn, vote, date)
-    }
-
-
 
     fun getBookInfoResponseFromDB(idLibro: String): MutableLiveData<DocumentSnapshot>{
         return firebase.getAllBookInfoFromId(idLibro)
