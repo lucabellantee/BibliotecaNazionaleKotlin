@@ -5,7 +5,7 @@ plugins {
 }
 
 apply plugin: "androidx.navigation.safeargs.kotlin"
-
+apply plugin: 'kotlin-android'   // Occhio a questo
 
 android {
     namespace 'com.example.biblioteca_nazionale'
