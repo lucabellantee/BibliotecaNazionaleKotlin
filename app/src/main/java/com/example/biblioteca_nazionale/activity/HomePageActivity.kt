@@ -52,7 +52,7 @@ class HomePageActivity : AppCompatActivity() {
 // INIZIO PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
 
 
-        val firebaseViewModel: FirebaseViewModel by viewModels()
+        /*val firebaseViewModel: FirebaseViewModel by viewModels()
 
         val uid = FirebaseAuth.getInstance().uid.toString()
         val currentUser = firebaseViewModel.getCurrentUser(uid)
@@ -65,14 +65,14 @@ class HomePageActivity : AppCompatActivity() {
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/HomePageActivity", "Errore nel recupero dell'utente: ${throwable.message}")
             null
-        }
+        }-*/
 
         // AGGIUNTA NUOVO LIBRO PRENOTATO
         //firebaseViewModel.addNewBookBooked("Libro di Luca", "123","Biblioteca di Ancona","Immagine")
         //firebaseViewModel.removeBookBooked("Libro di Luca")
          //firebaseViewModel.addNewCommentUserSide("23/06/2023" , "2 COMMENTO")
 
-        val BookInfoObserver = Observer<DocumentSnapshot> { currentBookInfo ->
+        /*val BookInfoObserver = Observer<DocumentSnapshot> { currentBookInfo ->
             // Update the UI, in this case, a TextView.
             //Log.d("/HomePageActivity", currentUserInfo.data.toString())
             //Log.d("/HomePageActivity",firebaseViewModel.getBookInfo("ID_LIBRO").toString())
@@ -83,7 +83,7 @@ class HomePageActivity : AppCompatActivity() {
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         // model.currentName.observe(this, nameObserver)
-        firebaseViewModel.getBookInfoResponseFromDB("ID_LIBRO").observe(this,BookInfoObserver)
+        firebaseViewModel.getBookInfoResponseFromDB("ID_LIBRO").observe(this,BookInfoObserver)*/
 
 // FINE PROVA CHIAMATE DB FIREBASE CON PATTTERN MVVVM
         //firebaseViewModel.addNewBookBooked("123","Il libro di Luca","Biblioteca comunale di termoli, Termoli 86039"," Link al immagine")
