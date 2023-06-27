@@ -68,8 +68,6 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
                 }                      }
         })
         recyclerView.adapter = adapter
-        return true
-    }
 
         return view
     }

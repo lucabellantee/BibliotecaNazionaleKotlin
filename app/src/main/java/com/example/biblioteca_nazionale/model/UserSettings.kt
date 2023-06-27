@@ -66,13 +66,6 @@ data class UserSettings(
     }
 }
 
-data class MiniBook (
-    var isbn: String,
-    var bookPlace: String,
-    var image: String,
-    var date: String
-)
-
 data class Review (
     var idComment: String,
     var reviewText: String,
