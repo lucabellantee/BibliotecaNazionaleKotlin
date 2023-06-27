@@ -64,7 +64,6 @@ data class UserSettings(
             }
         }
     }
-
 }
 
 data class MiniBook (

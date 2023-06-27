@@ -205,14 +205,34 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                                             counter++
 
-                                            Log.d("conto", counter.toString())
+                                            if (markerList.isNotEmpty()) {
+                                                if (markerList.size == 1) {
+                                                    binding.textViewNomeBiblioteca.text =
+                                                        markerList[0].title
+                                                    binding.buttonPrenota.setOnClickListener {
+                                                        fbViewModel.addNewBookBooked(
+                                                            book.id.toString(),
+                                                            book.id.toString(),
+                                                            binding.textViewNomeBiblioteca.text.toString(),
+                                                            book?.info?.imageLinks?.thumbnail.toString()
+                                                        )
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            "Your book has booked succesfully!",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
 
-                                            markerList.add(markerOptions)
+                                                        binding.buttonPrenota.isEnabled =
+                                                            false
 
-                                            Log.d("Marker", "M${markerList.size}")
-
-                                            println(book.id)
-
+                                                        binding.textViewDataRiconsegna.setOnClickListener {
+                                                            fbViewModel.newExpirationDate(
+                                                                it.id.toString()
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
                                             clusterManager.setOnClusterItemClickListener { marker ->
                                                 setDefaultLibrary(marker, book, googleMap)
                                                 true
@@ -262,7 +282,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                     noLibraryFound()
                                                 }
                                             } else {
-                                                if (!markerList.isEmpty()) {
+                                                if (markerList.isNotEmpty()) {
                                                     setDefaultLibrary(
                                                         markerList[0],
                                                         book,
@@ -273,6 +293,26 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                 }
                                             }
                                         }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
+                println(usersList)
+                for (user in usersList) {
+                    val userSettings = user.userSettings
+                    if (userSettings != null) {
+                        val commenti = userSettings.commenti
+                        if (commenti != null) {
+                            for (commento in commenti) {
+                                if (commento.isbn == book.id) {
+                                    binding.textTitleReview1.text = commento.reviewTitle
+                                    binding.textReview1.text = commento.reviewText
+                                    break
                                 }
                             }
                         }
@@ -400,49 +440,63 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
         return nearestMarker
     }
-        private fun manageToolbar(){
-            val toolbar = binding.toolbar
 
-            toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
+    private fun manageToolbar() {
+        val toolbar = binding.toolbar
 
-            toolbar.setNavigationOnClickListener {
-                val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
-                findNavController().navigate(action)
-            }
+        toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
 
-            binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    val action =
-                        BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(
-                            focusSearchView = true
-                        )
-                    findNavController().navigate(action)
-                }
-            }
+        toolbar.setNavigationOnClickListener {
+            val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
+            findNavController().navigate(action)
         }
 
-        private fun manageRatingBar(book: Book){
+        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                val action =
+                    BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(
+                        focusSearchView = true
+                    )
+                findNavController().navigate(action)
+            }
+        }
+    }
+
+    private fun manageRatingBar(book: Book) {
 
         val ratingBar: RatingBar = binding.ratingBarInserimento
 
         val buttonReview = binding.buttonScriviRecensione
 
+        if (ratingBar.rating != (0).toFloat()) {
+            showButtonWithAnimation(buttonReview)
+        }
+
         ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
 
             val ratingValue = rating.toFloat()
-            buttonReview.visibility = View.VISIBLE
 
-            buttonReview.setOnClickListener {
-
-                val bundle = Bundle().apply {
-                    putFloat("reviewVote", ratingValue)
-                    putParcelable("book", book)
+            if (rating != (0).toFloat()) {
+                if (buttonReview.visibility != View.VISIBLE) {
+                    showButtonWithAnimation(buttonReview)
                 }
 
-                findNavController().navigate(
-                    R.id.action_bookInfoFragment_to_writeReviewFragment,
-                    bundle
-                )
+                buttonReview.setOnClickListener {
+
+                    val bundle = Bundle().apply {
+                        putFloat("reviewVote", ratingValue)
+                        putParcelable("book", book)
+                    }
+
+                    findNavController().navigate(
+                        R.id.action_bookInfoFragment_to_writeReviewFragment,
+                        bundle
+                    )
+                }
+            } else {
+                hideButtonWithAnimation(buttonReview)
+                buttonReview.setOnClickListener {
+                }
             }
 
             Toast.makeText(
@@ -451,6 +505,24 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun showButtonWithAnimation(button: View) {
+        button.alpha = 0F
+        button.visibility = View.VISIBLE
+
+        button.animate()
+            .alpha(1F)
+            .setDuration(500)
+            .start()
+    }
+
+    private fun hideButtonWithAnimation(button: View) {
+        button.animate()
+            .alpha(0F)
+            .setDuration(500)
+            .withEndAction { button.visibility = View.GONE }
+            .start()
     }
 
     private fun manageDescription() {
