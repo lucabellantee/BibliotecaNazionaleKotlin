@@ -205,14 +205,34 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                                             counter++
 
-                                            Log.d("conto", counter.toString())
+                                            if (markerList.isNotEmpty()) {
+                                                if (markerList.size == 1) {
+                                                    binding.textViewNomeBiblioteca.text =
+                                                        markerList[0].title
+                                                    binding.buttonPrenota.setOnClickListener {
+                                                        fbViewModel.addNewBookBooked(
+                                                            book.id.toString(),
+                                                            book.id.toString(),
+                                                            binding.textViewNomeBiblioteca.text.toString(),
+                                                            book?.info?.imageLinks?.thumbnail.toString()
+                                                        )
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            "Your book has booked succesfully!",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
 
-                                            markerList.add(markerOptions)
+                                                        binding.buttonPrenota.isEnabled =
+                                                            false
 
-                                            Log.d("Marker", "M${markerList.size}")
-
-                                            println(book.id)
-
+                                                        binding.textViewDataRiconsegna.setOnClickListener {
+                                                            fbViewModel.newExpirationDate(
+                                                                it.id.toString()
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
                                             clusterManager.setOnClusterItemClickListener { marker ->
                                                 setDefaultLibrary(marker, book, googleMap)
                                                 true
@@ -262,7 +282,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                     noLibraryFound()
                                                 }
                                             } else {
-                                                if (!markerList.isEmpty()) {
+                                                if (markerList.isNotEmpty()) {
                                                     setDefaultLibrary(
                                                         markerList[0],
                                                         book,
