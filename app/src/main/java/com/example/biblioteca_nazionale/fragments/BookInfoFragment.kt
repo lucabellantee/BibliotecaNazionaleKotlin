@@ -300,19 +300,25 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 }
             }
 
-            /*println(book)
 
             fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
                 println(usersList)
                 for (user in usersList) {
-                    if (user.userSettings?.commenti?.get(0) is com.example.biblioteca_nazionale.model.Review) {
-                        val review = user.userSettings.commenti?.get(0) as com.example.biblioteca_nazionale.model.Review
-                        binding.textTitleReview1.text = review.reviewTitle
-                        binding.textReview1.text = review.reviewText
-                        break
+                    val userSettings = user.userSettings
+                    if (userSettings != null) {
+                        val commenti = userSettings.commenti
+                        if (commenti != null) {
+                            for (commento in commenti) {
+                                if (commento.isbn == book.id) {
+                                    binding.textTitleReview1.text = commento.reviewTitle
+                                    binding.textReview1.text = commento.reviewText
+                                    break
+                                }
+                            }
+                        }
                     }
                 }
-            }*/
+            }
         }
     }
 
