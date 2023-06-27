@@ -137,7 +137,7 @@ class FirebaseDB {
     fun updateBookPrenoted(newUser: Users) {
         /*firebaseAuth.currentUser?.let { db.collection("utenti").document(it.uid).delete() }
         db.collection("utenti").document(newUser.UID).set(newUser)*/
-        val uid = firebaseAuth.currentUser?.uid
+        val uid = newUser.UID
         if (uid != null) {
             db.collection("utenti")
                 .document(uid)

@@ -11,6 +11,7 @@ import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.firestore.DocumentSnapshot
 import java.util.concurrent.CompletableFuture
 import com.example.biblioteca_nazionale.model.MiniBook
+import com.example.biblioteca_nazionale.model.Review
 
 
 class FirebaseViewModel: ViewModel() {
@@ -49,7 +50,7 @@ class FirebaseViewModel: ViewModel() {
             //Log.d("IMPOSTAZIONI: ", impostazioniData.toString())
             val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<MiniBook>
             // Log.d("LIBRI PRENOTATI",libriPrenotatiData.toString())
-            val commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
+            val commentiData = impostazioniData?.get("commenti") as? ArrayList<Review>
            // Log.d("COMMENTI: ",commentiData.toString())
             val uid = data?.get("uid") as? String
             //Log.d("UID: ", uid.toString())
@@ -81,7 +82,7 @@ class FirebaseViewModel: ViewModel() {
                 val impostazioniData = document?.get("userSettings") as? HashMap<String, Any>
                 //val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
                 val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<MiniBook>
-                val commentiData = impostazioniData?.get("commenti") as? HashMap<String, HashMap<String, String>>
+                val commentiData = impostazioniData?.get("commenti") as? ArrayList<Review>
                 val uid = document?.get("uid") as? String
                 val email = document?.get("email") as? String
 
@@ -122,18 +123,17 @@ class FirebaseViewModel: ViewModel() {
         Log.d("UID: ", firebase.getCurrentUid().toString())
         Log.d("STRINGAA3", idLibro+""+isbn)
         val currentUser = this.getCurrentUser(uid.toString())
-        currentUser.thenAccept { user ->
-            Log.d("PRIMA" ,  idLibro + " " + isbn + " " + placeBooked + " " + image)
-            user.userSettings?.addNewBook(idLibro, isbn, placeBooked, image)
-            Log.d("DOPO" , idLibro + " " + isbn + " " + placeBooked + " " + image)
-            Log.d("USER", user.toString())
+        currentUser.thenAccept { utente ->
+            Log.d("ISBN:  ", isbn )
+            Log.d("IdLibro:  " , idLibro)
+            utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image)
+            //Log.d("DOPO" , idLibro + " " + isbn + " " + placeBooked + " " + image)
+            //Log.d("USER", utente.toString())
            // Log.d("USERRR", user.email)
             //Log.d("UIDDD", user.UID)
-            Log.d("USER", user.toString())
-            Log.d("STRINGAA4", idLibro+""+isbn)
-            firebase.updateBookPrenoted(user)
-            println(user.userSettings?.libriPrenotati?.get(user.userSettings?.libriPrenotati!!.size-1))
-            Log.d("STRINGAA5", idLibro+""+isbn)
+            Log.d("USER", utente.toString())
+            firebase.updateBookPrenoted(utente)
+            println(utente.userSettings?.libriPrenotati?.get(utente.userSettings?.libriPrenotati!!.size-1))
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
@@ -178,10 +178,10 @@ class FirebaseViewModel: ViewModel() {
     }
 
 
-    fun addNewCommentUserSide(commentDate: String, comment: String){
+    fun addNewCommentUserSide(reviewText: String,reviewTitle: String,isbn: String,vote:Float){
         val currentUser = this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
-            user.userSettings?.addNewComment(commentDate,comment)
+            user.userSettings?.addNewComment(reviewText,reviewTitle,isbn,vote)
             firebase.addCommentUserSide(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente

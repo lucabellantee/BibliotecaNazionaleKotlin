@@ -1,15 +1,14 @@
 package com.example.biblioteca_nazionale.model
 
 import java.time.LocalDate
+import java.util.UUID
 
 data class UserSettings(
     //var libriPrenotati: HashMap<String, ArrayList<String>>?,
     var libriPrenotati: ArrayList<MiniBook>?,
-    var commenti: HashMap<String, HashMap<String, String>>?
+    var commenti: ArrayList<Review>?
 ) {
-    companion object{
-        var idComment: String = "0"
-    }
+
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
 
     fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String) {
@@ -20,7 +19,6 @@ data class UserSettings(
         }
 
         libriPrenotati?.add(newElement)
-
 
         println(newElement)
 
@@ -41,23 +39,46 @@ data class UserSettings(
         }
     }
 
-    fun addNewComment(commentDate: String, comment: String){
-        val addNewComment = HashMap<String,String>()
-        idComment.toInt().plus(1).toString()
-        addNewComment.set(commentDate,comment)
-        commenti?.set(idComment,addNewComment)
+    fun addNewComment(reviewText: String, reviewTitle: String, isbn: String, vote: Float) {
+        val newComment = Review("C${UUID.randomUUID().toString()}", reviewText, reviewTitle, isbn, vote, LocalDate.now().toString())
+
+        println(newComment)
+
+        if (commenti == null) {
+            commenti = ArrayList()
+        }
+
+        commenti?.add(newComment)
     }
 
     fun removeComment(idComment: String){
-        if(commenti?.containsKey(idComment) == true){
-            commenti!!.remove(idComment)
+        val iterator = commenti?.iterator()
+
+        if (iterator != null) {
+            while (iterator.hasNext()) {
+                val comment = iterator.next()
+                if (comment.idComment == idComment) {
+                    iterator.remove()
+                    break
+                }
+            }
         }
     }
+
 }
 
 data class MiniBook (
     var isbn: String,
     var bookPlace: String,
     var image: String,
+    var date: String
+)
+
+data class Review (
+    var idComment: String,
+    var reviewText: String,
+    var reviewTitle:String,
+    var isbn: String,
+    var vote:Float,
     var date: String
 )
