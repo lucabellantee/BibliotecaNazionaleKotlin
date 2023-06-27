@@ -78,7 +78,7 @@ class FirebaseViewModel: ViewModel() {
                 val libriPrenotati = libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
                 val commenti = commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
 
-                val userSettings = UserSettings(libriPrenotati, commenti)
+                val userSettings = commenti?.let { UserSettings(libriPrenotati, it) }
                 val users = Users(uid, email, userSettings)
                 futureResult.complete(users)
             } else {
@@ -105,7 +105,7 @@ class FirebaseViewModel: ViewModel() {
                 val libriPrenotati = libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
                 val commenti = commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
 
-                val userSettings = UserSettings(libriPrenotati, commenti)
+                val userSettings = commenti?.let { UserSettings(libriPrenotati, it) }
                 val tmpUser = Users(uid.toString(), email.toString(), userSettings)
                 allUser.add(tmpUser)
             }
@@ -113,6 +113,65 @@ class FirebaseViewModel: ViewModel() {
         }
         return allUserLiveData
     }
+
+    fun getUserByCommentsOfBooks(isbn: String): LiveData<ArrayList<Users>> {
+        val allUserLiveData = MutableLiveData<ArrayList<Users>>()
+
+        this.getAllDocument().observeForever { allDocument ->
+            val allUser = ArrayList<Users>()
+
+            for (document in allDocument) {
+                val uid = document?.get("uid") as? String
+                val email = document?.get("email") as? String
+                val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
+                val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
+
+                val commenti = commentiData?.mapNotNull { convertHashMapToReview(it) } as ArrayList<Review>?
+
+                commenti?.let {
+                    val filteredComments = it.filter { comment -> comment.isbn == isbn }
+
+                    if (filteredComments.isNotEmpty()) {
+                        val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
+                        val libriPrenotati = libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
+
+                        val userSettings = UserSettings(libriPrenotati,
+                            filteredComments as ArrayList<Review>
+                        )
+                        val tmpUser = Users(uid.toString(), email.toString(), userSettings)
+                        allUser.add(tmpUser)
+                    }
+                }
+            }
+            allUserLiveData.value = allUser
+        }
+
+        return allUserLiveData
+    }
+
+
+    fun getAllCommentsByIsbn(isbn: String): LiveData<ArrayList<Review>> {
+        val allCommentsLiveData = MutableLiveData<ArrayList<Review>>()
+
+        this.getAllDocument().observeForever { allDocument ->
+            val allComments = ArrayList<Review>()
+            for (document in allDocument) {
+                val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
+                val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
+
+                val commenti = commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
+
+                // Aggiungi i commenti che hanno il valore di ISBN desiderato
+                commenti?.let {
+                    val filteredComments = it.filter { comment -> comment.isbn == isbn }
+                    allComments.addAll(filteredComments)
+                }
+            }
+            allCommentsLiveData.value = allComments
+        }
+        return allCommentsLiveData
+    }
+
 
     fun getBookInfoResponseFromDB(idLibro: String): MutableLiveData<DocumentSnapshot>{
         return firebase.getAllBookInfoFromId(idLibro)
@@ -177,13 +236,18 @@ class FirebaseViewModel: ViewModel() {
     } */
 
 
-    fun getExpirationDate(idBook: String , place: String): CompletableFuture<String> {
+    fun getExpirationDate(idBook: String, place: String): CompletableFuture<String> {
         val futureExpiringDate = CompletableFuture<String>()
         val firebase = FirebaseDB()
-        this.getCurrentUser(firebase.getFirebaseAuthIstance().uid.toString()).thenAccept {
-            user ->
-            for(libroPrenotato in user.userSettings?.libriPrenotati!!) {
-                if(libroPrenotato.isbn.equals(idBook) && libroPrenotato.bookPlace.equals(place)){
+        this.getCurrentUser(firebase.getFirebaseAuthIstance().uid.toString()).thenAccept { user ->
+            var foundMatchingBook = false
+            Log.d("idBook ", idBook)
+            Log.d("place ", place)
+            for (libroPrenotato in user.userSettings?.libriPrenotati!!) {
+                Log.d("idBook-user " , libroPrenotato.isbn)
+                Log.d("place-user ", libroPrenotato.bookPlace)
+                // todo LUCA: Vedere perchè non entra nel if
+                if (libroPrenotato.isbn.equals(idBook) && libroPrenotato.bookPlace.equals(place)) {
                     val inputFormat = SimpleDateFormat("yyyy/MM/dd")
                     val outputFormat = SimpleDateFormat("dd/MM/yyyy")
 
@@ -193,18 +257,21 @@ class FirebaseViewModel: ViewModel() {
 
                     calendar.add(Calendar.DAY_OF_MONTH, 14)
                     val expiringDate = outputFormat.format(calendar.time)
-                    val convertedExpiringDateToString = outputFormat.format(expiringDate)
 
-                    futureExpiringDate.complete(convertedExpiringDateToString)
+                    Log.d("GetExpirationDate", expiringDate)
+                    futureExpiringDate.complete(expiringDate)
 
+                    foundMatchingBook = true
                     break
                 }
+            }
+
+            if (!foundMatchingBook) {
                 futureExpiringDate.complete("ERROR")
             }
         }
         return futureExpiringDate
     }
-
 // TRUE -> Libro gia presente e prenotato   ||||||    FALSE -> Libro non presente e non prenotato
 
     fun bookIsBooked(id: String, place: String): CompletableFuture<Boolean> {

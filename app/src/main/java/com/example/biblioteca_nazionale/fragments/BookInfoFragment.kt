@@ -65,16 +65,13 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         super.onViewCreated(view, savedInstanceState)
 
         val locationPermissions = arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
         )
 
         val locationPermissionRequestCode = 1
 
         ActivityCompat.requestPermissions(
-            requireActivity(),
-            locationPermissions,
-            locationPermissionRequestCode
+            requireActivity(), locationPermissions, locationPermissionRequestCode
         )
 
         binding = FragmentBookInfoBinding.bind(view)
@@ -102,11 +99,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             if (description.isNullOrEmpty()) {
                 binding.textViewDescription.text = "Descrizione non disponibile"
                 binding.textMoreDescription.visibility = View.GONE
-            } else
-                binding.textViewDescription.text = description
+            } else binding.textViewDescription.text = description
 
-            Glide.with(requireContext())
-                .load(book.info.imageLinks?.thumbnail.toString())
+            Glide.with(requireContext()).load(book.info.imageLinks?.thumbnail.toString())
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
 
@@ -122,8 +117,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 googleMap.setOnMarkerClickListener(clusterManager)
 
                 // Personalizzazione e visualizzazione della mappa
-                googleMap.uiSettings.isZoomControlsEnabled =
-                    true // Abilita i controlli di zoom
+                googleMap.uiSettings.isZoomControlsEnabled = true // Abilita i controlli di zoom
                 googleMap.uiSettings.isMyLocationButtonEnabled =
                     true // Abilita il pulsante "La mia posizione"
                 googleMap.uiSettings.isScrollGesturesEnabled =
@@ -133,18 +127,15 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                 googleMap.setMapStyle(context?.let {
                     MapStyleOptions.loadRawResourceStyle(
-                        it,
-                        R.raw.map_style
+                        it, R.raw.map_style
                     )
                 })
 
                 val startLatLng = LatLng(
-                    41.87194,
-                    12.56738
+                    41.87194, 12.56738
                 )
 
-                val cameraUpdate =
-                    CameraUpdateFactory.newLatLngZoom(startLatLng, 4.4f)
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(startLatLng, 4.4f)
                 googleMap.moveCamera(cameraUpdate)
 
                 val geoApiContext = GeoApiContext.Builder()
@@ -194,14 +185,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                                     if (geocodingResult.isNotEmpty()) {
                                         val location = geocodingResult[0].geometry.location
-                                        val libraryLatLng =
-                                            LatLng(location.lat, location.lng)
+                                        val libraryLatLng = LatLng(location.lat, location.lng)
 
                                         withContext(Dispatchers.Main) {
                                             val markerOptions = MyItem(
-                                                libraryLatLng,
-                                                libraryName,
-                                                "Biblioteca"
+                                                libraryLatLng, libraryName, "Biblioteca"
                                             )  // Descrizione opzionale
                                             clusterManager.addItem(markerOptions)
                                             clusterManager.cluster()
@@ -218,8 +206,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                         book.id.toString(),
                                                         binding.textViewNomeBiblioteca.text.toString()
                                                     ).thenAccept { expirationDate ->
-                                                        if ((expirationDate.equals("ERRORE")).not()) binding.textViewDataRiconsegna.text =
+                                                        Log.d("EXPIRATION DATE ", expirationDate)
+                                                        if (!(expirationDate.equals("ERRORE"))) binding.textViewDataRiconsegna.text =
                                                             expirationDate
+                                                        else binding.textViewDataRiconsegna.text =
+                                                            ""
                                                     }
                                                     binding.buttonPrenota.setOnClickListener {
                                                         fbViewModel.bookIsBooked(
@@ -270,51 +261,41 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
 
                             if (ContextCompat.checkSelfPermission(
-                                    requireContext(),
-                                    Manifest.permission.ACCESS_FINE_LOCATION
+                                    requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
                                 ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                                    requireContext(),
-                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                    requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
                                 ) != PackageManager.PERMISSION_GRANTED
                             ) {
                                 setDefaultLibrary(markerList[0], book, googleMap)
                             } else {
                                 withContext(Dispatchers.IO) {
-                                    fusedLocationClient.lastLocation
-                                        .addOnSuccessListener { location: Location? ->
-                                            Log.d("Mannaia", "Mannaia$location")
-                                            if (location != null) {
-                                                val latitude = location.latitude
-                                                val longitude = location.longitude
+                                    fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                                        Log.d("Mannaia", "Mannaia$location")
+                                        if (location != null) {
+                                            val latitude = location.latitude
+                                            val longitude = location.longitude
 
-                                                val nearestMarker =
-                                                    findNearestMarker(
-                                                        latitude,
-                                                        longitude,
-                                                        markerList
-                                                    )
+                                            val nearestMarker = findNearestMarker(
+                                                latitude, longitude, markerList
+                                            )
 
-                                                if (nearestMarker != null) {
-                                                    setDefaultLibrary(
-                                                        nearestMarker,
-                                                        book,
-                                                        googleMap
-                                                    )
-                                                } else {
-                                                    noLibraryFound()
-                                                }
+                                            if (nearestMarker != null) {
+                                                setDefaultLibrary(
+                                                    nearestMarker, book, googleMap
+                                                )
                                             } else {
-                                                if (markerList.isNotEmpty()) {
-                                                    setDefaultLibrary(
-                                                        markerList[0],
-                                                        book,
-                                                        googleMap
-                                                    )
-                                                } else {
-                                                    noLibraryFound()
-                                                }
+                                                noLibraryFound()
+                                            }
+                                        } else {
+                                            if (markerList.isNotEmpty()) {
+                                                setDefaultLibrary(
+                                                    markerList[0], book, googleMap
+                                                )
+                                            } else {
+                                                noLibraryFound()
                                             }
                                         }
+                                    }
                                 }
                             }
                         }
@@ -335,8 +316,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                     println(binding.ratingReview2.rating)
                                     binding.textReviewUtente.text = "Valutazione di ${user.email}:"
 
-                                    val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                                    val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                                    val inputFormat =
+                                        SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                                    val outputFormat =
+                                        SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
                                     val date: Date = inputFormat.parse(commento.date)
                                     val outputDateString: String = outputFormat.format(date)
@@ -350,6 +333,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         }
                     }
                 }
+            }
+            binding.layoutReviews.setOnClickListener {
+                val action = BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
+                findNavController().navigate(action)
             }
         }
     }
@@ -368,9 +355,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     }
 
     inner class MyItem(
-        latLng: LatLng,
-        title: String,
-        snippet: String
+        latLng: LatLng, title: String, snippet: String
     ) : ClusterItem {
 
         private val position: LatLng
@@ -403,32 +388,30 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     private fun setDefaultLibrary(marker: MyItem, book: Book, googleMap: GoogleMap) {
 
         val startLatLng = LatLng(
-            marker.position.latitude,
-            marker.position.longitude
+            marker.position.latitude, marker.position.longitude
         )
 
-        val cameraUpdate =
-            CameraUpdateFactory.newLatLngZoom(
-                startLatLng,
-                12f
-            )
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+            startLatLng, 12f
+        )
         googleMap.animateCamera(cameraUpdate)
 
-        binding.textViewNomeBiblioteca.text =
-            marker.title
+        binding.textViewNomeBiblioteca.text = marker.title
 
-        fbViewModel.getExpirationDate(
-            book.id.toString(),
-            binding.textViewNomeBiblioteca.text.toString()
-        ).thenAccept { expirationDate ->
-            if ((expirationDate.equals("ERRORE")).not()) binding.textViewDataRiconsegna.text =
-                expirationDate
+        if(binding.textViewNomeBiblioteca.text.isNullOrEmpty().not()) {
+            fbViewModel.getExpirationDate(
+                book.id.toString(), binding.textViewNomeBiblioteca.text.toString()
+            ).thenAccept { expirationDate ->
+                Log.d("EXPIRATION DATE ", expirationDate)
+                if (!(expirationDate.equals("ERRORE"))) binding.textViewDataRiconsegna.text =
+                    expirationDate
+                else binding.textViewDataRiconsegna.text = ""
+            }
         }
 
         binding.buttonPrenota.setOnClickListener {
             fbViewModel.bookIsBooked(
-                book.id.toString(),
-                binding.textViewNomeBiblioteca.text.toString()
+                book.id.toString(), binding.textViewNomeBiblioteca.text.toString()
             ).thenAccept { isBooked ->
                 if (isBooked == true) {
                     Toast.makeText(
@@ -444,9 +427,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         book?.info?.imageLinks?.thumbnail.toString()
                     )
                     Toast.makeText(
-                        requireContext(),
-                        "Your book has booked succesfully!",
-                        Toast.LENGTH_SHORT
+                        requireContext(), "Your book has booked succesfully!", Toast.LENGTH_SHORT
                     ).show()
                 }
 
@@ -460,14 +441,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     }
 
     private fun noLibraryFound() {
-        binding.textViewNomeBiblioteca.text =
-            "Nessuna biblioteca trovata"
+        binding.textViewNomeBiblioteca.text = "Nessuna biblioteca trovata"
 
-        binding.textViewDataRiconsegna.visibility =
-            View.GONE
+        binding.textViewDataRiconsegna.visibility = View.GONE
 
-        binding.buttonPrenota.isEnabled =
-            false
+        binding.buttonPrenota.isEnabled = false
 
     }
 
@@ -505,10 +483,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                val action =
-                    BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(
-                        focusSearchView = true
-                    )
+                val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(
+                    focusSearchView = true
+                )
                 findNavController().navigate(action)
             }
         }
@@ -541,20 +518,16 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     }
 
                     findNavController().navigate(
-                        R.id.action_bookInfoFragment_to_writeReviewFragment,
-                        bundle
+                        R.id.action_bookInfoFragment_to_writeReviewFragment, bundle
                     )
                 }
             } else {
                 hideButtonWithAnimation(buttonReview)
-                buttonReview.setOnClickListener {
-                }
+                buttonReview.setOnClickListener {}
             }
 
             Toast.makeText(
-                requireContext(),
-                "Hai votato: $ratingValue",
-                Toast.LENGTH_SHORT
+                requireContext(), "Hai votato: $ratingValue", Toast.LENGTH_SHORT
             ).show()
         }
     }
@@ -563,17 +536,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         button.alpha = 0F
         button.visibility = View.VISIBLE
 
-        button.animate()
-            .alpha(1F)
-            .setDuration(500)
-            .start()
+        button.animate().alpha(1F).setDuration(500).start()
     }
 
     private fun hideButtonWithAnimation(button: View) {
-        button.animate()
-            .alpha(0F)
-            .setDuration(500)
-            .withEndAction { button.visibility = View.GONE }
+        button.animate().alpha(0F).setDuration(500).withEndAction { button.visibility = View.GONE }
             .start()
     }
 
@@ -611,4 +578,3 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
     }
 }
-

@@ -29,14 +29,14 @@ class FirebaseDB {
         return FirebaseAuth.getInstance()
     }
 
-    fun writeUidAndEmail() {
+    /*fun writeUidAndEmail() {
 
         val newUser = Users(user?.uid.toString(), user?.email.toString(), UserSettings(null, null))
         db.collection("utenti").document(user?.uid.toString())
             .set(newUser)
             .addOnSuccessListener { /*Log.d("/HomePageActivity", "DocumentSnapshot successfully written!")*/ }
             .addOnFailureListener { /*Log.d("/HomePageActivity", "Error writing document")*/ }
-    }
+    }*/
 
     var userInfoLiveData: MutableLiveData<DocumentSnapshot> = MutableLiveData()
     fun getAllUserInfoFromUid(uid: String): MutableLiveData<DocumentSnapshot> {

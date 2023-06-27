@@ -8,7 +8,7 @@ import java.util.UUID
 data class UserSettings(
     //var libriPrenotati: HashMap<String, ArrayList<String>>?,
     var libriPrenotati: ArrayList<MiniBook>?,
-    var commenti: ArrayList<Review>?
+    var commenti: ArrayList<Review>
 ) {
 
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
@@ -71,12 +71,3 @@ data class UserSettings(
         }
     }
 }
-
-data class Review (
-    var idComment: String,
-    var reviewText: String,
-    var reviewTitle:String,
-    var isbn: String,
-    var vote:Float,
-    var date: String
-)
