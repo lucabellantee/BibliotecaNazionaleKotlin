@@ -17,7 +17,7 @@ import com.example.biblioteca_nazionale.model.Review
 class FirebaseViewModel: ViewModel() {
 
     val firebase = FirebaseDB()
-/*
+    /*
     fun getUserInfo(): MutableLiveData<List<DocumentSnapshot>> {
         return firebase.getAllUserInfo()
     } */
@@ -90,10 +90,8 @@ class FirebaseViewModel: ViewModel() {
                 val tmpUser = Users(uid.toString(), email.toString(), userSettings)
                 allUser.add(tmpUser)
             }
-
             allUserLiveData.value = allUser
         }
-
         return allUserLiveData
     }
 

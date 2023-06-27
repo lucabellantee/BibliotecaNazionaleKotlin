@@ -279,6 +279,20 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     }
                 }
             }
+
+            /*println(book)
+
+            fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
+                println(usersList)
+                for (user in usersList) {
+                    if (user.userSettings?.commenti?.get(0) is com.example.biblioteca_nazionale.model.Review) {
+                        val review = user.userSettings.commenti?.get(0) as com.example.biblioteca_nazionale.model.Review
+                        binding.textTitleReview1.text = review.reviewTitle
+                        binding.textReview1.text = review.reviewText
+                        break
+                    }
+                }
+            }*/
         }
     }
 
@@ -400,49 +414,63 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
         return nearestMarker
     }
-        private fun manageToolbar(){
-            val toolbar = binding.toolbar
 
-            toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
+    private fun manageToolbar() {
+        val toolbar = binding.toolbar
 
-            toolbar.setNavigationOnClickListener {
-                val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
-                findNavController().navigate(action)
-            }
+        toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
 
-            binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    val action =
-                        BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(
-                            focusSearchView = true
-                        )
-                    findNavController().navigate(action)
-                }
-            }
+        toolbar.setNavigationOnClickListener {
+            val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
+            findNavController().navigate(action)
         }
 
-        private fun manageRatingBar(book: Book){
+        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                val action =
+                    BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment(
+                        focusSearchView = true
+                    )
+                findNavController().navigate(action)
+            }
+        }
+    }
+
+    private fun manageRatingBar(book: Book) {
 
         val ratingBar: RatingBar = binding.ratingBarInserimento
 
         val buttonReview = binding.buttonScriviRecensione
 
+        if (ratingBar.rating != (0).toFloat()) {
+            showButtonWithAnimation(buttonReview)
+        }
+
         ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
 
             val ratingValue = rating.toFloat()
-            buttonReview.visibility = View.VISIBLE
 
-            buttonReview.setOnClickListener {
-
-                val bundle = Bundle().apply {
-                    putFloat("reviewVote", ratingValue)
-                    putParcelable("book", book)
+            if (rating != (0).toFloat()) {
+                if (buttonReview.visibility != View.VISIBLE) {
+                    showButtonWithAnimation(buttonReview)
                 }
 
-                findNavController().navigate(
-                    R.id.action_bookInfoFragment_to_writeReviewFragment,
-                    bundle
-                )
+                buttonReview.setOnClickListener {
+
+                    val bundle = Bundle().apply {
+                        putFloat("reviewVote", ratingValue)
+                        putParcelable("book", book)
+                    }
+
+                    findNavController().navigate(
+                        R.id.action_bookInfoFragment_to_writeReviewFragment,
+                        bundle
+                    )
+                }
+            } else {
+                hideButtonWithAnimation(buttonReview)
+                buttonReview.setOnClickListener {
+                }
             }
 
             Toast.makeText(
@@ -451,6 +479,24 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun showButtonWithAnimation(button: View) {
+        button.alpha = 0F
+        button.visibility = View.VISIBLE
+
+        button.animate()
+            .alpha(1F)
+            .setDuration(500)
+            .start()
+    }
+
+    private fun hideButtonWithAnimation(button: View) {
+        button.animate()
+            .alpha(0F)
+            .setDuration(500)
+            .withEndAction { button.visibility = View.GONE }
+            .start()
     }
 
     private fun manageDescription() {
