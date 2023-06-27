@@ -62,49 +62,13 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                model.searchBooks(query)
-                val layoutManager = LinearLayoutManager(requireContext())
-                binding.recyclerViewBooks.layoutManager = layoutManager
-                val adapter = BookListAdapter(model.getLibriLiveData())
-
-                adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
-                    override fun onBookClick(position: Int) {
-                        val libri = model.getLibriLiveData()
-                        val libro  =libri.value?.items?.get(position)
-                        if (libro != null) {
-                            println(libro.id)
-                        }
-                        if (libro != null) {
-                            val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
-                            findNavController().navigate(action)
-                        } else {
-                            // Gestisci il caso in cui il libro è nullo
-                        }
-                    }
-                })
-                binding.recyclerViewBooks.adapter = adapter
+                println(query)
+                performBookSearch(query)
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                model.searchBooks(newText)
-                val layoutManager = LinearLayoutManager(requireContext())
-                binding.recyclerViewBooks.layoutManager = layoutManager
-                val adapter = BookListAdapter(model.getLibriLiveData())
-
-                adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
-                    override fun onBookClick(position: Int) {
-                        val libri = model.getLibriLiveData()
-                        val libro  =libri.value?.items?.get(position)
-
-                        if (libro != null) {
-                            val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
-                            findNavController().navigate(action)
-                        } else {
-                            // Gestisci il caso in cui il libro è nullo
-                        }                      }
-                })
-                binding.recyclerViewBooks.adapter = adapter
+                performBookSearch(newText)
                 return true
             }
         })
@@ -112,4 +76,26 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
         Log.d("yolxzxzoddd",binding.searchView.hasFocus().toString())
 
     }
+
+    private fun performBookSearch(query: String) {
+        model.searchBooks(query)
+        val layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewBooks.layoutManager = layoutManager
+        val adapter = BookListAdapter(model.getLibriLiveData())
+
+        adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
+            override fun onBookClick(position: Int) {
+                val libri = model.getLibriLiveData()
+                val libro = libri.value?.items?.get(position)
+                if (libro != null) {
+                    val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
+                    findNavController().navigate(action)
+                } else {
+                    // Gestisci il caso in cui il libro è nullo
+                }
+            }
+        })
+        binding.recyclerViewBooks.adapter = adapter
+    }
+
 }

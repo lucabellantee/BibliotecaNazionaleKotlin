@@ -4,7 +4,7 @@ import android.util.LruCache
 import com.google.maps.model.GeocodingResult
 
 object GeocodingCache {
-    private const val CACHE_SIZE = 100 // Dimensione massima della cache
+    private const val CACHE_SIZE = 1000 // Dimensione massima della cache
     private val cache: LruCache<String, GeocodingResult> = LruCache(CACHE_SIZE)
 
     fun getCacheKey(query: String): String {

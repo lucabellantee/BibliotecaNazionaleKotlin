@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.biblioteca_nazionale.model.BooksResponse
 import com.example.biblioteca_nazionale.utils.GoogleBooksApiClient
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class BooksViewModel : ViewModel() {
     private val googleBooksApiClient: GoogleBooksApiClient = GoogleBooksApiClient()
@@ -18,16 +18,14 @@ class BooksViewModel : ViewModel() {
         return _libriLiveData
     }
 
-    fun searchBooks(query: String): LiveData<BooksResponse> {
-        viewModelScope.async {
+    fun searchBooks(query: String) {
+        viewModelScope.launch{
             try {
                 val response = googleBooksApiClient.getApiService().searchBooks(query)
-
-                    _libriLiveData.value = response
+                _libriLiveData.value = response
             } catch (e: Exception) {
-                Log.d("BooksViewModel", "Error exception: "+e.message)
+                Log.d("BooksViewModel", "Error exception: " + e.message)
             }
         }
-        return _libriLiveData
     }
 }

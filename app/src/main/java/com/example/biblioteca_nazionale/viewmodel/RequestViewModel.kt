@@ -32,7 +32,6 @@ class RequestViewModel : ViewModel() {
         if (cachedResult != null) {
             libraries.postValue(cachedResult)
         } else {
-
             val retrofit = Retrofit.Builder()
                 .baseUrl("http://opac.sbn.it/opacmobilegw/")
                 .addConverterFactory(GsonConverterFactory.create())

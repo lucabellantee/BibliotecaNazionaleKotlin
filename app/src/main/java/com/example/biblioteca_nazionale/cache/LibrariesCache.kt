@@ -5,11 +5,10 @@ import com.example.biblioteca_nazionale.model.RequestCodeLocation
 import com.google.maps.model.GeocodingResult
 
 object LibrariesCache {
-    private const val CACHE_SIZE = 100 // Dimensione massima della cache
+    private const val CACHE_SIZE = 50 // Dimensione massima della cache
     private val cache: LruCache<String, List<RequestCodeLocation>> = LruCache(CACHE_SIZE)
 
     fun getCacheKey(query: String): String {
-        // Crea una chiave univoca per la cache basata sulla query di geocoding
         return query
     }
 
