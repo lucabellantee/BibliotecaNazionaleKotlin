@@ -60,6 +60,9 @@ class HomePageActivity : AppCompatActivity() {
             // Qui puoi utilizzare il valore dell'utente ottenuto
             Log.d("/HomePageActivity", user.toString())
            // firebaseViewModel.removeCommentUserSide("0",user)
+            firebaseViewModel.bookIsBooked("SZgQEAAAQBAJ","Biblioteca di archeologia e storia dell'arte").thenAccept {
+                result -> Log.d("bookIsBooked" , result.toString())
+            }
 
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente

@@ -172,6 +172,33 @@ class FirebaseViewModel: ViewModel() {
         }
     }
 
+// TRUE -> Libro gia presente e prenotato   ||||||    FALSE -> Libro non presente e non prenotato
+
+    fun bookIsBooked(id: String, place: String): CompletableFuture<Boolean> {
+        val uid = getUidLoggedUser()
+        val currentUser = this.getCurrentUser(uid)
+
+        val futureIsBooked = CompletableFuture<Boolean>()
+
+        currentUser.thenAccept { user ->
+            var isBooked = false
+            for (libro in user.userSettings?.libriPrenotati!!) {
+                if (libro.isbn == id && libro.bookPlace == place) {
+                    isBooked = true
+                    break
+                }
+            }
+            futureIsBooked.complete(isBooked)
+        }.exceptionally { throwable ->
+            // Gestione di eventuali errori nel recupero dell'utente
+            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
+            futureIsBooked.complete(false)
+            null
+        }
+
+        return futureIsBooked
+    }
+
 
 
 
