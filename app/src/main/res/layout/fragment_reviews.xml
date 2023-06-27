@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fragments.ReviewsFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fadeScrollbars="true"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutSearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/search_layout"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:menu="@menu/top_menu"
+            app:navigationIcon="@drawable/baseline_arrow_back_24">
+
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_bar"
+                android:baselineAligned="false"
+                android:paddingVertical="5dp"
+                android:paddingRight="20dp"
+                android:theme="@style/Search_view_theme"
+                app:closeIcon="@drawable/round_close_24"
+                app:commitIcon="@drawable/round_north_west_24"
+                app:iconifiedByDefault="false"
+                app:queryHint="Cerca"
+                app:searchHintIcon="@drawable/round_search__white_24"
+                app:searchIcon="@drawable/round_search__white_24" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
