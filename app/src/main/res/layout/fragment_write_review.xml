@@ -30,10 +30,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:menu="@menu/top_menu"
-            app:navigationIcon="@drawable/baseline_arrow_back_24">
+            app:navigationIcon="@drawable/round_close_24_purple"
+            app:menu="@menu/top_menu_review">
+
+            <TextView
+                android:id="@+id/toolbarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scrivi una recensione"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/primary_color"
+                android:layout_gravity="center" />
 
         </com.google.android.material.appbar.MaterialToolbar>
+
     </LinearLayout>
 
     <LinearLayout
@@ -144,15 +154,6 @@
 
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        tools:layout_editor_absoluteX="163dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
