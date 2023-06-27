@@ -206,8 +206,39 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                             clusterManager.addItem(markerOptions)
                                             clusterManager.cluster()
 
+                                            markerList.add(markerOptions)
+
                                             counter++
-                                            
+
+                                            if (markerList.isNotEmpty()) {
+                                                if (markerList.size == 1) {
+                                                    binding.textViewNomeBiblioteca.text =
+                                                        markerList[0].title
+                                                    binding.buttonPrenota.setOnClickListener {
+                                                        fbViewModel.addNewBookBooked(
+                                                            book.id.toString(),
+                                                            book.id.toString(),
+                                                            binding.textViewNomeBiblioteca.text.toString(),
+                                                            book?.info?.imageLinks?.thumbnail.toString()
+                                                        )
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            "Your book has booked succesfully!",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+
+                                                        binding.buttonPrenota.isEnabled =
+                                                            false
+
+                                                        binding.textViewDataRiconsegna.setOnClickListener {
+                                                            fbViewModel.newExpirationDate(
+                                                                it.id.toString()
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+
                                             clusterManager.setOnClusterItemClickListener { marker ->
                                                 setDefaultLibrary(marker, book, googleMap)
                                                 true
@@ -221,6 +252,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                 LocationServices.getFusedLocationProviderClient(
                                     requireContext()
                                 )
+
 
                             if (ContextCompat.checkSelfPermission(
                                     requireContext(),
