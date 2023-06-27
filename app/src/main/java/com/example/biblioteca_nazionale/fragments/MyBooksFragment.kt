@@ -60,12 +60,9 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
             override fun onBookClick(position: Int) {
                 val libro  = appo.get(position)
 
-                if (libro != null) {
-                    val action = MyBooksFragmentDirections.actionMyBooksFragmentToDeleteBookingFragment2(libro)
-                    findNavController().navigate(action)
-                } else {
-                    // Gestisci il caso in cui il libro Ã¨ nullo
-                }                      }
+                val action = MyBooksFragmentDirections.actionMyBooksFragmentToDeleteBookingFragment2(libro)
+                findNavController().navigate(action)
+            }
         })
         recyclerView.adapter = adapter
 
