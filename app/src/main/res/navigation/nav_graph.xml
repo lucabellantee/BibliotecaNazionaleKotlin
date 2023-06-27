@@ -131,6 +131,18 @@
         tools:layout="@layout/fragment_reviews">
         <action
             android:id="@+id/action_reviewsFragment_to_bookInfoFragment"
-            app:destination="@id/bookInfoFragment" />
+            app:destination="@id/bookInfoFragment" >
+            <argument
+                android:name="book"
+                app:argType="com.example.biblioteca_nazionale.model.Book" />
+        </action>
+        <action
+            android:id="@+id/action_reviewsFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment">
+            <argument
+                android:name="focusSearchView"
+                android:defaultValue="false"
+                app:argType="boolean" /> <!-- Assicurati di specificare un valore di default -->
+        </action>
     </fragment>
 </navigation>

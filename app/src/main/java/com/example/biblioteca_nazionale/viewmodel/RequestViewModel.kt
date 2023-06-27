@@ -1,12 +1,11 @@
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.biblioteca_nazionale.cache.LibrariesCache
 import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.RequestBookName
 import com.example.biblioteca_nazionale.model.RequestCode
 import com.example.biblioteca_nazionale.model.RequestCodeLocation
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -16,36 +15,44 @@ import retrofit2.http.Query
 
 class RequestViewModel : ViewModel() {
 
-    private val libraries: MutableLiveData<List<RequestCodeLocation>> = MutableLiveData()
+    private val libraries: MutableLiveData<List<RequestCodeLocation>?> = MutableLiveData()
     private lateinit var book: Book
 
-    fun getLibraries(): MutableLiveData<List<RequestCodeLocation>> {
+    fun getLibraries(): MutableLiveData<List<RequestCodeLocation>?> {
         return libraries
     }
 
     fun fetchDataBook(book: Book) {
+
         this.book = book
         val bookName = this.book.info?.title?.replace(" ", "+") ?: ""
+        val cacheKey = LibrariesCache.getCacheKey(bookName)
+        val cachedResult = LibrariesCache.getResult(cacheKey)
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://opac.sbn.it/opacmobilegw/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        if (cachedResult != null) {
+            libraries.postValue(cachedResult)
+        } else {
 
-        val apiService = retrofit.create(ApiService::class.java)
+            val retrofit = Retrofit.Builder()
+                .baseUrl("http://opac.sbn.it/opacmobilegw/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val request = apiService.searchBooks(bookName)
-                fetchDataCode(request)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                // Gestisci l'eccezione
+            val apiService = retrofit.create(ApiService::class.java)
+
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    val request = apiService.searchBooks(bookName)
+                    fetchDataCode(request, cacheKey)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    // Gestisci l'eccezione
+                }
             }
         }
     }
 
-    private suspend fun fetchDataCode(request: RequestBookName) {
+    private suspend fun fetchDataCode(request: RequestBookName, cacheKey: String) {
         val localizzazioniList = mutableListOf<RequestCodeLocation>()
         val formattedBookTitolo = book.info?.title?.replace("\\s".toRegex(), "") ?: ""
 
@@ -75,6 +82,7 @@ class RequestViewModel : ViewModel() {
         }
 
         libraries.postValue(localizzazioniList)
+        LibrariesCache.putResult(cacheKey, localizzazioniList)
     }
 
     interface ApiService {

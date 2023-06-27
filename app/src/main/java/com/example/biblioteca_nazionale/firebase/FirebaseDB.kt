@@ -29,7 +29,7 @@ class FirebaseDB {
         return FirebaseAuth.getInstance()
     }
 
-    fun writeUidAndEmail() {
+    /*fun writeUidAndEmail() {
 
         val newUser = Users(user?.uid.toString(), user?.email.toString(), UserSettings(null, null))
         db.collection("utenti").document(user?.uid.toString())

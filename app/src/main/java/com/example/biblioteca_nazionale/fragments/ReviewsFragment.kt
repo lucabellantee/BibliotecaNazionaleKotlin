@@ -4,6 +4,7 @@ import ReviewsAdapter
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentReviewsBinding
@@ -24,6 +25,9 @@ class ReviewsFragment : Fragment(R.layout.fragment_reviews) {
         val book = arguments?.getParcelable<Book>("book")
 
         book?.let {
+
+            manageToolbar(book)
+
             fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
                 val commentsList = ArrayList<TemporaryReview>()
                 println(users)
@@ -48,6 +52,26 @@ class ReviewsFragment : Fragment(R.layout.fragment_reviews) {
                 val layoutManager = LinearLayoutManager(requireContext())
                 binding.recyclerViewReviews.layoutManager = layoutManager
                 binding.recyclerViewReviews.adapter = adapter
+            }
+        }
+    }
+
+    private fun manageToolbar(book: Book) {
+        val toolbar = binding.toolbar
+
+        toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
+
+        toolbar.setNavigationOnClickListener {
+            val action = ReviewsFragmentDirections.actionReviewsFragmentToBookInfoFragment(book)
+            findNavController().navigate(action)
+        }
+
+        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                val action = ReviewsFragmentDirections.actionReviewsFragmentToBookListFragment(
+                    focusSearchView = true
+                )
+                findNavController().navigate(action)
             }
         }
     }

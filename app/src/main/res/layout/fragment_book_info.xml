@@ -655,6 +655,7 @@
                     android:id="@+id/layoutReviews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
                     android:orientation="horizontal">
 
                     <TextView
