@@ -25,7 +25,11 @@ class FirebaseDB {
         val user = firebaseAuth.currentUser
     }
 
-    /*fun writeUidAndEmail() {
+    fun getFirebaseAuthIstance(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
+
+    fun writeUidAndEmail() {
 
         val newUser = Users(user?.uid.toString(), user?.email.toString(), UserSettings(null, null))
         db.collection("utenti").document(user?.uid.toString())
@@ -189,6 +193,7 @@ class FirebaseDB {
         return bookInfoLiveData
     }
 
+    /*
     fun getExpirationDate(id: String, callback: (String?) -> Unit) {
         firebaseAuth.currentUser?.let { user ->
             db.collection("utenti").document(user.uid).get().addOnSuccessListener { documentSnapshot ->
@@ -210,5 +215,7 @@ class FirebaseDB {
                 callback(null)
             }
         }
-    }
+    } */
+
+
 }

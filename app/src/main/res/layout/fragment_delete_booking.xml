@@ -170,26 +170,6 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <RatingBar
-                        android:id="@+id/ratingBarBook"
-                        style="@style/Widget.AppCompat.RatingBar.Indicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/rating_bar_description" />
-
-                    <TextView
-                        android:id="@+id/textViewRating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="5.0 (123)" />
-                </LinearLayout>
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -199,36 +179,6 @@
                     android:layout_below="@id/textViewDescription"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp" />
-
-                <TextView
-                    android:id="@+id/descrizioneText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="50dp"
-                    android:elegantTextHeight="true"
-                    android:padding="2dp"
-                    android:text="Descrizione"
-                    android:textAlignment="textStart"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/textViewDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="50dp"
-                    android:elegantTextHeight="true"
-                    android:padding="2dp"
-                    android:text="Descrizione"
-                    android:textAlignment="textStart" />
-
-                <TextView
-                    android:id="@+id/textMoreDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginRight="45dp"
-                    android:text="@string/read_more"
-                    android:textColor="@color/primary_color" />
 
                 <View
                     android:layout_width="match_parent"
@@ -245,18 +195,6 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textViewNomeBiblioteca"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:elegantTextHeight="true"
-                        android:paddingHorizontal="10dp"
-                        android:text=""
-                        android:textAlignment="center"
-                        android:textColor="@color/primary_color"
-                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/textViewDataRiconsegna"
