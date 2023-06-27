@@ -39,6 +39,8 @@
     <string name="logout">Logout</string>
     <string name="expi_date">Expiration date:</string>
     <string name="id">Id:</string>
+    <string name="book_title">Book title</string>
+
 
 
     <!-- TODO: Remove or change this placeholder text -->

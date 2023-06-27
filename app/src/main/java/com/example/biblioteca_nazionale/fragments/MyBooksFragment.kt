@@ -25,7 +25,6 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val firebaseViewModel: FirebaseViewModel = ViewModelProvider(requireActivity()).get(FirebaseViewModel::class.java)
         val currentUser = firebaseViewModel.getCurrentUser(firebaseViewModel.firebase.getCurrentUid().toString()).get()
-        //val libriPrenotati: ArrayList<MiniBook>? = currentUser.userSettings?.libriPrenotati
         var appo:ArrayList<MiniBook> = ArrayList()
 
         fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
