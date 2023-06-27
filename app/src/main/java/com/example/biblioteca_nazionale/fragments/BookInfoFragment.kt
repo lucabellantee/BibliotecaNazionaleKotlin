@@ -349,6 +349,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     }
                 }
             }
+            binding.layoutReviews.setOnClickListener {
+                val action = BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
+                findNavController().navigate(action)
+            }
         }
     }
 
@@ -457,6 +461,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding.buttonPrenota.isEnabled =
             false
+
     }
 
     private fun findNearestMarker(a: Double, b: Double, markerList: MutableList<MyItem>): MyItem? {
@@ -599,4 +604,3 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
     }
 }
-

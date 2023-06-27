@@ -12,6 +12,8 @@ import com.google.firebase.firestore.DocumentSnapshot
 import java.util.concurrent.CompletableFuture
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.model.Review
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 
 class FirebaseViewModel: ViewModel() {
@@ -76,7 +78,7 @@ class FirebaseViewModel: ViewModel() {
                 val libriPrenotati = libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
                 val commenti = commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
 
-                val userSettings = UserSettings(libriPrenotati, commenti)
+                val userSettings = commenti?.let { UserSettings(libriPrenotati, it) }
                 val users = Users(uid, email, userSettings)
                 futureResult.complete(users)
             } else {
@@ -103,7 +105,7 @@ class FirebaseViewModel: ViewModel() {
                 val libriPrenotati = libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
                 val commenti = commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
 
-                val userSettings = UserSettings(libriPrenotati, commenti)
+                val userSettings = commenti?.let { UserSettings(libriPrenotati, it) }
                 val tmpUser = Users(uid.toString(), email.toString(), userSettings)
                 allUser.add(tmpUser)
             }
@@ -111,6 +113,65 @@ class FirebaseViewModel: ViewModel() {
         }
         return allUserLiveData
     }
+
+    fun getUserByCommentsOfBooks(isbn: String): LiveData<ArrayList<Users>> {
+        val allUserLiveData = MutableLiveData<ArrayList<Users>>()
+
+        this.getAllDocument().observeForever { allDocument ->
+            val allUser = ArrayList<Users>()
+
+            for (document in allDocument) {
+                val uid = document?.get("uid") as? String
+                val email = document?.get("email") as? String
+                val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
+                val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
+
+                val commenti = commentiData?.mapNotNull { convertHashMapToReview(it) } as ArrayList<Review>?
+
+                commenti?.let {
+                    val filteredComments = it.filter { comment -> comment.isbn == isbn }
+
+                    if (filteredComments.isNotEmpty()) {
+                        val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
+                        val libriPrenotati = libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
+
+                        val userSettings = UserSettings(libriPrenotati,
+                            filteredComments as ArrayList<Review>
+                        )
+                        val tmpUser = Users(uid.toString(), email.toString(), userSettings)
+                        allUser.add(tmpUser)
+                    }
+                }
+            }
+            allUserLiveData.value = allUser
+        }
+
+        return allUserLiveData
+    }
+
+
+    fun getAllCommentsByIsbn(isbn: String): LiveData<ArrayList<Review>> {
+        val allCommentsLiveData = MutableLiveData<ArrayList<Review>>()
+
+        this.getAllDocument().observeForever { allDocument ->
+            val allComments = ArrayList<Review>()
+            for (document in allDocument) {
+                val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
+                val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
+
+                val commenti = commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
+
+                // Aggiungi i commenti che hanno il valore di ISBN desiderato
+                commenti?.let {
+                    val filteredComments = it.filter { comment -> comment.isbn == isbn }
+                    allComments.addAll(filteredComments)
+                }
+            }
+            allCommentsLiveData.value = allComments
+        }
+        return allCommentsLiveData
+    }
+
 
     fun getBookInfoResponseFromDB(idLibro: String): MutableLiveData<DocumentSnapshot>{
         return firebase.getAllBookInfoFromId(idLibro)

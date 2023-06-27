@@ -42,6 +42,13 @@
             app:destination="@id/writeReviewFragment"
             app:enterAnim="@anim/slide_up"
             app:exitAnim="@anim/slide_down"></action>
+        <action
+            android:id="@+id/action_bookInfoFragment_to_reviewsFragment"
+            app:destination="@id/reviewsFragment">
+            <argument
+                android:name="book"
+                app:argType="com.example.biblioteca_nazionale.model.Book" />
+        </action>
 
     </fragment>
 
@@ -72,13 +79,13 @@
         android:id="@+id/myBooksFragment"
         android:name="com.example.biblioteca_nazionale.fragments.MyBooksFragment"
         android:label="fragment_my_books"
-        tools:layout="@layout/fragment_my_books" >
+        tools:layout="@layout/fragment_my_books">
         <action
             android:id="@+id/action_myBooksFragment_to_deleteBookingFragment2"
-            app:destination="@id/deleteBookingFragment2" >
-        <argument
-            android:name="book"
-            app:argType="com.example.biblioteca_nazionale.model.MiniBook" />
+            app:destination="@id/deleteBookingFragment2">
+            <argument
+                android:name="book"
+                app:argType="com.example.biblioteca_nazionale.model.MiniBook" />
         </action>
     </fragment>
 
@@ -112,9 +119,18 @@
         android:id="@+id/deleteBookingFragment2"
         android:name="com.example.biblioteca_nazionale.fragments.DeleteBookingFragment"
         android:label="fragment_delete_booking"
-        tools:layout="@layout/fragment_delete_booking" >
+        tools:layout="@layout/fragment_delete_booking">
         <action
             android:id="@+id/action_deleteBookingFragment2_to_myBooksFragment"
             app:destination="@id/myBooksFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reviewsFragment"
+        android:name="com.example.biblioteca_nazionale.fragments.ReviewsFragment"
+        android:label="fragment_reviews"
+        tools:layout="@layout/fragment_reviews">
+        <action
+            android:id="@+id/action_reviewsFragment_to_bookInfoFragment"
+            app:destination="@id/bookInfoFragment" />
     </fragment>
 </navigation>

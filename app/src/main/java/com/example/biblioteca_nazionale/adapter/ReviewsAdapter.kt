@@ -1,11 +1,16 @@
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RatingBar
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.biblioteca_nazionale.R
-import com.example.biblioteca_nazionale.model.Review
+import com.example.biblioteca_nazionale.fragments.TemporaryReview
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-class ReviewsAdapter(private val reviews: List<Review>) :
+class ReviewsAdapter(private val reviews: ArrayList<TemporaryReview>) :
     RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
@@ -24,13 +29,28 @@ class ReviewsAdapter(private val reviews: List<Review>) :
     }
 
     inner class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        // Dichiarazioni degli elementi dell'interfaccia utente
+        private val ratingReview = itemView.findViewById<RatingBar>(R.id.ratingReview2)
+        private val textReviewUtente = itemView.findViewById<TextView>(R.id.textReviewUtente)
+        private val textReviewDate = itemView.findViewById<TextView>(R.id.textReviewDate)
+        private val textTitleReview = itemView.findViewById<TextView>(R.id.textTitleReview1)
+        private val textReview = itemView.findViewById<TextView>(R.id.textReview1)
 
-        fun bind(review: Review) {
-            // Popolate gli elementi dell'item_review.xml con i dati della recensione
-            // Utilizzate itemView.findViewById per ottenere le reference agli elementi
-            // E assegnate i valori corrispondenti ai campi della recensione
-            // Esempio: val textViewTitle = itemView.findViewById<TextView>(R.id.textTitleReview1)
-            //         textViewTitle.text = review.reviewTitle
+        fun bind(review: TemporaryReview) {
+            // Collegamento dei dati agli elementi dell'interfaccia utente
+            ratingReview.rating = review.vote
+            textReviewUtente.text = "Valutazione di ${review.email}:"
+
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+
+            val date: Date = inputFormat.parse(review.date)
+            val outputDateString: String = outputFormat.format(date)
+
+            textReviewDate.text = outputDateString
+            textTitleReview.text = review.reviewTitle
+            textReview.text = review.reviewText
         }
     }
+
 }

@@ -16,7 +16,7 @@ class DeleteBookingFragment : Fragment(R.layout.fragment_delete_booking) {
 
     lateinit var binding: FragmentDeleteBookingBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    /*override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
@@ -73,5 +73,5 @@ class DeleteBookingFragment : Fragment(R.layout.fragment_delete_booking) {
                 }
             }
         }
-    }
+    }*/
 }
