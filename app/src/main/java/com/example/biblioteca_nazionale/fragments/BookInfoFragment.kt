@@ -252,7 +252,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                     }
                                                 }
                                             }
-
                                             clusterManager.setOnClusterItemClickListener { marker ->
                                                 setDefaultLibrary(marker, book, googleMap)
                                                 true
@@ -334,10 +333,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                     println(binding.ratingReview2.rating)
                                     binding.textReviewUtente.text = "Valutazione di ${user.email}:"
 
-                                    val inputFormat =
-                                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                    val outputFormat =
-                                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                    val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                                    val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
                                     val date: Date = inputFormat.parse(commento.date)
                                     val outputDateString: String = outputFormat.format(date)

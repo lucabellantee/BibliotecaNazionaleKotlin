@@ -1,6 +1,8 @@
 package com.example.biblioteca_nazionale.model
 
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 data class UserSettings(
@@ -40,7 +42,11 @@ data class UserSettings(
     }
 
     fun addNewComment(reviewText: String, reviewTitle: String, isbn: String, vote: Float) {
-        val newComment = Review("C${UUID.randomUUID().toString()}", reviewText, reviewTitle, isbn, vote, LocalDate.now().toString())
+
+        val currentDateTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        val formattedDateTime = currentDateTime.format(formatter)
+        val newComment = Review("C${UUID.randomUUID().toString()}", reviewText, reviewTitle, isbn, vote, formattedDateTime)
 
         println(newComment)
 
