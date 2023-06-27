@@ -64,7 +64,7 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
                     val action = MyBooksFragmentDirections.actionMyBooksFragmentToDeleteBookingFragment2(libro)
                     findNavController().navigate(action)
                 } else {
-                    // Gestisci il caso in cui il libro è nullo
+                    // Gestisci il caso in cui il libro Ã¨ nullo
                 }                      }
         })
         recyclerView.adapter = adapter

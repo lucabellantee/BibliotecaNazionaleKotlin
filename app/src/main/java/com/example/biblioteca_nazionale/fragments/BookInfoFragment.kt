@@ -214,6 +214,13 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                 if (markerList.size == 1) {
                                                     binding.textViewNomeBiblioteca.text =
                                                         markerList[0].title
+                                                    fbViewModel.getExpirationDate(
+                                                        book.id.toString(),
+                                                        binding.textViewNomeBiblioteca.text.toString()
+                                                    ).thenAccept { expirationDate ->
+                                                        if ((expirationDate.equals("ERRORE")).not()) binding.textViewDataRiconsegna.text =
+                                                            expirationDate
+                                                    }
                                                     binding.buttonPrenota.setOnClickListener {
                                                         fbViewModel.bookIsBooked(
                                                             book.id.toString(),
@@ -244,11 +251,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                         /*binding.buttonPrenota.isEnabled =
                                                             false */
 
-                                                        binding.textViewDataRiconsegna.setOnClickListener {
-                                                            fbViewModel.newExpirationDate(
-                                                                it.id.toString()
-                                                            )
-                                                        }
                                                     }
                                                 }
                                             }
@@ -414,6 +416,15 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding.textViewNomeBiblioteca.text =
             marker.title
+
+        fbViewModel.getExpirationDate(
+            book.id.toString(),
+            binding.textViewNomeBiblioteca.text.toString()
+        ).thenAccept { expirationDate ->
+            if ((expirationDate.equals("ERRORE")).not()) binding.textViewDataRiconsegna.text =
+                expirationDate
+        }
+
         binding.buttonPrenota.setOnClickListener {
             fbViewModel.bookIsBooked(
                 book.id.toString(),
@@ -444,7 +455,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             /*binding.buttonPrenota.isEnabled =
                 false */
 
-            binding.textViewDataRiconsegna.text = fbViewModel.newExpirationDate(it.id.toString()).toString()
+
         }
     }
 
@@ -457,6 +468,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding.buttonPrenota.isEnabled =
             false
+
     }
 
     private fun findNearestMarker(a: Double, b: Double, markerList: MutableList<MyItem>): MyItem? {

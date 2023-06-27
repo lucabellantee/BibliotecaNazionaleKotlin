@@ -12,6 +12,8 @@ import com.google.firebase.firestore.DocumentSnapshot
 import java.util.concurrent.CompletableFuture
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.model.Review
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 
 class FirebaseViewModel: ViewModel() {
@@ -155,6 +157,7 @@ class FirebaseViewModel: ViewModel() {
         }
     }
 
+    /*
     fun newExpirationDate(id: String) {
         var expirationDate: String? = null
 
@@ -171,6 +174,35 @@ class FirebaseViewModel: ViewModel() {
             Log.d("DATAAA12", expirationDate.toString())
             println("Data di scadenza: $expirationDate")
         }
+    } */
+
+
+    fun getExpirationDate(idBook: String , place: String): CompletableFuture<String> {
+        val futureExpiringDate = CompletableFuture<String>()
+        val firebase = FirebaseDB()
+        this.getCurrentUser(firebase.getFirebaseAuthIstance().uid.toString()).thenAccept {
+            user ->
+            for(libroPrenotato in user.userSettings?.libriPrenotati!!) {
+                if(libroPrenotato.isbn.equals(idBook) && libroPrenotato.bookPlace.equals(place)){
+                    val inputFormat = SimpleDateFormat("yyyy/MM/dd")
+                    val outputFormat = SimpleDateFormat("dd/MM/yyyy")
+
+                    val calendar = Calendar.getInstance()
+                    val date = inputFormat.parse(libroPrenotato.date)
+                    calendar.time = date
+
+                    calendar.add(Calendar.DAY_OF_MONTH, 14)
+                    val expiringDate = outputFormat.format(calendar.time)
+                    val convertedExpiringDateToString = outputFormat.format(expiringDate)
+
+                    futureExpiringDate.complete(convertedExpiringDateToString)
+
+                    break
+                }
+                futureExpiringDate.complete("ERROR")
+            }
+        }
+        return futureExpiringDate
     }
 
 // TRUE -> Libro gia presente e prenotato   ||||||    FALSE -> Libro non presente e non prenotato
