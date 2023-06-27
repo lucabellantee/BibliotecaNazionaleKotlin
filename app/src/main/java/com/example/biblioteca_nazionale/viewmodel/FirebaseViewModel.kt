@@ -22,6 +22,25 @@ class FirebaseViewModel: ViewModel() {
         return firebase.getAllUserInfo()
     } */
 
+    private fun convertHashMapToMiniBook(hashMap: HashMap<*, *>): MiniBook {
+        val isbn = hashMap["isbn"] as? String ?: ""
+        val bookPlace = hashMap["bookPlace"] as? String ?: ""
+        val image = hashMap["image"] as? String ?: ""
+        val date = hashMap["date"] as? String ?: ""
+
+        return MiniBook(isbn, bookPlace, image, date)
+    }
+
+    private fun convertHashMapToReview(hashMap: HashMap<*, *>): Review {
+        val idComment = hashMap["idComment"] as? String ?: ""
+        val reviewText = hashMap["reviewText"] as? String ?: ""
+        val reviewTitle = hashMap["reviewTitle"] as? String ?: ""
+        val isbn = hashMap["isbn"] as? String ?: ""
+        val vote = hashMap["vote"] as? Float ?: 0.0f
+        val date = hashMap["date"] as? String ?: ""
+
+        return Review(idComment, reviewText, reviewTitle, isbn, vote, date)
+    }
 
     fun getUserInfo(uid: String): MutableLiveData<DocumentSnapshot>{
       return firebase.getAllUserInfoFromUid(uid)
@@ -42,28 +61,23 @@ class FirebaseViewModel: ViewModel() {
 
     fun getCurrentUser(uid: String): CompletableFuture<Users> {
         val futureResult = CompletableFuture<Users>()
-        // TODO METTERE: firebase.getCurrentUid()
+
         this.getUserInfo(getUidLoggedUser()).observeForever { documentSnapshot ->
             val data = documentSnapshot
-           // Log.d("/IMPORTANTE", data.toString())
-            val impostazioniData = data?.get("userSettings") as? HashMap<String, Any>
-            //Log.d("IMPOSTAZIONI: ", impostazioniData.toString())
-            val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<MiniBook>
-            // Log.d("LIBRI PRENOTATI",libriPrenotatiData.toString())
-            val commentiData = impostazioniData?.get("commenti") as? ArrayList<Review>
-           // Log.d("COMMENTI: ",commentiData.toString())
+            val impostazioniData = data?.get("userSettings") as? HashMap<*, *>
+            val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
+            val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
             val uid = data?.get("uid") as? String
-            //Log.d("UID: ", uid.toString())
             val email = data?.get("email") as? String
-           // Log.d("EMAIL: ", email.toString())
 
-//          impostazioniData != null && libriPrenotatiData != null && commentiData != null && uid != null && email != null
             if (uid != null && email != null) {
-                val users = Users(uid, email, UserSettings(libriPrenotatiData, commentiData))
+                val libriPrenotati = libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
+                val commenti = commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
+
+                val userSettings = UserSettings(libriPrenotati, commenti)
+                val users = Users(uid, email, userSettings)
                 futureResult.complete(users)
-                Log.d("Future Result: ", futureResult.isDone.toString())
             } else {
-                // Gestisci il caso in cui i dati siano nulli o mancanti
                 futureResult.completeExceptionally(Exception("Dati mancanti o nulli"))
             }
         }
@@ -96,28 +110,6 @@ class FirebaseViewModel: ViewModel() {
         }
         return allUserLiveData
     }
-
-    private fun convertHashMapToMiniBook(hashMap: HashMap<*, *>): MiniBook {
-        val isbn = hashMap["isbn"] as? String ?: ""
-        val bookPlace = hashMap["bookPlace"] as? String ?: ""
-        val image = hashMap["image"] as? String ?: ""
-        val date = hashMap["date"] as? String ?: ""
-
-        return MiniBook(isbn, bookPlace, image, date)
-    }
-
-    private fun convertHashMapToReview(hashMap: HashMap<*, *>): Review {
-        val idComment = hashMap["idComment"] as? String ?: ""
-        val reviewText = hashMap["reviewText"] as? String ?: ""
-        val reviewTitle = hashMap["reviewTitle"] as? String ?: ""
-        val isbn = hashMap["isbn"] as? String ?: ""
-        val vote = hashMap["vote"] as? Float ?: 0.0f
-        val date = hashMap["date"] as? String ?: ""
-
-        return Review(idComment, reviewText, reviewTitle, isbn, vote, date)
-    }
-
-
 
     fun getBookInfoResponseFromDB(idLibro: String): MutableLiveData<DocumentSnapshot>{
         return firebase.getAllBookInfoFromId(idLibro)
