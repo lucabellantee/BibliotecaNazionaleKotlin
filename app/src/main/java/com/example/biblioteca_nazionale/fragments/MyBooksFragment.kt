@@ -39,6 +39,7 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
                         val libri = userSettings.libriPrenotati
                         if (libri != null) {
                             for (libro in libri) {
+                                Log.d("LIBRO34", libro.bookPlace+" "+libro.isbn+" "+libro.image+" "+libro.date)
                                 appo.add(libro)
                             }
                         }
@@ -46,9 +47,8 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
                     break
                 }
             }
+            adapter.notifyDataSetChanged()
         }
-
-        val bookList: List<MiniBook> = libriPrenotati ?: listOf()
 
         val view = inflater.inflate(R.layout.fragment_my_books, container, false)
 

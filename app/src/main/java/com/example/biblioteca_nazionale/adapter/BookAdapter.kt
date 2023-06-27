@@ -15,11 +15,13 @@ class BookAdapter(private val books: List<MiniBook>) : RecyclerView.Adapter<Book
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_book, parent, false)
+        println(books)
         return BookViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val book = books[position] as? MiniBook
+        println(books)
         if (book != null) {
             holder.bind(book)
         } else {
@@ -29,6 +31,7 @@ class BookAdapter(private val books: List<MiniBook>) : RecyclerView.Adapter<Book
     }
 
     override fun getItemCount(): Int {
+        println(books)
         return books.size
     }
 
