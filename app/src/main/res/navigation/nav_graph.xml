@@ -72,13 +72,15 @@
         android:id="@+id/myBooksFragment"
         android:name="com.example.biblioteca_nazionale.fragments.MyBooksFragment"
         android:label="fragment_my_books"
-        tools:layout="@layout/fragment_my_books" />
-
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.example.biblioteca_nazionale.fragments.SettingsFragment"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_my_books" >
+        <action
+            android:id="@+id/action_myBooksFragment_to_deleteBookingFragment2"
+            app:destination="@id/deleteBookingFragment2" >
+        <argument
+            android:name="book"
+            app:argType="com.example.biblioteca_nazionale.model.MiniBook" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/notificationsFragment"
@@ -105,5 +107,14 @@
                 android:name="book"
                 app:argType="com.example.biblioteca_nazionale.model.Book" />
         </action>
+    </fragment>
+    <fragment
+        android:id="@+id/deleteBookingFragment2"
+        android:name="com.example.biblioteca_nazionale.fragments.DeleteBookingFragment"
+        android:label="fragment_delete_booking"
+        tools:layout="@layout/fragment_delete_booking" >
+        <action
+            android:id="@+id/action_deleteBookingFragment2_to_myBooksFragment"
+            app:destination="@id/myBooksFragment" />
     </fragment>
 </navigation>

@@ -8,9 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.biblioteca_nazionale.R
+import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -53,6 +55,21 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        adapter.setOnBookClickListener(object : BookAdapter.OnBookClickListener{
+            override fun onBookClick(position: Int) {
+                val libro  = appo.get(position)
+
+                if (libro != null) {
+                    val action = MyBooksFragmentDirections.actionMyBooksFragmentToDeleteBookingFragment2(libro)
+                    findNavController().navigate(action)
+                } else {
+                    // Gestisci il caso in cui il libro è nullo
+                }                      }
+        })
+        recyclerView.adapter = adapter
+        return true
+    }
 
         return view
     }

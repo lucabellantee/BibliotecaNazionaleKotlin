@@ -10,9 +10,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
+import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.model.MiniBook
 
 class BookAdapter(private val books: List<MiniBook>) : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
+
+    private lateinit var mListner: BookAdapter.OnBookClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_book, parent, false)
@@ -27,6 +30,14 @@ class BookAdapter(private val books: List<MiniBook>) : RecyclerView.Adapter<Book
             Log.d("NIENTE", "NIENTE")
             // Gestisci il caso in cui l'elemento nella posizione specificata non sia un oggetto di tipo MiniBook
         }
+    }
+
+    interface OnBookClickListener {
+        fun onBookClick(position: Int)
+    }
+
+    fun setOnBookClickListener(listner: BookAdapter.OnBookClickListener) {
+        mListner = listner
     }
 
     override fun getItemCount(): Int {
