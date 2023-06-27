@@ -13,33 +13,50 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: BookAdapter
+    private val fbViewModel: FirebaseViewModel = FirebaseViewModel()
+    val firebaseAuth = FirebaseAuth.getInstance()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val firebaseViewModel: FirebaseViewModel = ViewModelProvider(requireActivity()).get(FirebaseViewModel::class.java)
         val currentUser = firebaseViewModel.getCurrentUser(firebaseViewModel.firebase.getCurrentUid().toString()).get()
         val libriPrenotati: ArrayList<MiniBook>? = currentUser.userSettings?.libriPrenotati
-        Log.d("SONO QUI1", currentUser.email+ " "+ currentUser.userSettings!!.libriPrenotati!!.get(0).bookPlace)
+        var appo:ArrayList<MiniBook> = ArrayList()
         /*val libriPrenotati: ArrayList<MiniBook>? =
             firebaseViewModel.getCurrentUser(firebaseViewModel.getUidLoggedUser()).get().userSettings?.libriPrenotati*/
 
+        fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
+            println(usersList)
+            for (user in usersList) {
+                if(user.UID == firebaseAuth.currentUser!!.uid) {
+                    val userSettings = user.userSettings
+                    if (userSettings != null) {
+                        val libri = userSettings.libriPrenotati
+                        if (libri != null) {
+                            for (libro in libri) {
+                                appo.add(libro)
+                            }
+                        }
+                    }
+                    break
+                }
+            }
+        }
+
         val bookList: List<MiniBook> = libriPrenotati ?: listOf()
 
-        Log.d("SONO QUI3", "MIAO")
         val view = inflater.inflate(R.layout.fragment_my_books, container, false)
 
         recyclerView = view.findViewById(R.id.recyclerViewMyBooks)
-        Log.d("LISTAA", bookList.listIterator().toString())
-        adapter = BookAdapter(bookList)
-        Log.d("LISTAA1", bookList.listIterator().toString())
+        adapter = BookAdapter(appo)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        Log.d("SONO QUI4", "MIAO")
 
         return view
     }
