@@ -264,12 +264,14 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                                                 binding.buttonPrenota.setOnClickListener {
                                                     println(it.id.toString())
+                                                    Log.d("STRINGAA1", it.id.toString())
                                                     fbViewModel.addNewBookBooked(
                                                         book.id.toString(),
                                                         book.id.toString(),
                                                         binding.textViewNomeBiblioteca.text.toString(),
                                                         book?.info?.imageLinks?.thumbnail.toString()
                                                     )
+                                                    Log.d("STRINGAA2", it.id.toString())
                                                     Toast.makeText(
                                                         requireContext(),
                                                         "Your book has booked succesfully!",

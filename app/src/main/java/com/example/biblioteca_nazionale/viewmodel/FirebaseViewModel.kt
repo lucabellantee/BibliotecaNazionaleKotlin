@@ -120,7 +120,7 @@ class FirebaseViewModel: ViewModel() {
     fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String){
         val uid = firebase.getCurrentUid()
         Log.d("UID: ", firebase.getCurrentUid().toString())
-
+        Log.d("STRINGAA3", idLibro+""+isbn)
         val currentUser = this.getCurrentUser(uid.toString())
         currentUser.thenAccept { user ->
             Log.d("PRIMA" ,  idLibro + " " + isbn + " " + placeBooked + " " + image)
@@ -130,8 +130,10 @@ class FirebaseViewModel: ViewModel() {
            // Log.d("USERRR", user.email)
             //Log.d("UIDDD", user.UID)
             Log.d("USER", user.toString())
+            Log.d("STRINGAA4", idLibro+""+isbn)
             firebase.updateBookPrenoted(user)
             println(user.userSettings?.libriPrenotati?.get(user.userSettings?.libriPrenotati!!.size-1))
+            Log.d("STRINGAA5", idLibro+""+isbn)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
