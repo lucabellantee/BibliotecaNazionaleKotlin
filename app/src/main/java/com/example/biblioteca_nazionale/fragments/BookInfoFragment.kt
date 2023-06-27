@@ -300,7 +300,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 }
             }
 
-
             fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
                 println(usersList)
                 for (user in usersList) {
