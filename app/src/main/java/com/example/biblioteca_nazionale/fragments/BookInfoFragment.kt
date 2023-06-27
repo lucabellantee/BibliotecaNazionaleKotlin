@@ -225,11 +225,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                         binding.buttonPrenota.isEnabled =
                                                             false
 
-                                                        binding.textViewDataRiconsegna.setOnClickListener {
-                                                            fbViewModel.newExpirationDate(
-                                                                it.id.toString()
-                                                            )
-                                                        }
+                                                        binding.textViewDataRiconsegna.text =
+                                                            fbViewModel.newExpirationDate(it.id.toString())
+                                                                .toString()
                                                     }
                                                 }
                                             }

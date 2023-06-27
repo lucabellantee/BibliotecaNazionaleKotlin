@@ -154,10 +154,10 @@ class FirebaseViewModel: ViewModel() {
         }
     }
 
-    fun newExpirationDate(isbn: String) {
+    fun newExpirationDate(id: String) {
         var expirationDate: String? = null
 
-        firebase.getExpirationDate(isbn) { dataScadenza ->
+        firebase.getExpirationDate(id) { dataScadenza ->
             if (dataScadenza != null) {
                 Log.d("DATAAA", dataScadenza)
                 Log.d("DATAAA1", expirationDate.toString())

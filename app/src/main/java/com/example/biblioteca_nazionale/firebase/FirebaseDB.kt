@@ -189,7 +189,7 @@ class FirebaseDB {
         return bookInfoLiveData
     }
 
-    fun getExpirationDate(isbn: String, callback: (String?) -> Unit) {
+    fun getExpirationDate(id: String, callback: (String?) -> Unit) {
         firebaseAuth.currentUser?.let { user ->
             db.collection("utenti").document(user.uid).get().addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
@@ -198,7 +198,7 @@ class FirebaseDB {
                         val libro = libroValue as? List<Any>
                         val libroIsbn = libro?.get(0) as? String
                         val dataScadenza = libro?.get(3) as? String
-                        if (libroIsbn == isbn) {
+                        if (libroIsbn == id) {
                             callback(dataScadenza)
                             return@addOnSuccessListener
                         }
