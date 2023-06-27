@@ -1,15 +1,13 @@
 package com.example.biblioteca_nazionale.model
 
 import java.time.LocalDate
+import java.util.UUID
 
 data class UserSettings(
     //var libriPrenotati: HashMap<String, ArrayList<String>>?,
     var libriPrenotati: ArrayList<MiniBook>?,
     var commenti: ArrayList<Review>?
 ) {
-    companion object{
-        var idComment: String = "0"
-    }
 
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
 
@@ -41,9 +39,8 @@ data class UserSettings(
         }
     }
 
-    fun addNewComment(reviewText: String,reviewTitle: String,isbn: String,vote:Float){
-        idComment.toInt().plus(1).toString()
-        val newComment = Review(idComment, reviewText, reviewTitle,isbn,vote, LocalDate.now().toString())
+    fun addNewComment(reviewText: String, reviewTitle: String, isbn: String, vote: Float) {
+        val newComment = Review("C${UUID.randomUUID().toString()}", reviewText, reviewTitle, isbn, vote, LocalDate.now().toString())
 
         println(newComment)
 
@@ -67,6 +64,7 @@ data class UserSettings(
             }
         }
     }
+
 }
 
 data class MiniBook (

@@ -496,6 +496,14 @@
                     android:layout_marginBottom="10dp"
                     android:background="@android:color/darker_gray" />
 
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Valuta"
+                    android:textSize="16sp" />
+
                 <RatingBar
                     android:id="@+id/ratingBarInserimento"
                     style="@android:style/Widget.Material.Light.RatingBar"
@@ -515,8 +523,17 @@
                     android:text="@string/write_review"
                     android:textColor="@color/black" />
 
-                <View style="@style/Divider" />
 
+                <View
+                    android:id="@+id/view3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/textViewDescription"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@android:color/darker_gray" />
 
                 <TextView
                     android:id="@+id/textView_title_recensioni"
