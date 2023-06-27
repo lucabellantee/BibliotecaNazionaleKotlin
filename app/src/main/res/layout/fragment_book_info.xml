@@ -228,7 +228,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_marginRight="45dp"
-                    android:text="Leggi di più"
+                    android:text="@string/read_more"
                     android:textColor="@color/primary_color" />
 
                 <View
@@ -251,7 +251,7 @@
                         android:id="@+id/mapView"
                         android:layout_width="match_parent"
                         android:layout_height="225dp"
-                        android:contentDescription="niente" />
+                        android:contentDescription="Map" />
 
                 </LinearLayout>
 
@@ -268,7 +268,7 @@
                         android:layout_margin="10dp"
                         android:elegantTextHeight="true"
                         android:paddingHorizontal="10dp"
-                        android:text="Biblioteca univpm"
+                        android:text=""
                         android:textAlignment="center"
                         android:textColor="@color/primary_color"
                         android:textSize="18sp" />
@@ -279,7 +279,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="30dp"
                         android:layout_marginVertical="10dp"
-                        android:text="Da riconsegnare entro il GG/MM/YY"
+                        android:text="@string/date"
                         android:textSize="16sp" />
 
                     <Button
@@ -288,7 +288,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="60dp"
                         android:layout_marginVertical="10dp"
-                        android:text="Prenota prestito"
+                        android:text="@string/book_loan"
                         app:cornerRadius="40dp" />
                 </LinearLayout>
 

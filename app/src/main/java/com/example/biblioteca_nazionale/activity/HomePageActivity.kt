@@ -60,7 +60,6 @@ class HomePageActivity : AppCompatActivity() {
             // Qui puoi utilizzare il valore dell'utente ottenuto
             Log.d("/HomePageActivity", user.toString())
            // firebaseViewModel.removeCommentUserSide("0",user)
-
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/HomePageActivity", "Errore nel recupero dell'utente: ${throwable.message}")
