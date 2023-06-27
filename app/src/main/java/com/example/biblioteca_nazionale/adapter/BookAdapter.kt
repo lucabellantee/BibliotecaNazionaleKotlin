@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,10 +37,12 @@ class BookAdapter(private val books: List<MiniBook>) : RecyclerView.Adapter<Book
         private val titleTextView: TextView = itemView.findViewById(R.id.bookTitleItem)
         private val imageImageView: ImageView = itemView.findViewById(R.id.bookImageItem)
         private val dateTextView: TextView = itemView.findViewById(R.id.bookDate)
+        private val libraryTextView: TextView = itemView.findViewById(R.id.library)
 
         fun bind(book: MiniBook) {
-            titleTextView.text = book.isbn
-            dateTextView.text = book.date
+            titleTextView.text = "${titleTextView.text} ${book.isbn}"
+            dateTextView.text = "${dateTextView.text} ${book.date}"
+            libraryTextView.text = book.bookPlace
             Glide.with(itemView)
                 .load(book.image)
                 .apply(RequestOptions().centerCrop())

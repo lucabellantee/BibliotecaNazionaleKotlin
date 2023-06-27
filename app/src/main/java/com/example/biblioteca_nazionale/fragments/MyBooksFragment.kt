@@ -25,10 +25,7 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val firebaseViewModel: FirebaseViewModel = ViewModelProvider(requireActivity()).get(FirebaseViewModel::class.java)
         val currentUser = firebaseViewModel.getCurrentUser(firebaseViewModel.firebase.getCurrentUid().toString()).get()
-        val libriPrenotati: ArrayList<MiniBook>? = currentUser.userSettings?.libriPrenotati
         var appo:ArrayList<MiniBook> = ArrayList()
-        /*val libriPrenotati: ArrayList<MiniBook>? =
-            firebaseViewModel.getCurrentUser(firebaseViewModel.getUidLoggedUser()).get().userSettings?.libriPrenotati*/
 
         fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
             println(usersList)
@@ -46,9 +43,8 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
                     break
                 }
             }
+            adapter.notifyDataSetChanged()
         }
-
-        val bookList: List<MiniBook> = libriPrenotati ?: listOf()
 
         val view = inflater.inflate(R.layout.fragment_my_books, container, false)
 
