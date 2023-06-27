@@ -1,0 +1,12 @@
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_confirm"
+        android:icon="@drawable/round_check_24_purple"
+        android:title="@string/confirm"
+        app:showAsAction="always" />
+
+</menu>
+

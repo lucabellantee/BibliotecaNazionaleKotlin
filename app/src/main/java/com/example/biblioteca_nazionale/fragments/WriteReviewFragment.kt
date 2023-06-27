@@ -37,7 +37,7 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
             binding.textViewAutore.text = it.info?.authors?.toString() ?: ""
 
             Glide.with(requireContext())
-                .load(book.info.imageLinks?.thumbnail.toString())
+                .load(book.info.imageLinks?.thumbnail?.toString())
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
 
@@ -61,8 +61,11 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
                         Toast.makeText(requireContext(), "La recensione è andata a buon fine", Toast.LENGTH_SHORT).show()
 
-                        /*val action = WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment()
-                        findNavController().navigate(action)*/
+                        val action = WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
+                        findNavController().navigate(action)
+
+                        //findNavController().popBackStack()
+
 
                     } else {
                         Toast.makeText(

@@ -129,8 +129,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 googleMap.uiSettings.isRotateGesturesEnabled = true
                 googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
 
-
-
                 googleMap.setMapStyle(context?.let {
                     MapStyleOptions.loadRawResourceStyle(
                         it,
