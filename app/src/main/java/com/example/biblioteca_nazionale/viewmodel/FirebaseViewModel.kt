@@ -38,13 +38,13 @@ class FirebaseViewModel: ViewModel() {
         val reviewText = hashMap["reviewText"] as? String ?: ""
         val reviewTitle = hashMap["reviewTitle"] as? String ?: ""
         val isbn = hashMap["isbn"] as? String ?: ""
-        println(hashMap["vote"])
-        val vote = hashMap["vote"].toString() as? Float ?: 0.0f
-        println(vote)
+
+        val vote = hashMap["vote"].toString().toFloat()
         val date = hashMap["date"] as? String ?: ""
 
         return Review(idComment, reviewText, reviewTitle, isbn, vote, date)
     }
+
 
     fun getUserInfo(uid: String): MutableLiveData<DocumentSnapshot>{
       return firebase.getAllUserInfoFromUid(uid)
