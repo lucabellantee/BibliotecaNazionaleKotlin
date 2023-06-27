@@ -177,13 +177,18 @@ class FirebaseViewModel: ViewModel() {
     } */
 
 
-    fun getExpirationDate(idBook: String , place: String): CompletableFuture<String> {
+    fun getExpirationDate(idBook: String, place: String): CompletableFuture<String> {
         val futureExpiringDate = CompletableFuture<String>()
         val firebase = FirebaseDB()
-        this.getCurrentUser(firebase.getFirebaseAuthIstance().uid.toString()).thenAccept {
-            user ->
-            for(libroPrenotato in user.userSettings?.libriPrenotati!!) {
-                if(libroPrenotato.isbn.equals(idBook) && libroPrenotato.bookPlace.equals(place)){
+        this.getCurrentUser(firebase.getFirebaseAuthIstance().uid.toString()).thenAccept { user ->
+            var foundMatchingBook = false
+            Log.d("idBook ", idBook)
+            Log.d("place ", place)
+            for (libroPrenotato in user.userSettings?.libriPrenotati!!) {
+                Log.d("idBook-user " , libroPrenotato.isbn)
+                Log.d("place-user ", libroPrenotato.bookPlace)
+                // todo LUCA: Vedere perchè non entra nel if
+                if (libroPrenotato.isbn.equals(idBook) && libroPrenotato.bookPlace.equals(place)) {
                     val inputFormat = SimpleDateFormat("yyyy/MM/dd")
                     val outputFormat = SimpleDateFormat("dd/MM/yyyy")
 
@@ -193,18 +198,21 @@ class FirebaseViewModel: ViewModel() {
 
                     calendar.add(Calendar.DAY_OF_MONTH, 14)
                     val expiringDate = outputFormat.format(calendar.time)
-                    val convertedExpiringDateToString = outputFormat.format(expiringDate)
 
-                    futureExpiringDate.complete(convertedExpiringDateToString)
+                    Log.d("GetExpirationDate", expiringDate)
+                    futureExpiringDate.complete(expiringDate)
 
+                    foundMatchingBook = true
                     break
                 }
+            }
+
+            if (!foundMatchingBook) {
                 futureExpiringDate.complete("ERROR")
             }
         }
         return futureExpiringDate
     }
-
 // TRUE -> Libro gia presente e prenotato   ||||||    FALSE -> Libro non presente e non prenotato
 
     fun bookIsBooked(id: String, place: String): CompletableFuture<Boolean> {
