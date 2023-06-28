@@ -1,5 +1,6 @@
 package com.example.biblioteca_nazionale.fragments
 
+import NotificationAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,12 +9,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentNotificationsBinding
-import com.example.biblioteca_nazionale.databinding.FragmentSettingsBinding
 import com.example.biblioteca_nazionale.utils.NotificationReceiver
 
-class NotificationsFragment : Fragment() {
+class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
 
     private var _binding: FragmentNotificationsBinding? = null
     private val binding get() = _binding!!
@@ -34,12 +35,32 @@ class NotificationsFragment : Fragment() {
         intent.putExtra("title", "Titolo della notifica")
         intent.putExtra("text", "Testo della notifica")
 
-        binding.button234.setOnClickListener {
+        /*binding.button234.setOnClickListener {
             context.sendBroadcast(intent)
-        }
+        }*/
 
-        Log.d("Nervo", "Nervo")
+        val sharedPreferences = requireContext().getSharedPreferences("notification_data", Context.MODE_PRIVATE)
+        val allEntries = sharedPreferences.all
+
+        val notificationIds = allEntries.keys.filter { it.startsWith("title_") }.map { it.removePrefix("title_").toInt() }.toSet()
+
+        val notificationList = mutableListOf<Pair<String, String>>()
+        if (notificationIds != null) {
+            for (notificationId in notificationIds) {
+                val title = sharedPreferences.getString("title_$notificationId", "")
+                val text = sharedPreferences.getString("text_$notificationId", "")
+                val notificationInfo = Pair(title, text)
+                notificationList.add(notificationInfo as Pair<String, String>)
+                println(notificationList)
+            }
+        }
+        val layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewNotifications.layoutManager = layoutManager
+
+        val adapter = NotificationAdapter(notificationList)
+        binding.recyclerViewNotifications.adapter = adapter
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
