@@ -15,14 +15,11 @@ import com.example.biblioteca_nazionale.databinding.FragmentBookListBinding
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
 import com.google.firebase.auth.FirebaseAuth
 
-class BookListFragment : Fragment(R.layout.fragment_book_list){
+class BookListFragment : Fragment(R.layout.fragment_book_list) {
 
-    lateinit var binding: FragmentBookListBinding
-
+    private lateinit var binding: FragmentBookListBinding
     private lateinit var firebaseAuth: FirebaseAuth
-
     private val model: BooksViewModel = BooksViewModel()
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,23 +32,11 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
                 binding.searchView.clearFocus()
                 binding.searchView.requestFocus()
 
-                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
             }, 1)
         }
-
-        /*firebaseAuth = FirebaseAuth.getInstance()
-        binding.toolbar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.menu_back -> {
-                    firebaseAuth.signOut()
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }*/
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -66,7 +51,7 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
             }
         })
 
-        Log.d("yolxzxzoddd",binding.searchView.hasFocus().toString())
+        Log.d("yolxzxzoddd", binding.searchView.hasFocus().toString())
 
     }
 
@@ -74,13 +59,12 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
         model.searchBooks(query)
         val layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewBooks.layoutManager = layoutManager
-        model.getLibriLiveData().observe(viewLifecycleOwner){libriList->
+        model.getLibriLiveData().observe(viewLifecycleOwner) { libriList ->
+            println(libriList)
             val adapter = BookListAdapter(libriList)
-
-            adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener{
+            adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener {
                 override fun onBookClick(position: Int) {
-                    val libri = model.getLibriLiveData()
-                    val libro = libri.value?.items?.get(position)
+                    val libro = libriList.items[position]
                     if (libro != null) {
                         val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
                         findNavController().navigate(action)

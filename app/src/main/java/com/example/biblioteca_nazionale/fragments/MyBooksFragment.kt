@@ -46,6 +46,7 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
                 }
                 //adapter.notifyDataSetChanged()
             }
+            println(appo)
             adapter = BookAdapter(appo)
             adapter.setOnBookClickListener(object : BookAdapter.OnBookClickListener {
                 override fun onBookClick(position: Int) {

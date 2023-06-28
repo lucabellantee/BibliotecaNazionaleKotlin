@@ -19,11 +19,10 @@ class BooksViewModel : ViewModel() {
     }
 
     fun searchBooks(query: String) {
-        viewModelScope.launch{
+        viewModelScope.launch {
             try {
-                val response = googleBooksApiClient.getApiService().searchBooks(query)
+                val response = googleBooksApiClient.getApiService().searchBooks(query, 20)
                 _libriLiveData.value = response
-                println()
             } catch (e: Exception) {
                 Log.d("BooksViewModel", "Error exception: " + e.message)
             }
