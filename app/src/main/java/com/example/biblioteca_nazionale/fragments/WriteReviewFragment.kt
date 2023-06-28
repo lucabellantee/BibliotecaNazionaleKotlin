@@ -1,7 +1,11 @@
 package com.example.biblioteca_nazionale.fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.RatingBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -34,6 +38,20 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
         val ratingBar: RatingBar = binding.ratingBarReview
 
         val toolbar: MaterialToolbar = binding.toolbar
+
+        binding.reviewTitle.requestFocus()
+
+
+        binding.reviewTitle.postDelayed({
+            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+        }, 1)
+
+        ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+            if (rating == 0.0f) {
+                ratingBar.rating = 1.0f // Imposta il rating a 1 se l'utente ha selezionato 0
+            }
+        }
 
 
         book?.let {
