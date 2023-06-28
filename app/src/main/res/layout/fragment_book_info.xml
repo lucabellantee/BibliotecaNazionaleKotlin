@@ -501,7 +501,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:text="Valuta"
+                    android:text="@string/vote"
                     android:textSize="16sp" />
 
                 <RatingBar
@@ -554,6 +554,11 @@
                     android:orientation="vertical"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewReviews"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
                     <LinearLayout
                         android:layout_width="428dp"

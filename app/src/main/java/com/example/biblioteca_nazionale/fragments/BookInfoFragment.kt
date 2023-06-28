@@ -2,6 +2,7 @@ package com.example.biblioteca_nazionale.fragments
 
 
 import RequestViewModel
+import ReviewsAdapter
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -20,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
@@ -89,6 +91,39 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         val book = arguments?.getParcelable<Book>("book")
 
         book?.let {
+
+            fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
+                val commentsList = ArrayList<TemporaryReview>()
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                println(users)
+                for (user in users) {
+                    for (comment in user.userSettings?.commenti!!) {
+                        if (comment.isbn == book.id) {
+                            commentsList.add(
+                                TemporaryReview(
+                                    comment.idComment,
+                                    comment.reviewText,
+                                    comment.reviewTitle,
+                                    comment.isbn,
+                                    comment.vote,
+                                    comment.date,
+                                    user.email
+                                )
+                            )
+                        }
+                    }
+                }
+
+                // Ordina commentsList in ordine decrescente di data
+                commentsList.sortByDescending { dateFormat.parse(it.date) }
+
+
+                val adapter = ReviewsAdapter(commentsList)
+                val layoutManager = LinearLayoutManager(requireContext())
+                binding.recyclerViewReviews.layoutManager = layoutManager
+                binding.recyclerViewReviews.adapter = adapter
+            }
+
 
             modelRequest.fetchDataBook(it)
 

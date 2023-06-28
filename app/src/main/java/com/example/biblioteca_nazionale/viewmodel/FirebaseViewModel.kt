@@ -1,6 +1,8 @@
 package com.example.biblioteca_nazionale.viewmodel
 
 import android.util.Log
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -324,25 +326,26 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-    fun removeBookBooked(idLibro: String) {
+    fun removeBookBooked(idLibro: String, onSuccess: () -> Unit, onError: () -> Unit) {
 
-        val uid = getUidLoggedUser() // TODO METTERE: firebase.getCurrentUid()
+        val uid = getUidLoggedUser()
         val currentUser = this.getCurrentUser(uid)
+
         currentUser.thenAccept { user ->
             user.userSettings?.removeBook(idLibro)
             firebase.updateBookPrenoted(user)
+            onSuccess() // Richiama il callback in caso di successo
         }.exceptionally { throwable ->
-            // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
+            onError() // Richiama il callback in caso di errore
             null
         }
-
     }
 
 
-    fun addNewCommentUserSide(reviewText: String, reviewTitle: String, isbn: String, vote: Float) {
-        val currentUser =
-            this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
+
+    fun addNewCommentUserSide(reviewText: String,reviewTitle: String,isbn: String,vote:Float){
+        val currentUser = this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
             user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote)
             firebase.addCommentUserSide(user)

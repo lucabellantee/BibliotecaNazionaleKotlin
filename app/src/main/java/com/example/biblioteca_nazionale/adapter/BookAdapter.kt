@@ -1,4 +1,3 @@
-import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +9,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
-import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.model.MiniBook
 
 class BookAdapter(private val books: List<MiniBook>) : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
 
-    private lateinit var mListner: BookAdapter.OnBookClickListener
+    private var onBookClickListener: OnBookClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_book, parent, false)
@@ -23,25 +21,19 @@ class BookAdapter(private val books: List<MiniBook>) : RecyclerView.Adapter<Book
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        val book = books[position] as? MiniBook
-        if (book != null) {
-            holder.bind(book)
-        } else {
-            Log.d("NIENTE", "NIENTE")
-            // Gestisci il caso in cui l'elemento nella posizione specificata non sia un oggetto di tipo MiniBook
+        val book = books[position]
+        holder.bind(book)
+        holder.itemView.setOnClickListener {
+            onBookClickListener?.onBookClick(position)
         }
-    }
-
-    interface OnBookClickListener {
-        fun onBookClick(position: Int)
-    }
-
-    fun setOnBookClickListener(listner: BookAdapter.OnBookClickListener) {
-        mListner = listner
     }
 
     override fun getItemCount(): Int {
         return books.size
+    }
+
+    fun setOnBookClickListener(listener: OnBookClickListener) {
+        onBookClickListener = listener
     }
 
     inner class BookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -51,8 +43,8 @@ class BookAdapter(private val books: List<MiniBook>) : RecyclerView.Adapter<Book
         private val libraryTextView: TextView = itemView.findViewById(R.id.library)
 
         fun bind(book: MiniBook) {
-            titleTextView.text = "${titleTextView.text} ${book.isbn}"
-            dateTextView.text = "${dateTextView.text} ${book.date}"
+            titleTextView.text = "Id:${book.isbn}"
+            dateTextView.text = "Expiration date:${book.date}"
             libraryTextView.text = book.bookPlace
             Glide.with(itemView)
                 .load(book.image)
@@ -60,5 +52,9 @@ class BookAdapter(private val books: List<MiniBook>) : RecyclerView.Adapter<Book
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageImageView)
         }
+    }
+
+    interface OnBookClickListener {
+        fun onBookClick(position: Int)
     }
 }
