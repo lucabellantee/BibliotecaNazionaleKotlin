@@ -235,10 +235,37 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     }
                 }
             }
-            binding.layoutReviews.setOnClickListener {
-                val action =
-                    BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
-                findNavController().navigate(action)
+            fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
+                val commentsList = ArrayList<TemporaryReview>()
+                for (user in users) {
+                    for (comment in user.userSettings?.commenti!!) {
+                        if (comment.isbn == book.id) {
+                            commentsList.add(
+                                TemporaryReview(
+                                    comment.idComment,
+                                    comment.reviewText,
+                                    comment.reviewTitle,
+                                    comment.isbn,
+                                    comment.vote,
+                                    comment.date,
+                                    user.email
+                                )
+                            )
+                        }
+                    }
+                }
+                if (commentsList.isNotEmpty()) {
+                    binding.layoutReviews.visibility=View.VISIBLE
+                    binding.textViewTitleRecensioni.text="Reviews"
+                    binding.layoutReviews.setOnClickListener {
+                        val action =
+                            BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
+                        findNavController().navigate(action)
+                    }
+                }else{
+                    binding.layoutReviews.visibility=View.GONE
+                    binding.textViewTitleRecensioni.text="No reviews found"
+                }
             }
         }
     }
@@ -568,8 +595,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         button.animate().alpha(0F).setDuration(500).withEndAction { button.visibility = View.GONE }
             .start()
     }
-
-
 
 
     private fun manageRecyclerView(book: Book) {

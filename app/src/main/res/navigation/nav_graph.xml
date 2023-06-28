@@ -145,4 +145,9 @@
                 app:argType="boolean" /> <!-- Assicurati di specificare un valore di default -->
         </action>
     </fragment>
+    <fragment
+        android:id="@+id/myReviewsFragment"
+        android:name="com.example.biblioteca_nazionale.fragments.MyReviewsFragment"
+        android:label="fragment_my_reviews"
+        tools:layout="@layout/fragment_my_reviews" />
 </navigation>

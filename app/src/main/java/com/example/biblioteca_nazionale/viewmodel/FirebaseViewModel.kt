@@ -395,10 +395,10 @@ class FirebaseViewModel : ViewModel() {
     }
 
     
-    fun allDate(uid: String): CompletableFuture<List<MiniBook>> {
+    fun allDate(): CompletableFuture<List<MiniBook>> {
         val futureResult = CompletableFuture<List<MiniBook>>()
 
-        getCurrentUser(uid).thenAccept { user ->
+        getCurrentUser().thenAccept { user ->
             val currentDate = LocalDate.now()
             val upcomingBooks = user.userSettings?.libriPrenotati?.filter { miniBook ->
                 val expirationDate = LocalDate.parse(miniBook.date, DateTimeFormatter.ISO_DATE)
