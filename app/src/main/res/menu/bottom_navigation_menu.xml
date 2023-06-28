@@ -16,18 +16,18 @@
         android:title="@string/books"/>
 
     <item
+        android:id="@+id/myReviewsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:icon="@drawable/round_rate_review_24_purple"
+        android:title="@string/reviews"/>
+
+    <item
         android:id="@+id/notificationsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:icon="@drawable/baseline_notifications_24"
         android:title="@string/notifications"/>
-
-    <!--<item
-        android:id="@+id/settingsFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:icon="@drawable/baseline_settings_24"
-        android:title="@string/settings"/>-->
 
 
     <item

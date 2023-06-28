@@ -50,6 +50,8 @@
     <string name="write_text">Write your text…</string>
     <string name="your_review">Your review from:</string>
     <string name="change_review">Change your review</string>
+    <string name="my_reviews">My reviews</string>
+
 
     <string name="notifications_image">Notifications image</string>
 
