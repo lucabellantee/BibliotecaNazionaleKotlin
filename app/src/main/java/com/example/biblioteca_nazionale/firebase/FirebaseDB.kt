@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
+import java.util.concurrent.CompletableFuture
 
 
 class FirebaseDB {
@@ -138,21 +139,27 @@ class FirebaseDB {
     } */
 
 
-    fun updateBookPrenoted(newUser: Users) {
-        /*firebaseAuth.currentUser?.let { db.collection("utenti").document(it.uid).delete() }
-        db.collection("utenti").document(newUser.UID).set(newUser)*/
+    fun updateBookPrenoted(newUser: Users): CompletableFuture<Void> {
         val uid = newUser.UID
+        val futureResult = CompletableFuture<Void>()
+
         if (uid != null) {
             db.collection("utenti")
                 .document(uid)
                 .set(newUser, SetOptions.merge())
                 .addOnSuccessListener {
                     Log.d("/FirebaseViewModel", "Documento utente aggiornato correttamente.")
+                    futureResult.complete(null)
                 }
                 .addOnFailureListener { e ->
                     Log.e("/FirebaseViewModel", "Errore nell'aggiornamento del documento utente: ${e.message}")
+                    futureResult.completeExceptionally(e)
                 }
+        } else {
+            futureResult.completeExceptionally(IllegalArgumentException("UID utente nullo."))
         }
+
+        return futureResult
     }
 
 
