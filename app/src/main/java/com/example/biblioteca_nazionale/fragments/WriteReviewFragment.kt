@@ -22,9 +22,11 @@ import com.google.android.material.appbar.MaterialToolbar
 
 class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
-    lateinit var binding: FragmentWriteReviewBinding
+    private lateinit var binding: FragmentWriteReviewBinding
 
     private val fbViewModel: FirebaseViewModel = FirebaseViewModel()
+
+    private lateinit var ratingBar: RatingBar
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,15 +37,14 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
         val reviewVote = arguments?.getFloat("reviewVote")
         val book = arguments?.getParcelable<Book>("book")
 
-        val ratingBar: RatingBar = binding.ratingBarReview
-
-        val toolbar: MaterialToolbar = binding.toolbar
+        ratingBar = binding.ratingBarReview
 
         binding.reviewTitle.requestFocus()
 
 
         binding.reviewTitle.postDelayed({
-            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
         }, 1)
 
@@ -65,42 +66,53 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
             reviewVote?.let {
                 ratingBar.rating = it
+                manageToolbar(book)
+            }
+        }
+    }
 
-                toolbar.setNavigationOnClickListener {
-                    findNavController().popBackStack()
+    private fun manageToolbar(book: Book) {
+        val toolbar: MaterialToolbar = binding.toolbar
+
+        toolbar.setNavigationOnClickListener {
+            val action =
+                WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
+            findNavController().navigate(action)
+        }
+
+        toolbar.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.menu_confirm) {
+                if (binding.reviewText.text.toString()
+                        .isNotEmpty() && binding.reviewTitle.text.toString().isNotEmpty()
+                ) {
+                    fbViewModel.addNewCommentUserSide(
+                        binding.reviewText.text.toString(),
+                        binding.reviewTitle.text.toString(),
+                        book.id,
+                        ratingBar.rating
+                    )
+
+                    Toast.makeText(
+                        requireContext(),
+                        "La recensione è andata a buon fine",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    val action =
+                        WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(
+                            book
+                        )
+                    findNavController().navigate(action)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Devi inserire il titolo della recensione e la recensione",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-
-                toolbar.setOnMenuItemClickListener { item ->
-                    if (item.itemId == R.id.menu_confirm) {
-                        if (binding.reviewText.text.toString()
-                                .isNotEmpty() && binding.reviewTitle.text.toString().isNotEmpty()
-                        ) {
-                            fbViewModel.addNewCommentUserSide(
-                                binding.reviewText.text.toString(),
-                                binding.reviewTitle.text.toString(),
-                                book.id,
-                                ratingBar.rating
-                            )
-
-                            Toast.makeText(requireContext(), "La recensione è andata a buon fine", Toast.LENGTH_SHORT).show()
-
-                            val action = WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
-                            findNavController().navigate(action)
-
-                            //findNavController().popBackStack()
-
-                        } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "Devi inserire il titolo della recensione e la recensione",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        true
-                    } else {
-                        false
-                    }
-                }
+                true
+            } else {
+                false
             }
         }
     }

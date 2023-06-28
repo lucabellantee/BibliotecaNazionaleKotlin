@@ -92,38 +92,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         book?.let {
 
-            fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
-                val commentsList = ArrayList<TemporaryReview>()
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                println(users)
-                for (user in users) {
-                    for (comment in user.userSettings?.commenti!!) {
-                        if (comment.isbn == book.id) {
-                            commentsList.add(
-                                TemporaryReview(
-                                    comment.idComment,
-                                    comment.reviewText,
-                                    comment.reviewTitle,
-                                    comment.isbn,
-                                    comment.vote,
-                                    comment.date,
-                                    user.email
-                                )
-                            )
-                        }
-                    }
-                }
-
-                // Ordina commentsList in ordine decrescente di data
-                commentsList.sortByDescending { dateFormat.parse(it.date) }
-
-
-                val adapter = ReviewsAdapter(commentsList)
-                val layoutManager = LinearLayoutManager(requireContext())
-                binding.recyclerViewReviews.layoutManager = layoutManager
-                binding.recyclerViewReviews.adapter = adapter
-            }
-
+            manageRecyclerView(it)
 
             modelRequest.fetchDataBook(it)
 
@@ -274,7 +243,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                                 ).show()
 
                                                             }
-
                                                         }
 
                                                         /*binding.buttonPrenota.isEnabled =
@@ -296,7 +264,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                 LocationServices.getFusedLocationProviderClient(
                                     requireContext()
                                 )
-
 
                             if (ContextCompat.checkSelfPermission(
                                     requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
@@ -334,38 +301,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                             }
                                         }
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
-                println(usersList)
-                outer@ for (user in usersList) {
-                    val userSettings = user.userSettings
-                    if (userSettings != null) {
-                        val commenti = userSettings.commenti
-                        if (commenti != null) {
-                            for (commento in commenti) {
-                                if (commento.isbn == book.id) {
-                                    binding.ratingReview2.rating = commento.vote
-                                    println(binding.ratingReview2.rating)
-                                    binding.textReviewUtente.text = "Valutazione di ${user.email}:"
-
-                                    val inputFormat =
-                                        SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                                    val outputFormat =
-                                        SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-
-                                    val date: Date = inputFormat.parse(commento.date)
-                                    val outputDateString: String = outputFormat.format(date)
-
-                                    binding.textReviewDate.text = outputDateString
-                                    binding.textTitleReview1.text = commento.reviewTitle
-                                    binding.textReview1.text = commento.reviewText
-                                    break@outer
                                 }
                             }
                         }
@@ -596,6 +531,40 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     private fun hideButtonWithAnimation(button: View) {
         button.animate().alpha(0F).setDuration(500).withEndAction { button.visibility = View.GONE }
             .start()
+    }
+
+    private fun manageRecyclerView(book: Book) {
+        fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
+            val commentsList = ArrayList<TemporaryReview>()
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+            println(users)
+            for (user in users) {
+                for (comment in user.userSettings?.commenti!!) {
+                    if (comment.isbn == book.id) {
+                        commentsList.add(
+                            TemporaryReview(
+                                comment.idComment,
+                                comment.reviewText,
+                                comment.reviewTitle,
+                                comment.isbn,
+                                comment.vote,
+                                comment.date,
+                                user.email
+                            )
+                        )
+                    }
+                }
+            }
+
+            commentsList.sortByDescending { dateFormat.parse(it.date) }
+
+            val first3Comments = ArrayList(commentsList.subList(0, minOf(commentsList.size, 3)))
+
+            val adapter = ReviewsAdapter(first3Comments as ArrayList<TemporaryReview>)
+            val layoutManager = LinearLayoutManager(requireContext())
+            binding.recyclerViewReviews.layoutManager = layoutManager
+            binding.recyclerViewReviews.adapter = adapter
+        }
     }
 
     private fun manageDescription() {
