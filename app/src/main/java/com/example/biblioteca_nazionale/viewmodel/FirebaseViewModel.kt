@@ -17,6 +17,7 @@ import com.example.biblioteca_nazionale.model.Review
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 
 
@@ -391,6 +392,26 @@ class FirebaseViewModel : ViewModel() {
             null
         }
 
+    }
+
+    
+    fun allDate(uid: String): CompletableFuture<List<MiniBook>> {
+        val futureResult = CompletableFuture<List<MiniBook>>()
+
+        getCurrentUser(uid).thenAccept { user ->
+            val currentDate = LocalDate.now()
+            val upcomingBooks = user.userSettings?.libriPrenotati?.filter { miniBook ->
+                val expirationDate = LocalDate.parse(miniBook.date, DateTimeFormatter.ISO_DATE)
+                val daysUntilExpiration = ChronoUnit.DAYS.between(currentDate, expirationDate)
+                daysUntilExpiration <= 2
+            }
+            futureResult.complete(upcomingBooks.orEmpty())
+        }.exceptionally { throwable ->
+            futureResult.completeExceptionally(throwable)
+            null
+        }
+
+        return futureResult
     }
 
     fun removeCommentUserSide(idComment: String) {

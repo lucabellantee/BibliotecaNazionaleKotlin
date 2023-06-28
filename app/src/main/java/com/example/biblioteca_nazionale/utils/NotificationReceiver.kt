@@ -16,27 +16,24 @@ class NotificationReceiver : BroadcastReceiver() {
         val channelName = "My Channel"
         val title = intent?.getStringExtra("title")
         val text = intent?.getStringExtra("text")
+        //val uid = intent?.getStringExtra("uid")
 
         val sharedPreferences = context?.getSharedPreferences("notification_data", Context.MODE_PRIVATE)
-        println(sharedPreferences)
         var lastNotificationId = sharedPreferences?.getInt("last_notification_id", 0) ?: 0
-        println(lastNotificationId)
 
         val notificationId = lastNotificationId + 1
 
-        println(notificationId)
         val editor = sharedPreferences?.edit()
         editor?.putInt("last_notification_id", notificationId)
         val notificationIdsSet = sharedPreferences?.getStringSet("notification_ids", emptySet())?.toMutableSet()
         notificationIdsSet?.add(notificationId.toString())
         editor?.putStringSet("notification_ids", notificationIdsSet)
-        //editor?.putStringSet("notification_ids", emptySet<String>())
         editor?.apply()
 
         editor?.putString("title_$notificationId", title)
         editor?.putString("text_$notificationId", text)
+        //editor?.putString("uid_$notificationId", uid)
         editor?.putInt("logo_$notificationId", R.drawable.logo_welcome)
-        //editor?.putStringSet("notification_ids", emptySet<String>())
         editor?.apply()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

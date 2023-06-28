@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentNotificationsBinding
 import com.example.biblioteca_nazionale.utils.NotificationReceiver
+import com.google.firebase.auth.FirebaseAuth
 
 class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
 
@@ -34,6 +35,7 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
         val intent = Intent(context, NotificationReceiver::class.java)
         intent.putExtra("title", "Titolo della notifica")
         intent.putExtra("text", "Testo della notifica")
+        //intent.putExtra("uid", firebaseAuth.currentUser?.uid)
 
         /*binding.button234.setOnClickListener {
             context.sendBroadcast(intent)
@@ -41,6 +43,11 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
 
         val sharedPreferences = requireContext().getSharedPreferences("notification_data", Context.MODE_PRIVATE)
         val allEntries = sharedPreferences.all
+
+        /*val currentUserUid = firebaseAuth.currentUser?.uid
+        val notificationIds = allEntries.keys.filter {
+            it.startsWith("title_") && sharedPreferences.getString("uid_$it", "") == currentUserUid
+        }.map { it.removePrefix("title_").toInt() }.toSet()*/
 
         val notificationIds = allEntries.keys.filter { it.startsWith("title_") }.map { it.removePrefix("title_").toInt() }.toSet()
 
@@ -51,7 +58,6 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
                 val text = sharedPreferences.getString("text_$notificationId", "")
                 val notificationInfo = Pair(title, text)
                 notificationList.add(notificationInfo as Pair<String, String>)
-                println(notificationList)
             }
         }
         val layoutManager = LinearLayoutManager(requireContext())
