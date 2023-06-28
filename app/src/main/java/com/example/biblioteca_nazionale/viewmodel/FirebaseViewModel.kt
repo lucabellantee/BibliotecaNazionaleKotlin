@@ -233,7 +233,6 @@ class FirebaseViewModel : ViewModel() {
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             null
-
         }
         return result
     }
@@ -275,7 +274,6 @@ class FirebaseViewModel : ViewModel() {
                     "Condizion nel if ",
                     ((libroPrenotato.isbn == idBook) && (libroPrenotato.bookPlace == place)).toString()
                 )
-                // todo LUCA: Vedere perchè non entra nel if
                 if ((libroPrenotato.isbn == idBook) && (libroPrenotato.bookPlace == place)) {
                     val inputFormat = "yyyy-MM-dd"
                     val outputFormat = "dd/MM/yyyy"

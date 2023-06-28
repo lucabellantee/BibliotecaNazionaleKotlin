@@ -152,7 +152,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         binding.scrollViewInfo.visibility = View.VISIBLE
                         buttonReview.visibility = View.GONE
 
-                        manageRatingBar(book)
+                        manageRatingBars(book)
 
                         manageDescription()
 
@@ -214,7 +214,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                     }
                                 }
                             }
-                            setDefaultCamera(markerList,book,googleMap)
+                            setDefaultCamera(markerList, book, googleMap)
                         }
                     }
                 }
@@ -226,68 +226,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             }
         }
     }
-
-    private suspend fun setDefaultCamera(markerList: MutableList<MyItem>, book: Book, googleMap: GoogleMap) {
-        val fusedLocationClient =
-            LocationServices.getFusedLocationProviderClient(
-                requireContext()
-            )
-
-        if (ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            setDefaultLibraryCamera(markerList[0], book, googleMap)
-        } else {
-            withContext(Dispatchers.IO) {
-                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    Log.d("Mannaia", "Mannaia$location")
-                    if (location != null) {
-                        val latitude = location.latitude
-                        val longitude = location.longitude
-
-                        val nearestMarker = findNearestMarker(
-                            latitude, longitude, markerList
-                        )
-
-                        if (nearestMarker != null) {
-                            setDefaultLibraryCamera(
-                                nearestMarker, book, googleMap
-                            )
-                        } else {
-                            noLibraryFound()
-                        }
-                    } else {
-                        if (markerList.isNotEmpty()) {
-                            setDefaultLibraryCamera(
-                                markerList[0], book, googleMap
-                            )
-                        } else {
-                            noLibraryFound()
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-    private fun expirationDate(bookId: String, nomeBiblioteca: String) {
-        fbViewModel.getExpirationDate(
-            bookId,
-            nomeBiblioteca
-        ).thenAccept { expirationDate ->
-            println(expirationDate)
-            if (!(expirationDate.equals(""))) {
-                showViewWithAnimation(binding.textViewDataRiconsegna)
-                binding.textViewDataRiconsegna.text =
-                    "Da riconsegnare entro il " + expirationDate.toString()
-            } else hideViewWithAnimation(binding.textViewDataRiconsegna)
-        }
-    }
-
 
     private fun setDefaultLibraryCamera(marker: MyItem, book: Book, googleMap: GoogleMap) {
 
@@ -352,6 +290,72 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
     }
 
+    private fun expirationDate(bookId: String, nomeBiblioteca: String) {
+        fbViewModel.getExpirationDate(
+            bookId,
+            nomeBiblioteca
+        ).thenAccept { expirationDate ->
+            println(expirationDate)
+            if (!(expirationDate.equals(""))) {
+                showViewWithAnimation(binding.textViewDataRiconsegna)
+                binding.textViewDataRiconsegna.text =
+                    "Da riconsegnare entro il " + expirationDate.toString()
+            } else hideViewWithAnimation(binding.textViewDataRiconsegna)
+        }
+    }
+
+    private suspend fun setDefaultCamera(
+        markerList: MutableList<MyItem>,
+        book: Book,
+        googleMap: GoogleMap
+    ) {
+        val fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(
+                requireContext()
+            )
+
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            setDefaultLibraryCamera(markerList[0], book, googleMap)
+        } else {
+            withContext(Dispatchers.IO) {
+                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                    Log.d("Mannaia", "Mannaia$location")
+                    if (location != null) {
+                        val latitude = location.latitude
+                        val longitude = location.longitude
+
+                        val nearestMarker = findNearestMarker(
+                            latitude, longitude, markerList
+                        )
+
+                        if (nearestMarker != null) {
+                            setDefaultLibraryCamera(
+                                nearestMarker, book, googleMap
+                            )
+                        } else {
+                            noLibraryFound()
+                        }
+                    } else {
+                        if (markerList.isNotEmpty()) {
+                            setDefaultLibraryCamera(
+                                markerList[0], book, googleMap
+                            )
+                        } else {
+                            noLibraryFound()
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+
     private fun noLibraryFound() {
         binding.textViewNomeBiblioteca.text = "Nessuna biblioteca trovata"
 
@@ -403,7 +407,64 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
     }
 
-    private fun manageRatingBar(book: Book) {
+    private fun manageRatingBars(book: Book) {
+
+        val ratingDetail = binding.detailReview
+
+        val textratingBarStella1 = binding.textViewInforatingbar1
+        val progressBar1: ProgressBar = binding.progressBar1
+
+        val textratingBarStella2 = binding.textViewInforatingbar2
+        val progressBar2: ProgressBar = binding.progressBar2
+
+        val textratingBarStella3 = binding.textViewInforatingbar3
+        val progressBar3: ProgressBar = binding.progressBar3
+
+        val textratingBarStella4 = binding.textViewInforatingbar4
+        val progressBar4: ProgressBar = binding.progressBar4
+
+        val textratingBarStella5 = binding.textViewInforatingbar5
+        val progressBar5: ProgressBar = binding.progressBar5
+
+        val ratingBarIndicator: RatingBar = binding.ratingBarIndicator
+        val textRatingIndicator = binding.textRatingIndicator
+
+        fbViewModel.getAllCommentsByIsbn(book.id).observe(viewLifecycleOwner) { comments ->
+            val numReviews = comments.size
+            val numReviews5 = comments.count { it.vote == 5.0f }
+            val numReviews4 = comments.count { it.vote == 4.0f }
+            val numReviews3 = comments.count { it.vote == 3.0f }
+            val numReviews2 = comments.count { it.vote == 2.0f }
+            val numReviews1 = comments.count { it.vote == 1.0f }
+
+            val reviewsAverage = comments.map { it.vote }.average()
+            val formattedAverage = String.format("%.2f", reviewsAverage)
+            val perc5Star = (numReviews5.toFloat() / numReviews.toFloat()) * 100
+            val perc4Star = (numReviews4.toFloat() / numReviews.toFloat()) * 100
+            val perc3Star = (numReviews3.toFloat() / numReviews.toFloat()) * 100
+            val perc2Star = (numReviews2.toFloat() / numReviews.toFloat()) * 100
+            val perc1Star = (numReviews1.toFloat() / numReviews.toFloat()) * 100
+
+            ratingDetail.text = "${formattedAverage} su 5.0  ${numReviews} valutazioni"
+
+            textRatingIndicator.text = "${formattedAverage}"
+            ratingBarIndicator.rating = reviewsAverage.toFloat()
+
+            textratingBarStella1.text = "${perc1Star.toInt()}%"
+            progressBar1.progress = perc1Star.toInt()
+
+            textratingBarStella2.text = "${perc2Star.toInt()}%"
+            progressBar2.progress = perc2Star.toInt()
+
+            textratingBarStella3.text = "${perc3Star.toInt()}%"
+            progressBar3.progress = perc3Star.toInt()
+
+            textratingBarStella4.text = "${perc4Star.toInt()}%"
+            progressBar4.progress = perc4Star.toInt()
+
+            textratingBarStella5.text = "${perc5Star.toInt()}%"
+            progressBar5.progress = perc5Star.toInt()
+        }
 
         val ratingBar: RatingBar = binding.ratingBarInserimento
 
