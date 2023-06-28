@@ -21,26 +21,13 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
     private lateinit var adapter: BookAdapter
     private lateinit var firebaseViewModel: FirebaseViewModel
     private val firebaseAuth = FirebaseAuth.getInstance()
+    private var isDataLoaded = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMyBooksBinding.bind(view)
         firebaseViewModel = ViewModelProvider(requireActivity()).get(FirebaseViewModel::class.java)
         val appo: ArrayList<MiniBook> = ArrayList()
-
-        adapter = BookAdapter(appo)
-        adapter.setOnBookClickListener(object : BookAdapter.OnBookClickListener {
-            override fun onBookClick(position: Int) {
-                val libro = appo[position]
-                val action =
-                    MyBooksFragmentDirections.actionMyBooksFragmentToDeleteBookingFragment2(libro)
-                findNavController().navigate(action)
-            }
-        })
-
-        val layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewMyBooks.layoutManager = layoutManager
-        binding.recyclerViewMyBooks.adapter = adapter
 
         firebaseViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
             appo.clear()
@@ -57,8 +44,21 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
                     }
                     break
                 }
-                adapter.notifyDataSetChanged()
+                //adapter.notifyDataSetChanged()
             }
+            adapter = BookAdapter(appo)
+            adapter.setOnBookClickListener(object : BookAdapter.OnBookClickListener {
+                override fun onBookClick(position: Int) {
+                    val libro = appo[position]
+                    val action =
+                        MyBooksFragmentDirections.actionMyBooksFragmentToDeleteBookingFragment2(libro)
+                    findNavController().navigate(action)
+                }
+            })
+
+            val layoutManager = LinearLayoutManager(requireContext())
+            binding.recyclerViewMyBooks.layoutManager = layoutManager
+            binding.recyclerViewMyBooks.adapter = adapter
         }
     }
 }
