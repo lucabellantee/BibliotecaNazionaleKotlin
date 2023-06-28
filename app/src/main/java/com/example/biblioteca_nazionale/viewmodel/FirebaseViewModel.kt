@@ -13,10 +13,12 @@ import java.util.concurrent.CompletableFuture
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.model.Review
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 
-class FirebaseViewModel: ViewModel() {
+class FirebaseViewModel : ViewModel() {
 
     val firebase = FirebaseDB()
     /*
@@ -46,18 +48,18 @@ class FirebaseViewModel: ViewModel() {
     }
 
 
-    fun getUserInfo(uid: String): MutableLiveData<DocumentSnapshot>{
-      return firebase.getAllUserInfoFromUid(uid)
+    fun getUserInfo(uid: String): MutableLiveData<DocumentSnapshot> {
+        return firebase.getAllUserInfoFromUid(uid)
     }
 
-    fun getAllDocument(): MutableLiveData<ArrayList<DocumentSnapshot>>{
+    fun getAllDocument(): MutableLiveData<ArrayList<DocumentSnapshot>> {
         return firebase.getAllUserFromDB()
     }
 
 
- /*   fun saveNewUser(uid: String, email: String){
-        firebase.saveNewUser(Users(uid,email))
-    }*/
+    /*   fun saveNewUser(uid: String, email: String){
+           firebase.saveNewUser(Users(uid,email))
+       }*/
 
     fun getEmailLoggedUser(): String = firebase.getCurrentEmail().toString()
 
@@ -69,14 +71,17 @@ class FirebaseViewModel: ViewModel() {
         this.getUserInfo(getUidLoggedUser()).observeForever { documentSnapshot ->
             val data = documentSnapshot
             val impostazioniData = data?.get("userSettings") as? HashMap<*, *>
-            val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
+            val libriPrenotatiData =
+                impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
             val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
             val uid = data?.get("uid") as? String
             val email = data?.get("email") as? String
 
             if (uid != null && email != null) {
-                val libriPrenotati = libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
-                val commenti = commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
+                val libriPrenotati =
+                    libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
+                val commenti =
+                    commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
 
                 val userSettings = commenti?.let { UserSettings(libriPrenotati, it) }
                 val users = Users(uid, email, userSettings)
@@ -89,7 +94,6 @@ class FirebaseViewModel: ViewModel() {
     }
 
 
-
     fun getAllUser(): LiveData<ArrayList<Users>> {
         val allUserLiveData = MutableLiveData<ArrayList<Users>>()
 
@@ -97,13 +101,16 @@ class FirebaseViewModel: ViewModel() {
             val allUser = ArrayList<Users>()
             for (document in allDocument) {
                 val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
-                val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
+                val libriPrenotatiData =
+                    impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
                 val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
                 val uid = document?.get("uid") as? String
                 val email = document?.get("email") as? String
 
-                val libriPrenotati = libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
-                val commenti = commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
+                val libriPrenotati =
+                    libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
+                val commenti =
+                    commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
 
                 val userSettings = commenti?.let { UserSettings(libriPrenotati, it) }
                 val tmpUser = Users(uid.toString(), email.toString(), userSettings)
@@ -126,16 +133,20 @@ class FirebaseViewModel: ViewModel() {
                 val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
                 val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
 
-                val commenti = commentiData?.mapNotNull { convertHashMapToReview(it) } as ArrayList<Review>?
+                val commenti =
+                    commentiData?.mapNotNull { convertHashMapToReview(it) } as ArrayList<Review>?
 
                 commenti?.let {
                     val filteredComments = it.filter { comment -> comment.isbn == isbn }
 
                     if (filteredComments.isNotEmpty()) {
-                        val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
-                        val libriPrenotati = libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
+                        val libriPrenotatiData =
+                            impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
+                        val libriPrenotati =
+                            libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
 
-                        val userSettings = UserSettings(libriPrenotati,
+                        val userSettings = UserSettings(
+                            libriPrenotati,
                             filteredComments as ArrayList<Review>
                         )
                         val tmpUser = Users(uid.toString(), email.toString(), userSettings)
@@ -159,7 +170,8 @@ class FirebaseViewModel: ViewModel() {
                 val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
                 val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
 
-                val commenti = commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
+                val commenti =
+                    commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
 
                 // Aggiungi i commenti che hanno il valore di ISBN desiderato
                 commenti?.let {
@@ -173,42 +185,42 @@ class FirebaseViewModel: ViewModel() {
     }
 
 
-    fun getBookInfoResponseFromDB(idLibro: String): MutableLiveData<DocumentSnapshot>{
+    fun getBookInfoResponseFromDB(idLibro: String): MutableLiveData<DocumentSnapshot> {
         return firebase.getAllBookInfoFromId(idLibro)
     }
 
-    fun getBookInfo(idLibro: String): BookFirebase{
+    fun getBookInfo(idLibro: String): BookFirebase {
         var allData = this.getBookInfoResponseFromDB("ID_LIBRO")
         val data = allData.value?.data
-        val allComment = data?.get("Commenti") as? HashMap<String, HashMap<String,HashMap<String,String>>>
-       // Log.d("/FirebaseViewModel", allComment.toString())
-       // val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
+        val allComment =
+            data?.get("Commenti") as? HashMap<String, HashMap<String, HashMap<String, String>>>
+        // Log.d("/FirebaseViewModel", allComment.toString())
+        // val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
         //val comment = allComment?.get("uid utente") as? HashMap<Any,Any>
         //Log.d("/FirebaseViewModel", comment.toString())
-        val allRankingStar = data?.get("Stelle recensioni") as? HashMap<String,String>
-       // Log.d("/FirebaseViewModel", allRankingStar.toString())
+        val allRankingStar = data?.get("Stelle recensioni") as? HashMap<String, String>
+        // Log.d("/FirebaseViewModel", allRankingStar.toString())
 
         return BookFirebase(allComment!!, allRankingStar!!)
     }
 
 
-
-    fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String){
+    fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String) {
         val uid = firebase.getCurrentUid()
         Log.d("UID: ", firebase.getCurrentUid().toString())
-        Log.d("STRINGAA3", idLibro+""+isbn)
+        Log.d("STRINGAA3", idLibro + "" + isbn)
         val currentUser = this.getCurrentUser(uid.toString())
         currentUser.thenAccept { utente ->
-            Log.d("ISBN:  ", isbn )
-            Log.d("IdLibro:  " , idLibro)
+            Log.d("ISBN:  ", isbn)
+            Log.d("IdLibro:  ", idLibro)
             utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image)
             //Log.d("DOPO" , idLibro + " " + isbn + " " + placeBooked + " " + image)
             //Log.d("USER", utente.toString())
-           // Log.d("USERRR", user.email)
+            // Log.d("USERRR", user.email)
             //Log.d("UIDDD", user.UID)
             Log.d("USER", utente.toString())
             firebase.updateBookPrenoted(utente)
-            println(utente.userSettings?.libriPrenotati?.get(utente.userSettings?.libriPrenotati!!.size-1))
+            println(utente.userSettings?.libriPrenotati?.get(utente.userSettings?.libriPrenotati!!.size - 1))
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
@@ -243,32 +255,44 @@ class FirebaseViewModel: ViewModel() {
             var foundMatchingBook = false
             Log.d("idBook ", idBook)
             Log.d("place ", place)
+
             for (libroPrenotato in user.userSettings?.libriPrenotati!!) {
-                Log.d("idBook-user " , libroPrenotato.isbn)
+                Log.d("idBook-user ", libroPrenotato.isbn)
                 Log.d("place-user ", libroPrenotato.bookPlace)
+                Log.d(
+                    "Condizion nel if ",
+                    ((libroPrenotato.isbn == idBook) && (libroPrenotato.bookPlace == place)).toString()
+                )
                 // todo LUCA: Vedere perchè non entra nel if
-                if (libroPrenotato.isbn.equals(idBook) && libroPrenotato.bookPlace.equals(place)) {
-                    val inputFormat = SimpleDateFormat("yyyy/MM/dd")
-                    val outputFormat = SimpleDateFormat("dd/MM/yyyy")
+                if ((libroPrenotato.isbn == idBook) && (libroPrenotato.bookPlace == place)) {
+                    val inputFormat = "yyyy-MM-dd"
+                    val outputFormat = "dd/MM/yyyy"
+                    Log.d("Data scadenza", libroPrenotato.date.toString())
 
-                    val calendar = Calendar.getInstance()
-                    val date = inputFormat.parse(libroPrenotato.date)
-                    calendar.time = date
+                    // Creazione dell'oggetto DateTimeFormatter per l'input
+                    val inputFormatter = DateTimeFormatter.ofPattern(inputFormat)
 
-                    calendar.add(Calendar.DAY_OF_MONTH, 14)
-                    val expiringDate = outputFormat.format(calendar.time)
+                    // Conversione della stringa di input in un oggetto LocalDate
+                    val date = LocalDate.parse(libroPrenotato.date.toString(), inputFormatter)
 
-                    Log.d("GetExpirationDate", expiringDate)
+
+                    // Creazione dell'oggetto DateTimeFormatter per l'output
+                    val outputFormatter = DateTimeFormatter.ofPattern(outputFormat)
+
+                    // Conversione della data di output in una stringa nel formato desiderato
+                    val expiringDate = date.format(outputFormatter)
+
                     futureExpiringDate.complete(expiringDate)
 
-                    foundMatchingBook = true
                     break
+                 //   foundMatchingBook = true
+
                 }
             }
 
-            if (!foundMatchingBook) {
-                futureExpiringDate.complete("ERROR")
-            }
+           // if (!foundMatchingBook) {
+                futureExpiringDate.complete("")
+          //  }
         }
         return futureExpiringDate
     }
@@ -300,9 +324,7 @@ class FirebaseViewModel: ViewModel() {
     }
 
 
-
-
-    fun removeBookBooked(idLibro: String){
+    fun removeBookBooked(idLibro: String) {
 
         val uid = getUidLoggedUser() // TODO METTERE: firebase.getCurrentUid()
         val currentUser = this.getCurrentUser(uid)
@@ -311,17 +333,18 @@ class FirebaseViewModel: ViewModel() {
             firebase.updateBookPrenoted(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
-           Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
+            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             null
         }
 
     }
 
 
-    fun addNewCommentUserSide(reviewText: String,reviewTitle: String,isbn: String,vote:Float){
-        val currentUser = this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
+    fun addNewCommentUserSide(reviewText: String, reviewTitle: String, isbn: String, vote: Float) {
+        val currentUser =
+            this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
-            user.userSettings?.addNewComment(reviewText,reviewTitle,isbn,vote)
+            user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote)
             firebase.addCommentUserSide(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
@@ -331,8 +354,9 @@ class FirebaseViewModel: ViewModel() {
 
     }
 
-    fun removeCommentUserSide(idComment: String, currentUser: Users){
-        val currentUser = this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
+    fun removeCommentUserSide(idComment: String, currentUser: Users) {
+        val currentUser =
+            this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
             user.userSettings?.removeComment(idComment)
             firebase.removeCommentUserSide(user)

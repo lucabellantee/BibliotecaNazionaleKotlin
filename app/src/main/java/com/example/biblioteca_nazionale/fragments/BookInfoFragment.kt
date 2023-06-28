@@ -202,20 +202,16 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                 if (markerList.size == 1) {
                                                     binding.textViewNomeBiblioteca.text =
                                                         markerList[0].title
-                                                    fbViewModel.getExpirationDate(
+                                                    expirationDate(
                                                         book.id.toString(),
                                                         binding.textViewNomeBiblioteca.text.toString()
-                                                    ).thenAccept { expirationDate ->
-                                                        Log.d("EXPIRATION DATE ", expirationDate)
-                                                        if (!(expirationDate.equals("ERRORE"))) binding.textViewDataRiconsegna.text =
-                                                            expirationDate
-                                                        else binding.textViewDataRiconsegna.text =
-                                                            ""
-                                                    }
+                                                    )
                                                     binding.buttonPrenota.setOnClickListener {
+                                                        var nomeBiblioteca =
+                                                            binding.textViewNomeBiblioteca.text.toString()
                                                         fbViewModel.bookIsBooked(
                                                             book.id.toString(),
-                                                            binding.textViewNomeBiblioteca.text.toString()
+                                                            nomeBiblioteca
                                                         ).thenAccept { isBooked ->
                                                             if (isBooked == true) {
                                                                 Toast.makeText(
@@ -223,6 +219,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                                     "Book already reserved for the same library",
                                                                     Toast.LENGTH_SHORT
                                                                 ).show()
+                                                                expirationDate(
+                                                                    book.id.toString(),
+                                                                    nomeBiblioteca
+                                                                )
                                                             } else if (isBooked == false) {
                                                                 fbViewModel.addNewBookBooked(
                                                                     book.id.toString(),
@@ -235,6 +235,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                                     "Your book has booked succesfully!",
                                                                     Toast.LENGTH_SHORT
                                                                 ).show()
+                                                                expirationDate(
+                                                                    book.id.toString(),
+                                                                    nomeBiblioteca
+                                                                )
+
                                                             }
 
                                                         }
@@ -335,9 +340,23 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 }
             }
             binding.layoutReviews.setOnClickListener {
-                val action = BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
+                val action =
+                    BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
                 findNavController().navigate(action)
             }
+        }
+    }
+
+    private fun expirationDate(bookId: String, nomeBiblioteca: String) {
+        fbViewModel.getExpirationDate(
+            bookId,
+            nomeBiblioteca
+        ).thenAccept { expirationDate ->
+            if (!(expirationDate.equals(""))) {
+                binding.textViewDataRiconsegna.visibility = View.VISIBLE
+                binding.textViewDataRiconsegna.text =
+                    "Da riconsegnare entro il " + expirationDate.toString()
+            } else binding.textViewDataRiconsegna.visibility = View.GONE
         }
     }
 
@@ -365,6 +384,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         override fun getPosition(): LatLng {
             return position
         }
+
 
         override fun getTitle(): String {
             return title
@@ -398,16 +418,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding.textViewNomeBiblioteca.text = marker.title
 
-        if(binding.textViewNomeBiblioteca.text.isNullOrEmpty().not()) {
-            fbViewModel.getExpirationDate(
-                book.id.toString(), binding.textViewNomeBiblioteca.text.toString()
-            ).thenAccept { expirationDate ->
-                Log.d("EXPIRATION DATE ", expirationDate)
-                if (!(expirationDate.equals("ERRORE"))) binding.textViewDataRiconsegna.text =
-                    expirationDate
-                else binding.textViewDataRiconsegna.text = ""
-            }
-        }
+        if (binding.textViewNomeBiblioteca.text.isNullOrEmpty().not())
+            expirationDate(book.id.toString(), binding.textViewNomeBiblioteca.text.toString())
 
         binding.buttonPrenota.setOnClickListener {
             fbViewModel.bookIsBooked(
@@ -429,6 +441,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     Toast.makeText(
                         requireContext(), "Your book has booked succesfully!", Toast.LENGTH_SHORT
                     ).show()
+                    expirationDate(
+                        book.id.toString(),
+                        binding.textViewNomeBiblioteca.text.toString()
+                    )
+
                 }
 
             }
