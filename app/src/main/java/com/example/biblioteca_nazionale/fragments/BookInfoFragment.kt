@@ -4,6 +4,9 @@ package com.example.biblioteca_nazionale.fragments
 import RequestViewModel
 import ReviewsAdapter
 import android.Manifest
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
@@ -13,6 +16,8 @@ import android.text.TextUtils
 import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.ProgressBar
 import android.widget.RatingBar
 import android.widget.TextView
@@ -86,7 +91,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             true
         }
 
-        binding.myReview.visibility= View.GONE
+        binding.myReview.visibility = View.GONE
 
         binding.scrollViewInfo.visibility = View.GONE
 
@@ -482,17 +487,13 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         val buttonReview = binding.buttonScriviRecensione
 
-        if (ratingBar.rating != (0).toFloat()) {
-            showViewWithAnimation(buttonReview)
-        }
-
         fbViewModel.getUsersComment(book.id).observe(viewLifecycleOwner) { review ->
 
             if (review != null) {
                 binding.textViewVote.text = "Your vote:"
-                ratingBar.rating=review.vote
+                ratingBar.rating = review.vote
                 ratingBar.setIsIndicator(true)
-                binding.myReview.visibility= View.VISIBLE
+                binding.myReview.visibility = View.VISIBLE
 
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
                 val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
@@ -503,8 +504,26 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 binding.textReviewDate.text = outputDateString
                 binding.textTitleReview1.text = review.reviewTitle
                 binding.textReview1.text = review.reviewText
+
+                binding.buttonModificaRecensione.setOnClickListener {
+                    val bundle = Bundle().apply {
+                        putFloat("reviewVote", review.vote)
+                        putParcelable("book", book)
+                        putParcelable("review", review)
+                    }
+
+                    findNavController().navigate(
+                        R.id.action_bookInfoFragment_to_writeReviewFragment, bundle
+                    )
+                }
             } else {
+                if (ratingBar.rating != (0).toFloat()) {
+                    showViewWithAnimation(buttonReview)
+                }
                 ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+
+                    println(buttonReview.visibility != View.VISIBLE)
+
 
                     val ratingValue = rating.toFloat()
 
@@ -518,6 +537,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                             val bundle = Bundle().apply {
                                 putFloat("reviewVote", ratingValue)
                                 putParcelable("book", book)
+                                putParcelable("review", null)
                             }
 
                             findNavController().navigate(
@@ -548,6 +568,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         button.animate().alpha(0F).setDuration(500).withEndAction { button.visibility = View.GONE }
             .start()
     }
+
+
+
 
     private fun manageRecyclerView(book: Book) {
         fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
@@ -602,9 +625,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     var buttonText = ""
                     if (isExpanded) {
                         buttonText = "Leggi meno"
+                        //showTextWithAnimation(binding.textViewDescription)
                         binding.textViewDescription.ellipsize = null
                     } else {
                         buttonText = "Leggi di più"
+                        //hideTextWithAnimation(binding.textViewDescription)
                         binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
                     }
                     val spannableString = SpannableString(buttonText)

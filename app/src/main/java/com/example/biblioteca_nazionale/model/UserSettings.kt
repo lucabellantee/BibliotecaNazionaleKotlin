@@ -41,12 +41,19 @@ data class UserSettings(
         }
     }
 
-    fun addNewComment(reviewText: String, reviewTitle: String, isbn: String, vote: Float) {
+    fun addNewComment(reviewText: String, reviewTitle: String, isbn: String, vote: Float,idComment: String? = null) {
 
         val currentDateTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val formattedDateTime = currentDateTime.format(formatter)
-        val newComment = Review("C${UUID.randomUUID().toString()}", reviewText, reviewTitle, isbn, vote, formattedDateTime)
+        var idC:String
+        if (idComment==null){
+            idC="C${UUID.randomUUID().toString()}"
+        }
+        else{
+            idC=idComment
+        }
+        val newComment = Review(idC, reviewText, reviewTitle, isbn, vote, formattedDateTime)
 
         println(newComment)
 
