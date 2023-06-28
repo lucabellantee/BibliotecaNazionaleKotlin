@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RatingBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -46,6 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 
@@ -71,11 +73,20 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         val locationPermissionRequestCode = 1
 
+
+
         ActivityCompat.requestPermissions(
             requireActivity(), locationPermissions, locationPermissionRequestCode
         )
 
         binding = FragmentBookInfoBinding.bind(view)
+
+        binding.recyclerViewReviews.setOnTouchListener { _, event ->
+            // Blocca l'elaborazione dell'evento touch sulla RecyclerView
+            true
+        }
+
+        binding.myReview.visibility= View.GONE
 
         binding.scrollViewInfo.visibility = View.GONE
 
@@ -430,6 +441,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         val textRatingIndicator = binding.textRatingIndicator
 
         fbViewModel.getAllCommentsByIsbn(book.id).observe(viewLifecycleOwner) { comments ->
+
             val numReviews = comments.size
             val numReviews5 = comments.count { it.vote == 5.0f }
             val numReviews4 = comments.count { it.vote == 4.0f }
@@ -474,34 +486,54 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             showViewWithAnimation(buttonReview)
         }
 
-        ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+        fbViewModel.getUsersComment(book.id).observe(viewLifecycleOwner) { review ->
 
-            val ratingValue = rating.toFloat()
+            if (review != null) {
+                binding.textViewVote.text = "Your vote:"
+                ratingBar.rating=review.vote
+                ratingBar.setIsIndicator(true)
+                binding.myReview.visibility= View.VISIBLE
 
-            if (rating != (0).toFloat()) {
-                if (buttonReview.visibility != View.VISIBLE) {
-                    showViewWithAnimation(buttonReview)
-                }
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
-                buttonReview.setOnClickListener {
+                val date: Date = inputFormat.parse(review.date)
+                val outputDateString: String = outputFormat.format(date)
 
-                    val bundle = Bundle().apply {
-                        putFloat("reviewVote", ratingValue)
-                        putParcelable("book", book)
+                binding.textReviewDate.text = outputDateString
+                binding.textTitleReview1.text = review.reviewTitle
+                binding.textReview1.text = review.reviewText
+            } else {
+                ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+
+                    val ratingValue = rating.toFloat()
+
+                    if (rating != (0).toFloat()) {
+                        if (buttonReview.visibility != View.VISIBLE) {
+                            showViewWithAnimation(buttonReview)
+                        }
+
+                        buttonReview.setOnClickListener {
+
+                            val bundle = Bundle().apply {
+                                putFloat("reviewVote", ratingValue)
+                                putParcelable("book", book)
+                            }
+
+                            findNavController().navigate(
+                                R.id.action_bookInfoFragment_to_writeReviewFragment, bundle
+                            )
+                        }
+                    } else {
+                        hideViewWithAnimation(buttonReview)
+                        buttonReview.setOnClickListener {}
                     }
 
-                    findNavController().navigate(
-                        R.id.action_bookInfoFragment_to_writeReviewFragment, bundle
-                    )
+                    Toast.makeText(
+                        requireContext(), "Hai votato: $ratingValue", Toast.LENGTH_SHORT
+                    ).show()
                 }
-            } else {
-                hideViewWithAnimation(buttonReview)
-                buttonReview.setOnClickListener {}
             }
-
-            Toast.makeText(
-                requireContext(), "Hai votato: $ratingValue", Toast.LENGTH_SHORT
-            ).show()
         }
     }
 

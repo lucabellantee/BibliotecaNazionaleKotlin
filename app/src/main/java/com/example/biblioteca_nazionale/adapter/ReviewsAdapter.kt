@@ -22,6 +22,12 @@ class ReviewsAdapter(private val reviews: ArrayList<TemporaryReview>) :
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
         val review = reviews[position]
         holder.bind(review)
+
+        if (position == reviews.size-1) {
+            holder.itemView.findViewById<View>(R.id.view).visibility = View.GONE
+        } else {
+            holder.itemView.findViewById<View>(R.id.view).visibility = View.VISIBLE
+        }
     }
 
     override fun getItemCount(): Int {

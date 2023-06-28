@@ -68,7 +68,7 @@ class FirebaseViewModel : ViewModel() {
 
     fun getUidLoggedUser(): String = firebase.getCurrentUid().toString()
 
-    fun getCurrentUser(uid: String): CompletableFuture<Users> {
+    fun getCurrentUser(): CompletableFuture<Users> {
         val futureResult = CompletableFuture<Users>()
 
         this.getUserInfo(getUidLoggedUser()).observeForever { documentSnapshot ->
@@ -163,6 +163,24 @@ class FirebaseViewModel : ViewModel() {
         return allUserLiveData
     }
 
+    fun getUsersComment(isbn: String): LiveData<Review> {
+        val uid = firebase.getCurrentUid()
+        val review = MutableLiveData<Review>()
+
+        if (uid != null) {
+            val currentUser = this.getCurrentUser()
+            currentUser.thenAccept { user ->
+                for (commento in user.userSettings?.commenti!!) {
+                    if (commento.isbn == isbn) {
+                        review.value = commento
+                        break
+                    }
+                }
+            }
+        }
+        return review
+    }
+
 
     fun getAllCommentsByIsbn(isbn: String): LiveData<ArrayList<Review>> {
         val allCommentsLiveData = MutableLiveData<ArrayList<Review>>()
@@ -208,12 +226,17 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-    fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String) : CompletableFuture<Boolean>{
+    fun addNewBookBooked(
+        idLibro: String,
+        isbn: String,
+        placeBooked: String,
+        image: String
+    ): CompletableFuture<Boolean> {
         val uid = firebase.getCurrentUid()
         Log.d("UID: ", firebase.getCurrentUid().toString())
         Log.d("STRINGAA3", idLibro + "" + isbn)
         val result = CompletableFuture<Boolean>()
-        val currentUser = this.getCurrentUser(uid.toString())
+        val currentUser = this.getCurrentUser()
         currentUser.thenAccept { utente ->
             //Log.d("ISBN:  ", isbn)
             //Log.d("IdLibro:  ", idLibro)
@@ -261,7 +284,7 @@ class FirebaseViewModel : ViewModel() {
     fun getExpirationDate(idBook: String, place: String): CompletableFuture<String> {
         val futureExpiringDate = CompletableFuture<String>()
         val firebase = FirebaseDB()
-        this.getCurrentUser(firebase.getFirebaseAuthIstance().uid.toString()).thenAccept { user ->
+        this.getCurrentUser().thenAccept { user ->
             println(user)
             var foundMatchingBook = false
             Log.d("idBook ", idBook)
@@ -311,7 +334,7 @@ class FirebaseViewModel : ViewModel() {
 
     fun bookIsBooked(id: String, place: String): CompletableFuture<Boolean> {
         val uid = getUidLoggedUser()
-        val currentUser = this.getCurrentUser(uid)
+        val currentUser = this.getCurrentUser()
 
         val futureIsBooked = CompletableFuture<Boolean>()
 
@@ -338,7 +361,7 @@ class FirebaseViewModel : ViewModel() {
     fun removeBookBooked(idLibro: String, onSuccess: () -> Unit, onError: () -> Unit) {
 
         val uid = getUidLoggedUser()
-        val currentUser = this.getCurrentUser(uid)
+        val currentUser = this.getCurrentUser()
 
         currentUser.thenAccept { user ->
             user.userSettings?.removeBook(idLibro)
@@ -354,7 +377,7 @@ class FirebaseViewModel : ViewModel() {
 
     fun addNewCommentUserSide(reviewText: String, reviewTitle: String, isbn: String, vote: Float) {
         val currentUser =
-            this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
+            this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
             user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote)
             firebase.addCommentUserSide(user)
@@ -387,7 +410,7 @@ class FirebaseViewModel : ViewModel() {
 
     fun removeCommentUserSide(idComment: String, currentUser: Users) {
         val currentUser =
-            this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
+            this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
             user.userSettings?.removeComment(idComment)
             firebase.removeCommentUserSide(user)
