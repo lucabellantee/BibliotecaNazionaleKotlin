@@ -68,7 +68,7 @@ class BookListFragment : Fragment(R.layout.fragment_book_list){
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                performBookSearch(newText)
+                //performBookSearch(newText)
                 return true
             }
         })

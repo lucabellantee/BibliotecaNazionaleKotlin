@@ -23,6 +23,7 @@ class BooksViewModel : ViewModel() {
             try {
                 val response = googleBooksApiClient.getApiService().searchBooks(query)
                 _libriLiveData.value = response
+                println()
             } catch (e: Exception) {
                 Log.d("BooksViewModel", "Error exception: " + e.message)
             }
