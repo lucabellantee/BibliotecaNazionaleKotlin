@@ -23,6 +23,10 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
     private val model: FirebaseViewModel = FirebaseViewModel()
     private val binding get() = _binding!!
 
+    companion object {
+        var flag = true
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,16 +38,19 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        model.getAllDate().thenAccept { expirationBook ->
-            for (book in expirationBook) {
-                val context: Context = requireContext()
-                val intent = Intent(context, NotificationReceiver::class.java)
-                intent.putExtra("title", "Book return")
-                intent.putExtra(
-                    "text",
-                    "Your book ${book.isbn} taken from the library ${book.bookPlace} will expire ${book.date}"
-                )
-                context.sendBroadcast(intent)
+        if(flag) {
+            flag = false
+            model.getAllDate().thenAccept { expirationBook ->
+                for (book in expirationBook) {
+                    val context: Context = requireContext()
+                    val intent = Intent(context, NotificationReceiver::class.java)
+                    intent.putExtra("title", "Book return")
+                    intent.putExtra(
+                        "text",
+                        "Your book ${book.isbn} taken from the library ${book.bookPlace} will expire ${book.date}"
+                    )
+                    context.sendBroadcast(intent)
+                }
             }
         }
 

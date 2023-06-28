@@ -38,7 +38,7 @@ class NotificationAdapter(private val notificationList: List<Pair<String, String
             titleTextView.text = title
             textTextView.text = text
             Glide.with(itemView)
-                .load(R.drawable.logo_welcome)
+                .load(R.drawable.ic_launcher_foreground)
                 .apply(RequestOptions().centerCrop())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(logoImageView)
