@@ -46,7 +46,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 
@@ -204,107 +203,18 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
                                             if (markerList.isNotEmpty()) {
                                                 if (markerList.size == 1) {
-                                                    binding.textViewNomeBiblioteca.text =
-                                                        markerList[0].title
-                                                    expirationDate(
-                                                        book.id.toString(),
-                                                        binding.textViewNomeBiblioteca.text.toString()
-                                                    )
-                                                    binding.buttonPrenota.setOnClickListener {
-                                                        var nomeBiblioteca =
-                                                            binding.textViewNomeBiblioteca.text.toString()
-                                                        fbViewModel.bookIsBooked(
-                                                            book.id.toString(),
-                                                            nomeBiblioteca
-                                                        ).thenAccept { isBooked ->
-                                                            if (isBooked == true) {
-                                                                Toast.makeText(
-                                                                    requireContext(),
-                                                                    "Book already reserved for the same library",
-                                                                    Toast.LENGTH_SHORT
-                                                                ).show()
-                                                                expirationDate(
-                                                                    book.id.toString(),
-                                                                    nomeBiblioteca
-                                                                )
-                                                            } else if (isBooked == false) {
-                                                                fbViewModel.addNewBookBooked(
-                                                                    book.id.toString(),
-                                                                    book.id.toString(),
-                                                                    binding.textViewNomeBiblioteca.text.toString(),
-                                                                    book?.info?.imageLinks?.thumbnail.toString()
-                                                                )
-                                                                Toast.makeText(
-                                                                    requireContext(),
-                                                                    "Your book has booked succesfully!",
-                                                                    Toast.LENGTH_SHORT
-                                                                ).show()
-                                                                expirationDate(
-                                                                    book.id.toString(),
-                                                                    nomeBiblioteca
-                                                                )
-
-                                                            }
-                                                        }
-
-                                                        /*binding.buttonPrenota.isEnabled =
-                                                            false */
-
-                                                    }
+                                                    setDefaultLibrary(markerList[0], book)
                                                 }
                                             }
                                             clusterManager.setOnClusterItemClickListener { marker ->
-                                                setDefaultLibrary(marker, book, googleMap)
+                                                setDefaultLibraryCamera(marker, book, googleMap)
                                                 true
                                             }
                                         }
                                     }
                                 }
                             }
-
-                            val fusedLocationClient =
-                                LocationServices.getFusedLocationProviderClient(
-                                    requireContext()
-                                )
-
-                            if (ContextCompat.checkSelfPermission(
-                                    requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
-                                ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                                    requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
-                                ) != PackageManager.PERMISSION_GRANTED
-                            ) {
-                                setDefaultLibrary(markerList[0], book, googleMap)
-                            } else {
-                                withContext(Dispatchers.IO) {
-                                    fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                                        Log.d("Mannaia", "Mannaia$location")
-                                        if (location != null) {
-                                            val latitude = location.latitude
-                                            val longitude = location.longitude
-
-                                            val nearestMarker = findNearestMarker(
-                                                latitude, longitude, markerList
-                                            )
-
-                                            if (nearestMarker != null) {
-                                                setDefaultLibrary(
-                                                    nearestMarker, book, googleMap
-                                                )
-                                            } else {
-                                                noLibraryFound()
-                                            }
-                                        } else {
-                                            if (markerList.isNotEmpty()) {
-                                                setDefaultLibrary(
-                                                    markerList[0], book, googleMap
-                                                )
-                                            } else {
-                                                noLibraryFound()
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            setDefaultCamera(markerList,book,googleMap)
                         }
                     }
                 }
@@ -317,65 +227,69 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
     }
 
+    private suspend fun setDefaultCamera(markerList: MutableList<MyItem>, book: Book, googleMap: GoogleMap) {
+        val fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(
+                requireContext()
+            )
+
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            setDefaultLibraryCamera(markerList[0], book, googleMap)
+        } else {
+            withContext(Dispatchers.IO) {
+                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                    Log.d("Mannaia", "Mannaia$location")
+                    if (location != null) {
+                        val latitude = location.latitude
+                        val longitude = location.longitude
+
+                        val nearestMarker = findNearestMarker(
+                            latitude, longitude, markerList
+                        )
+
+                        if (nearestMarker != null) {
+                            setDefaultLibraryCamera(
+                                nearestMarker, book, googleMap
+                            )
+                        } else {
+                            noLibraryFound()
+                        }
+                    } else {
+                        if (markerList.isNotEmpty()) {
+                            setDefaultLibraryCamera(
+                                markerList[0], book, googleMap
+                            )
+                        } else {
+                            noLibraryFound()
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
     private fun expirationDate(bookId: String, nomeBiblioteca: String) {
         fbViewModel.getExpirationDate(
             bookId,
             nomeBiblioteca
         ).thenAccept { expirationDate ->
+            println(expirationDate)
             if (!(expirationDate.equals(""))) {
-                binding.textViewDataRiconsegna.visibility = View.VISIBLE
+                showViewWithAnimation(binding.textViewDataRiconsegna)
                 binding.textViewDataRiconsegna.text =
                     "Da riconsegnare entro il " + expirationDate.toString()
-            } else binding.textViewDataRiconsegna.visibility = View.GONE
+            } else hideViewWithAnimation(binding.textViewDataRiconsegna)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        val mapView: MapView = binding.mapView
 
-        mapView.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        val mapView: MapView = binding.mapView
-        mapView.onPause()
-    }
-
-    inner class MyItem(
-        latLng: LatLng, title: String, snippet: String
-    ) : ClusterItem {
-
-        private val position: LatLng
-        private val title: String
-        private val snippet: String
-
-        override fun getPosition(): LatLng {
-            return position
-        }
-
-
-        override fun getTitle(): String {
-            return title
-        }
-
-        override fun getSnippet(): String {
-            return snippet
-        }
-
-        fun getZIndex(): Float {
-            return 0f
-        }
-
-        init {
-            position = latLng
-            this.title = title
-            this.snippet = snippet
-        }
-    }
-
-    private fun setDefaultLibrary(marker: MyItem, book: Book, googleMap: GoogleMap) {
+    private fun setDefaultLibraryCamera(marker: MyItem, book: Book, googleMap: GoogleMap) {
 
         val startLatLng = LatLng(
             marker.position.latitude, marker.position.longitude
@@ -386,14 +300,22 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         )
         googleMap.animateCamera(cameraUpdate)
 
-        binding.textViewNomeBiblioteca.text = marker.title
+        setDefaultLibrary(marker, book)
+    }
 
-        if (binding.textViewNomeBiblioteca.text.isNullOrEmpty().not())
-            expirationDate(book.id.toString(), binding.textViewNomeBiblioteca.text.toString())
-
+    private fun setDefaultLibrary(marker: MyItem, book: Book) {
+        binding.textViewNomeBiblioteca.text =
+            marker.title
+        expirationDate(
+            book.id,
+            binding.textViewNomeBiblioteca.text.toString()
+        )
         binding.buttonPrenota.setOnClickListener {
+            var nomeBiblioteca =
+                binding.textViewNomeBiblioteca.text.toString()
             fbViewModel.bookIsBooked(
-                book.id.toString(), binding.textViewNomeBiblioteca.text.toString()
+                book.id,
+                nomeBiblioteca
             ).thenAccept { isBooked ->
                 if (isBooked == true) {
                     Toast.makeText(
@@ -401,29 +323,32 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         "Book already reserved for the same library",
                         Toast.LENGTH_SHORT
                     ).show()
+                    expirationDate(
+                        book.id.toString(),
+                        nomeBiblioteca
+                    )
                 } else if (isBooked == false) {
                     fbViewModel.addNewBookBooked(
-                        book.id.toString(),
-                        book.id.toString(),
+                        book.id,
+                        book.id,
                         binding.textViewNomeBiblioteca.text.toString(),
                         book?.info?.imageLinks?.thumbnail.toString()
                     )
                     Toast.makeText(
-                        requireContext(), "Your book has booked succesfully!", Toast.LENGTH_SHORT
+                        requireContext(),
+                        "Your book has booked succesfully!",
+                        Toast.LENGTH_SHORT
                     ).show()
                     expirationDate(
-                        book.id.toString(),
-                        binding.textViewNomeBiblioteca.text.toString()
+                        book.id,
+                        nomeBiblioteca
                     )
 
                 }
-
             }
 
             /*binding.buttonPrenota.isEnabled =
                 false */
-
-
         }
     }
 
@@ -485,7 +410,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         val buttonReview = binding.buttonScriviRecensione
 
         if (ratingBar.rating != (0).toFloat()) {
-            showButtonWithAnimation(buttonReview)
+            showViewWithAnimation(buttonReview)
         }
 
         ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
@@ -494,7 +419,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
             if (rating != (0).toFloat()) {
                 if (buttonReview.visibility != View.VISIBLE) {
-                    showButtonWithAnimation(buttonReview)
+                    showViewWithAnimation(buttonReview)
                 }
 
                 buttonReview.setOnClickListener {
@@ -509,7 +434,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     )
                 }
             } else {
-                hideButtonWithAnimation(buttonReview)
+                hideViewWithAnimation(buttonReview)
                 buttonReview.setOnClickListener {}
             }
 
@@ -519,14 +444,14 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
     }
 
-    private fun showButtonWithAnimation(button: View) {
+    private fun showViewWithAnimation(button: View) {
         button.alpha = 0F
         button.visibility = View.VISIBLE
 
         button.animate().alpha(1F).setDuration(500).start()
     }
 
-    private fun hideButtonWithAnimation(button: View) {
+    private fun hideViewWithAnimation(button: View) {
         button.animate().alpha(0F).setDuration(500).withEndAction { button.visibility = View.GONE }
             .start()
     }
@@ -596,6 +521,52 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 binding.textViewDescription.maxLines = 5
                 binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
             }
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        val mapView: MapView = binding.mapView
+
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val mapView: MapView = binding.mapView
+        mapView.onPause()
+    }
+
+    inner class MyItem(
+        latLng: LatLng, title: String, snippet: String
+    ) : ClusterItem {
+
+        private val position: LatLng
+        private val title: String
+        private val snippet: String
+
+        override fun getPosition(): LatLng {
+            return position
+        }
+
+
+        override fun getTitle(): String {
+            return title
+        }
+
+        override fun getSnippet(): String {
+            return snippet
+        }
+
+        fun getZIndex(): Float {
+            return 0f
+        }
+
+        init {
+            position = latLng
+            this.title = title
+            this.snippet = snippet
         }
     }
 }

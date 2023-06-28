@@ -207,10 +207,11 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-    fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String) {
+    fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String) : CompletableFuture<Boolean>{
         val uid = firebase.getCurrentUid()
         Log.d("UID: ", firebase.getCurrentUid().toString())
         Log.d("STRINGAA3", idLibro + "" + isbn)
+        val result = CompletableFuture<Boolean>()
         val currentUser = this.getCurrentUser(uid.toString())
         currentUser.thenAccept { utente ->
             Log.d("ISBN:  ", isbn)
@@ -222,12 +223,19 @@ class FirebaseViewModel : ViewModel() {
             //Log.d("UIDDD", user.UID)
             Log.d("USER", utente.toString())
             firebase.updateBookPrenoted(utente)
+                .thenApply {
+                    result.complete(true)
+                    true
+                }
             println(utente.userSettings?.libriPrenotati?.get(utente.userSettings?.libriPrenotati!!.size - 1))
         }.exceptionally { throwable ->
+            result.complete(false)
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             null
+
         }
+        return result
     }
 
     /*
@@ -254,11 +262,13 @@ class FirebaseViewModel : ViewModel() {
         val futureExpiringDate = CompletableFuture<String>()
         val firebase = FirebaseDB()
         this.getCurrentUser(firebase.getFirebaseAuthIstance().uid.toString()).thenAccept { user ->
+            println(user)
             var foundMatchingBook = false
             Log.d("idBook ", idBook)
             Log.d("place ", place)
 
             for (libroPrenotato in user.userSettings?.libriPrenotati!!) {
+                println(user.userSettings.libriPrenotati)
                 Log.d("idBook-user ", libroPrenotato.isbn)
                 Log.d("place-user ", libroPrenotato.bookPlace)
                 Log.d(
