@@ -35,6 +35,7 @@ class DeleteBookingFragment : Fragment(R.layout.fragment_delete_booking) {
                 fbModel.removeBookBooked(isbn,
                     onSuccess = {
                         Toast.makeText(requireContext(), "Book deleted successfully!", Toast.LENGTH_SHORT).show()
+                        binding.buttonCancella.isEnabled = false
                         val action = DeleteBookingFragmentDirections.actionDeleteBookingFragment2ToMyBooksFragment()
                         findNavController().navigate(action)
                     },
