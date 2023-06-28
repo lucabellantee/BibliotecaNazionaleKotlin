@@ -1,11 +1,17 @@
 package com.example.biblioteca_nazionale.viewmodel
 
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.firebase.FirebaseDB
 import com.example.biblioteca_nazionale.model.BookFirebase
 import com.example.biblioteca_nazionale.model.UserSettings
@@ -14,6 +20,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import java.util.concurrent.CompletableFuture
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.model.Review
+import com.example.biblioteca_nazionale.utils.NotificationReceiver
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -389,24 +396,28 @@ class FirebaseViewModel : ViewModel() {
 
     }
 
-    fun allDate(uid: String): CompletableFuture<List<MiniBook>> {
-        val futureResult = CompletableFuture<List<MiniBook>>()
+    fun getAllDate(): CompletableFuture<List<MiniBook>> {
+        val currentUser = this.getCurrentUser()
+        val today = LocalDate.now()
+        val result = CompletableFuture<List<MiniBook>>()
 
-        getCurrentUser(uid).thenAccept { user ->
-            val currentDate = LocalDate.now()
-            val upcomingBooks = user.userSettings?.libriPrenotati?.filter { miniBook ->
-                val expirationDate = LocalDate.parse(miniBook.date, DateTimeFormatter.ISO_DATE)
-                val daysUntilExpiration = ChronoUnit.DAYS.between(currentDate, expirationDate)
-                daysUntilExpiration <= 2
+        currentUser.thenAccept { user ->
+            val userMiniList = user.userSettings?.libriPrenotati
+            if (userMiniList != null) {
+                val miniList: MutableList<MiniBook> = mutableListOf()
+                for (libro in userMiniList) {
+                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                    val date = LocalDate.parse(libro.date, formatter)
+                    if (ChronoUnit.DAYS.between(today, date) <= 2) {
+                        miniList += libro
+                    }
+                }
+                result.complete(miniList)
             }
-            futureResult.complete(upcomingBooks.orEmpty())
-        }.exceptionally { throwable ->
-            futureResult.completeExceptionally(throwable)
-            null
         }
-
-        return futureResult
+        return result
     }
+
 
     fun removeCommentUserSide(idComment: String, currentUser: Users) {
         val currentUser =

@@ -13,11 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentNotificationsBinding
 import com.example.biblioteca_nazionale.utils.NotificationReceiver
+import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 
 class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
 
     private var _binding: FragmentNotificationsBinding? = null
+    private val model: FirebaseViewModel = FirebaseViewModel()
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -31,25 +34,25 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val context: Context = requireContext()
-        val intent = Intent(context, NotificationReceiver::class.java)
-        intent.putExtra("title", "Titolo della notifica")
-        intent.putExtra("text", "Testo della notifica")
-        //intent.putExtra("uid", firebaseAuth.currentUser?.uid)
+        model.getAllDate().thenAccept { expirationBook ->
+            for (book in expirationBook) {
+                val context: Context = requireContext()
+                val intent = Intent(context, NotificationReceiver::class.java)
+                intent.putExtra("title", "Book return")
+                intent.putExtra(
+                    "text",
+                    "Your book ${book.isbn} taken from the library ${book.bookPlace} will expire ${book.date}"
+                )
+                context.sendBroadcast(intent)
+            }
+        }
 
-        /*binding.button234.setOnClickListener {
-            context.sendBroadcast(intent)
-        }*/
-
-        val sharedPreferences = requireContext().getSharedPreferences("notification_data", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("notification_data", Context.MODE_PRIVATE)
         val allEntries = sharedPreferences.all
 
-        /*val currentUserUid = firebaseAuth.currentUser?.uid
-        val notificationIds = allEntries.keys.filter {
-            it.startsWith("title_") && sharedPreferences.getString("uid_$it", "") == currentUserUid
-        }.map { it.removePrefix("title_").toInt() }.toSet()*/
-
-        val notificationIds = allEntries.keys.filter { it.startsWith("title_") }.map { it.removePrefix("title_").toInt() }.toSet()
+        val notificationIds = allEntries.keys.filter { it.startsWith("title_") }
+            .map { it.removePrefix("title_").toInt() }.toSet()
 
         val notificationList = mutableListOf<Pair<String, String>>()
         if (notificationIds != null) {
