@@ -92,38 +92,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         book?.let {
 
-            fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
-                val commentsList = ArrayList<TemporaryReview>()
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                println(users)
-                for (user in users) {
-                    for (comment in user.userSettings?.commenti!!) {
-                        if (comment.isbn == book.id) {
-                            commentsList.add(
-                                TemporaryReview(
-                                    comment.idComment,
-                                    comment.reviewText,
-                                    comment.reviewTitle,
-                                    comment.isbn,
-                                    comment.vote,
-                                    comment.date,
-                                    user.email
-                                )
-                            )
-                        }
-                    }
-                }
-
-                // Ordina commentsList in ordine decrescente di data
-                commentsList.sortByDescending { dateFormat.parse(it.date) }
-
-
-                val adapter = ReviewsAdapter(commentsList)
-                val layoutManager = LinearLayoutManager(requireContext())
-                binding.recyclerViewReviews.layoutManager = layoutManager
-                binding.recyclerViewReviews.adapter = adapter
-            }
-
+            manageRecyclerView(it)
 
             modelRequest.fetchDataBook(it)
 
@@ -237,16 +206,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                 if (markerList.size == 1) {
                                                     binding.textViewNomeBiblioteca.text =
                                                         markerList[0].title
-                                                    fbViewModel.getExpirationDate(
+                                                    expirationDate(
                                                         book.id.toString(),
                                                         binding.textViewNomeBiblioteca.text.toString()
-                                                    ).thenAccept { expirationDate ->
-                                                        Log.d("EXPIRATION DATE ", expirationDate)
-                                                        if (!(expirationDate.equals("ERRORE"))) binding.textViewDataRiconsegna.text =
-                                                            expirationDate
-                                                        else binding.textViewDataRiconsegna.text =
-                                                            ""
-                                                    }
+                                                    )
                                                     binding.buttonPrenota.setOnClickListener {
                                                         fbViewModel.bookIsBooked(
                                                             book.id.toString(),
@@ -258,6 +221,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                                     "Book already reserved for the same library",
                                                                     Toast.LENGTH_SHORT
                                                                 ).show()
+                                                                expirationDate(
+                                                                    book.id.toString(),
+                                                                    binding.textViewNomeBiblioteca.text.toString()
+                                                                )
                                                             } else if (isBooked == false) {
                                                                 fbViewModel.addNewBookBooked(
                                                                     book.id.toString(),
@@ -265,13 +232,17 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                                                     binding.textViewNomeBiblioteca.text.toString(),
                                                                     book?.info?.imageLinks?.thumbnail.toString()
                                                                 )
+                                                                expirationDate(
+                                                                    book.id.toString(),
+                                                                    binding.textViewNomeBiblioteca.text.toString()
+                                                                )
                                                                 Toast.makeText(
                                                                     requireContext(),
                                                                     "Your book has booked succesfully!",
                                                                     Toast.LENGTH_SHORT
                                                                 ).show()
-                                                            }
 
+                                                            }
                                                         }
 
                                                         /*binding.buttonPrenota.isEnabled =
@@ -293,7 +264,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                 LocationServices.getFusedLocationProviderClient(
                                     requireContext()
                                 )
-
 
                             if (ContextCompat.checkSelfPermission(
                                     requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
@@ -337,42 +307,24 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     }
                 }
             }
-
-            fbViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
-                println(usersList)
-                outer@ for (user in usersList) {
-                    val userSettings = user.userSettings
-                    if (userSettings != null) {
-                        val commenti = userSettings.commenti
-                        if (commenti != null) {
-                            for (commento in commenti) {
-                                if (commento.isbn == book.id) {
-                                    binding.ratingReview2.rating = commento.vote
-                                    println(binding.ratingReview2.rating)
-                                    binding.textReviewUtente.text = "Valutazione di ${user.email}:"
-
-                                    val inputFormat =
-                                        SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                                    val outputFormat =
-                                        SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-
-                                    val date: Date = inputFormat.parse(commento.date)
-                                    val outputDateString: String = outputFormat.format(date)
-
-                                    binding.textReviewDate.text = outputDateString
-                                    binding.textTitleReview1.text = commento.reviewTitle
-                                    binding.textReview1.text = commento.reviewText
-                                    break@outer
-                                }
-                            }
-                        }
-                    }
-                }
-            }
             binding.layoutReviews.setOnClickListener {
-                val action = BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
+                val action =
+                    BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
                 findNavController().navigate(action)
             }
+        }
+    }
+
+    private fun expirationDate(bookId: String, nomeBiblioteca: String) {
+        fbViewModel.getExpirationDate(
+            bookId,
+            nomeBiblioteca
+        ).thenAccept { expirationDate ->
+            if (!(expirationDate.equals(""))) {
+                binding.textViewDataRiconsegna.visibility = View.VISIBLE
+                binding.textViewDataRiconsegna.text =
+                    "Da riconsegnare entro il " + expirationDate.toString()
+            } else binding.textViewDataRiconsegna.visibility = View.GONE
         }
     }
 
@@ -400,6 +352,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         override fun getPosition(): LatLng {
             return position
         }
+
 
         override fun getTitle(): String {
             return title
@@ -433,16 +386,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
         binding.textViewNomeBiblioteca.text = marker.title
 
-        if(binding.textViewNomeBiblioteca.text.isNullOrEmpty().not()) {
-            fbViewModel.getExpirationDate(
-                book.id.toString(), binding.textViewNomeBiblioteca.text.toString()
-            ).thenAccept { expirationDate ->
-                Log.d("EXPIRATION DATE ", expirationDate)
-                if (!(expirationDate.equals("ERRORE"))) binding.textViewDataRiconsegna.text =
-                    expirationDate
-                else binding.textViewDataRiconsegna.text = ""
-            }
-        }
+        //if (binding.textViewNomeBiblioteca.text.isNullOrEmpty().not())
+        expirationDate(book.id.toString(), binding.textViewNomeBiblioteca.text.toString())
 
         binding.buttonPrenota.setOnClickListener {
             fbViewModel.bookIsBooked(
@@ -454,6 +399,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         "Book already reserved for the same library",
                         Toast.LENGTH_SHORT
                     ).show()
+                    expirationDate(
+                        book.id.toString(),
+                        binding.textViewNomeBiblioteca.text.toString()
+                    )
                 } else if (isBooked == false) {
                     fbViewModel.addNewBookBooked(
                         book.id.toString(),
@@ -464,6 +413,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     Toast.makeText(
                         requireContext(), "Your book has booked succesfully!", Toast.LENGTH_SHORT
                     ).show()
+                    expirationDate(
+                        book.id.toString(),
+                        binding.textViewNomeBiblioteca.text.toString()
+                    )
+
                 }
 
             }
@@ -577,6 +531,40 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     private fun hideButtonWithAnimation(button: View) {
         button.animate().alpha(0F).setDuration(500).withEndAction { button.visibility = View.GONE }
             .start()
+    }
+
+    private fun manageRecyclerView(book: Book) {
+        fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
+            val commentsList = ArrayList<TemporaryReview>()
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+            println(users)
+            for (user in users) {
+                for (comment in user.userSettings?.commenti!!) {
+                    if (comment.isbn == book.id) {
+                        commentsList.add(
+                            TemporaryReview(
+                                comment.idComment,
+                                comment.reviewText,
+                                comment.reviewTitle,
+                                comment.isbn,
+                                comment.vote,
+                                comment.date,
+                                user.email
+                            )
+                        )
+                    }
+                }
+            }
+
+            commentsList.sortByDescending { dateFormat.parse(it.date) }
+
+            val first3Comments = ArrayList(commentsList.subList(0, minOf(commentsList.size, 3)))
+
+            val adapter = ReviewsAdapter(first3Comments as ArrayList<TemporaryReview>)
+            val layoutManager = LinearLayoutManager(requireContext())
+            binding.recyclerViewReviews.layoutManager = layoutManager
+            binding.recyclerViewReviews.adapter = adapter
+        }
     }
 
     private fun manageDescription() {
