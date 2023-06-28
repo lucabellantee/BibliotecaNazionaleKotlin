@@ -162,23 +162,28 @@ class FirebaseViewModel : ViewModel() {
         return allUserLiveData
     }
 
-    fun getUsersComment(isbn: String): LiveData<Review> {
+    fun getUsersComment(isbn: String): LiveData<Review?> {
         val uid = firebase.getCurrentUid()
-        val review = MutableLiveData<Review>()
+        val review = MutableLiveData<Review?>()
 
         if (uid != null) {
             val currentUser = this.getCurrentUser()
             currentUser.thenAccept { user ->
                 for (commento in user.userSettings?.commenti!!) {
                     if (commento.isbn == isbn) {
-                        review.value = commento
-                        break
+                        review.postValue(commento)
+                        return@thenAccept
                     }
                 }
+                review.postValue(null) // Nessuna recensione trovata, passa null
             }
+        } else {
+            review.postValue(null) // Nessun utente corrente, passa null
         }
+
         return review
     }
+
 
 
     fun getAllCommentsByIsbn(isbn: String): LiveData<ArrayList<Review>> {
@@ -374,11 +379,11 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-    fun addNewCommentUserSide(reviewText: String, reviewTitle: String, isbn: String, vote: Float) {
+    fun addNewCommentUserSide(reviewText: String, reviewTitle: String, isbn: String, vote: Float, idComment: String? = null) {
         val currentUser =
             this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
-            user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote)
+            user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote,idComment)
             firebase.addCommentUserSide(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
@@ -388,7 +393,7 @@ class FirebaseViewModel : ViewModel() {
 
     }
 
-    fun removeCommentUserSide(idComment: String, currentUser: Users) {
+    fun removeCommentUserSide(idComment: String) {
         val currentUser =
             this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->

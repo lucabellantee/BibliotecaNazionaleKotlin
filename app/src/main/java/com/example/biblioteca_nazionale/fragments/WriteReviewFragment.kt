@@ -16,6 +16,7 @@ import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.databinding.FragmentWriteReviewBinding
 import com.example.biblioteca_nazionale.model.Book
+import com.example.biblioteca_nazionale.model.Review
 import com.example.biblioteca_nazionale.model.UserSettings
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.material.appbar.MaterialToolbar
@@ -36,6 +37,7 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
         val reviewVote = arguments?.getFloat("reviewVote")
         val book = arguments?.getParcelable<Book>("book")
+        val review = arguments?.getParcelable<Review>("review")
 
         ratingBar = binding.ratingBarReview
 
@@ -54,7 +56,6 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
             }
         }
 
-
         book?.let {
             binding.textViewBookName.text = it.info?.title ?: ""
             binding.textViewAutore.text = it.info?.authors?.toString() ?: ""
@@ -64,14 +65,19 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
 
+            review?.let {
+                binding.reviewTitle.setText( it.reviewText)
+                binding.reviewText.setText(it.reviewText)
+            }
+
             reviewVote?.let {
                 ratingBar.rating = it
-                manageToolbar(book)
+                manageToolbar(book, review)
             }
         }
     }
 
-    private fun manageToolbar(book: Book) {
+    private fun manageToolbar(book: Book, review: Review?) {
         val toolbar: MaterialToolbar = binding.toolbar
 
         toolbar.setNavigationOnClickListener {
@@ -85,12 +91,23 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                 if (binding.reviewText.text.toString()
                         .isNotEmpty() && binding.reviewTitle.text.toString().isNotEmpty()
                 ) {
-                    fbViewModel.addNewCommentUserSide(
-                        binding.reviewText.text.toString(),
-                        binding.reviewTitle.text.toString(),
-                        book.id,
-                        ratingBar.rating
-                    )
+                    if (review == null) {
+                        fbViewModel.addNewCommentUserSide(
+                            binding.reviewText.text.toString(),
+                            binding.reviewTitle.text.toString(),
+                            book.id,
+                            ratingBar.rating
+                        )
+                    } else {
+                        fbViewModel.removeCommentUserSide(review.idComment)
+                        fbViewModel.addNewCommentUserSide(
+                            binding.reviewText.text.toString(),
+                            binding.reviewTitle.text.toString(),
+                            book.id,
+                            ratingBar.rating,
+                            review.idComment
+                        )
+                    }
 
                     Toast.makeText(
                         requireContext(),
