@@ -13,15 +13,12 @@ import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.MiniBook
 
 class DeleteBookingFragment : Fragment(R.layout.fragment_delete_booking) {
-
-    lateinit var binding: FragmentDeleteBookingBinding
-
-    /*override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var _binding: FragmentDeleteBookingBinding? = null
+    private val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentDeleteBookingBinding.bind(view)
 
         val book = arguments?.getParcelable<MiniBook>("book")
 
@@ -34,7 +31,12 @@ class DeleteBookingFragment : Fragment(R.layout.fragment_delete_booking) {
                 .load(book.image)
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
-
         }
-    }*/
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
+
