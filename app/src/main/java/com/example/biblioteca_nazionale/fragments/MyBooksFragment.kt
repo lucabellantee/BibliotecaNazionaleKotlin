@@ -32,7 +32,8 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
         adapter.setOnBookClickListener(object : BookAdapter.OnBookClickListener {
             override fun onBookClick(position: Int) {
                 val libro = appo[position]
-                val action = MyBooksFragmentDirections.actionMyBooksFragmentToDeleteBookingFragment2(libro)
+                val action =
+                    MyBooksFragmentDirections.actionMyBooksFragmentToDeleteBookingFragment2(libro)
                 findNavController().navigate(action)
             }
         })
@@ -44,15 +45,20 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
         firebaseViewModel.getAllUser().observe(viewLifecycleOwner) { usersList ->
             appo.clear()
             for (user in usersList) {
-                if (user.UID == firebaseAuth.currentUser?.uid) {
+                if (user.UID == firebaseAuth.currentUser!!.uid) {
                     val userSettings = user.userSettings
-                    userSettings?.libriPrenotati?.let { libri ->
-                        appo.addAll(libri)
+                    if (userSettings != null) {
+                        val libri = userSettings.libriPrenotati
+                        if (libri != null) {
+                            for (libro in libri) {
+                                appo.add(libro)
+                            }
+                        }
                     }
                     break
                 }
+                adapter.notifyDataSetChanged()
             }
-            adapter.notifyDataSetChanged()
         }
     }
 }
