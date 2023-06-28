@@ -209,18 +209,18 @@ class FirebaseViewModel : ViewModel() {
 
     fun addNewBookBooked(idLibro: String, isbn: String, placeBooked: String, image: String) {
         val uid = firebase.getCurrentUid()
-        Log.d("UID: ", firebase.getCurrentUid().toString())
-        Log.d("STRINGAA3", idLibro + "" + isbn)
+        // Log.d("UID: ", firebase.getCurrentUid().toString())
+        // Log.d("STRINGAA3", idLibro + "" + isbn)
         val currentUser = this.getCurrentUser(uid.toString())
         currentUser.thenAccept { utente ->
-            Log.d("ISBN:  ", isbn)
-            Log.d("IdLibro:  ", idLibro)
+            //Log.d("ISBN:  ", isbn)
+            //Log.d("IdLibro:  ", idLibro)
             utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image)
             //Log.d("DOPO" , idLibro + " " + isbn + " " + placeBooked + " " + image)
             //Log.d("USER", utente.toString())
             // Log.d("USERRR", user.email)
             //Log.d("UIDDD", user.UID)
-            Log.d("USER", utente.toString())
+            //Log.d("USER", utente.toString())
             firebase.updateBookPrenoted(utente)
             println(utente.userSettings?.libriPrenotati?.get(utente.userSettings?.libriPrenotati!!.size - 1))
         }.exceptionally { throwable ->
@@ -287,14 +287,14 @@ class FirebaseViewModel : ViewModel() {
                     futureExpiringDate.complete(expiringDate)
 
                     break
-                 //   foundMatchingBook = true
+                    //   foundMatchingBook = true
 
                 }
             }
 
-           // if (!foundMatchingBook) {
-                futureExpiringDate.complete("")
-          //  }
+            // if (!foundMatchingBook) {
+            futureExpiringDate.complete("")
+            //  }
         }
         return futureExpiringDate
     }
@@ -343,9 +343,9 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-
-    fun addNewCommentUserSide(reviewText: String,reviewTitle: String,isbn: String,vote:Float){
-        val currentUser = this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
+    fun addNewCommentUserSide(reviewText: String, reviewTitle: String, isbn: String, vote: Float) {
+        val currentUser =
+            this.getCurrentUser(getUidLoggedUser())  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
             user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote)
             firebase.addCommentUserSide(user)
