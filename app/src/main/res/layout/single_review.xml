@@ -103,7 +103,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/textMoreDescription2"
+            android:id="@+id/textChangeReview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"

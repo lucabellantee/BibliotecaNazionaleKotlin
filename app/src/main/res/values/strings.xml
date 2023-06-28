@@ -51,6 +51,10 @@
     <string name="your_review">Your review from:</string>
     <string name="change_review">Change your review</string>
     <string name="my_reviews">My reviews</string>
+    <string name="your_vote">Your vote:</string>
+    <string name="change_my_review">Change review</string>
+
+
 
 
     <string name="notifications_image">Notifications image</string>
