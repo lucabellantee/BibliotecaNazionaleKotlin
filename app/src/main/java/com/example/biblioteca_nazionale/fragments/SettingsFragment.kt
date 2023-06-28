@@ -14,13 +14,12 @@ import androidx.core.app.NotificationCompat
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.activity.HomePageActivity
 import com.example.biblioteca_nazionale.databinding.FragmentSettingsBinding
-import com.example.biblioteca_nazionale.utils.NotificationReceiver
 
 
 class SettingsFragment : Fragment() {
 
     lateinit var binding: FragmentSettingsBinding
-    val notify: NotificationReceiver = NotificationReceiver()
+    //val notify: NotificationReceiver = NotificationReceiver()
 
 
     override fun onCreateView(
@@ -33,7 +32,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val context: Context = requireContext()
+        /*val context: Context = requireContext()
         val intent = Intent(context, NotificationReceiver::class.java)
         intent.putExtra("title", "Titolo della notifica")
         intent.putExtra("text", "Testo della notifica")
@@ -42,7 +41,7 @@ class SettingsFragment : Fragment() {
             context.sendBroadcast(intent)
         }
 
-        Log.d("Nervo", "Nervo")
+        Log.d("Nervo", "Nervo")*/
 
     }
 }

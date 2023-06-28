@@ -12,13 +12,33 @@ import com.example.biblioteca_nazionale.R
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        val notificationId = 1
         val channelId = "my_channel_id"
         val channelName = "My Channel"
         val title = intent?.getStringExtra("title")
         val text = intent?.getStringExtra("text")
 
-        // Creazione del canale di notifica
+        val sharedPreferences = context?.getSharedPreferences("notification_data", Context.MODE_PRIVATE)
+        println(sharedPreferences)
+        var lastNotificationId = sharedPreferences?.getInt("last_notification_id", 0) ?: 0
+        println(lastNotificationId)
+
+        val notificationId = lastNotificationId + 1
+
+        println(notificationId)
+        val editor = sharedPreferences?.edit()
+        editor?.putInt("last_notification_id", notificationId)
+        val notificationIdsSet = sharedPreferences?.getStringSet("notification_ids", emptySet())?.toMutableSet()
+        notificationIdsSet?.add(notificationId.toString())
+        editor?.putStringSet("notification_ids", notificationIdsSet)
+        //editor?.putStringSet("notification_ids", emptySet<String>())
+        editor?.apply()
+
+        editor?.putString("title_$notificationId", title)
+        editor?.putString("text_$notificationId", text)
+        editor?.putInt("logo_$notificationId", R.drawable.logo_welcome)
+        //editor?.putStringSet("notification_ids", emptySet<String>())
+        editor?.apply()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             notificationChannel.enableLights(true)
@@ -28,7 +48,6 @@ class NotificationReceiver : BroadcastReceiver() {
             notificationManager?.createNotificationChannel(notificationChannel)
         }
 
-        // Creazione della notifica
         val notificationBuilder = NotificationCompat.Builder(context!!, channelId)
             .setSmallIcon(R.drawable.logo_welcome)
             .setContentTitle(title)
