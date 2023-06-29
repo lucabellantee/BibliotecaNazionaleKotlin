@@ -41,8 +41,10 @@ class FirebaseViewModel : ViewModel() {
         val bookPlace = hashMap["bookPlace"] as? String ?: ""
         val image = hashMap["image"] as? String ?: ""
         val date = hashMap["date"] as? String ?: ""
+        val title = hashMap["title"] as? String ?: ""
 
-        return MiniBook(isbn, bookPlace, image, date)
+
+        return MiniBook(isbn, bookPlace, image, date, title)
     }
 
     private fun convertHashMapToReview(hashMap: HashMap<*, *>): Review {
@@ -53,8 +55,10 @@ class FirebaseViewModel : ViewModel() {
 
         val vote = hashMap["vote"].toString().toFloat()
         val date = hashMap["date"] as? String ?: ""
+        val title = hashMap["title"] as? String ?: ""
 
-        return Review(idComment, reviewText, reviewTitle, isbn, vote, date)
+
+        return Review(idComment, reviewText, reviewTitle, isbn, vote, date, title)
     }
 
 
@@ -177,21 +181,23 @@ class FirebaseViewModel : ViewModel() {
         if (uid != null) {
             val currentUser = this.getCurrentUser()
             currentUser.thenAccept { user ->
-                for (commento in user.userSettings?.commenti!!) {
-                    if (commento.isbn == isbn) {
-                        review.postValue(commento)
-                        return@thenAccept
+                if (user.userSettings != null) {
+                    for (commento in user.userSettings!!.commenti!!) {
+                        if (commento.isbn == isbn) {
+                            review.postValue(commento)
+                            return@thenAccept
+                        }
                     }
+                } else {
+                    review.postValue(null)
                 }
                 review.postValue(null) // Nessuna recensione trovata, passa null
             }
         } else {
             review.postValue(null) // Nessun utente corrente, passa null
         }
-
         return review
     }
-
 
 
     fun getAllCommentsByIsbn(isbn: String): LiveData<ArrayList<Review>> {
@@ -242,7 +248,8 @@ class FirebaseViewModel : ViewModel() {
         idLibro: String,
         isbn: String,
         placeBooked: String,
-        image: String
+        image: String,
+        title: String
     ): CompletableFuture<Boolean> {
         val uid = firebase.getCurrentUid()
         Log.d("UID: ", firebase.getCurrentUid().toString())
@@ -252,7 +259,11 @@ class FirebaseViewModel : ViewModel() {
         currentUser.thenAccept { utente ->
             //Log.d("ISBN:  ", isbn)
             //Log.d("IdLibro:  ", idLibro)
-            utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image)
+            println(title)
+            if (utente.userSettings == null) {
+                utente.userSettings = UserSettings(ArrayList(), ArrayList())
+            }
+            utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image, title)
             //Log.d("DOPO" , idLibro + " " + isbn + " " + placeBooked + " " + image)
             //Log.d("USER", utente.toString())
             // Log.d("USERRR", user.email)
@@ -303,7 +314,6 @@ class FirebaseViewModel : ViewModel() {
             Log.d("place ", place)
 
             for (libroPrenotato in user.userSettings?.libriPrenotati!!) {
-                println(user.userSettings.libriPrenotati)
                 Log.d("idBook-user ", libroPrenotato.isbn)
                 Log.d("place-user ", libroPrenotato.bookPlace)
                 Log.d(
@@ -387,11 +397,18 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-    fun addNewCommentUserSide(reviewText: String, reviewTitle: String, isbn: String, vote: Float, idComment: String? = null) {
+    fun addNewCommentUserSide(
+        reviewText: String,
+        reviewTitle: String,
+        isbn: String,
+        vote: Float,
+        idComment: String? = null,
+        title: String
+    ) {
         val currentUser =
             this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
-            user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote,idComment)
+            user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote, idComment, title)
             firebase.addCommentUserSide(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente

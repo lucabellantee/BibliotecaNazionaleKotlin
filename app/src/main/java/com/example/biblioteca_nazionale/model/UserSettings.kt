@@ -13,8 +13,8 @@ data class UserSettings(
 
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
 
-    fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String) {
-        val newElement = MiniBook(isbn, bookedPlace, image, LocalDate.now().plusDays(14).toString())
+    fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String,title:String) {
+        val newElement = MiniBook(isbn, bookedPlace, image, LocalDate.now().plusDays(14).toString(),title)
 
         if (libriPrenotati == null) {
             libriPrenotati = ArrayList()
@@ -41,7 +41,7 @@ data class UserSettings(
         }
     }
 
-    fun addNewComment(reviewText: String, reviewTitle: String, isbn: String, vote: Float,idComment: String? = null) {
+    fun addNewComment(reviewText: String, reviewTitle: String, isbn: String, vote: Float,idComment: String? = null,title: String) {
 
         val currentDateTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
@@ -53,7 +53,7 @@ data class UserSettings(
         else{
             idC=idComment
         }
-        val newComment = Review(idC, reviewText, reviewTitle, isbn, vote, formattedDateTime)
+        val newComment = Review(idC, reviewText, reviewTitle, isbn, vote, formattedDateTime,title)
 
         println(newComment)
 

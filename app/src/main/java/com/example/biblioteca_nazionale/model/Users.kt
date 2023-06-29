@@ -1,9 +1,9 @@
 package com.example.biblioteca_nazionale.model
 
 data class Users(
-    val UID: String ,
+    val UID: String,
     val email: String,
-    val userSettings: UserSettings?
+    var userSettings: UserSettings?
 ) {
    override fun toString(): String{
        val uid: String = this.UID
