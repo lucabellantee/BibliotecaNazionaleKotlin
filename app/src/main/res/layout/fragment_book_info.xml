@@ -323,7 +323,7 @@
                     android:textColor="#A9A9A9" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="50dp"
                     android:orientation="vertical">
@@ -345,7 +345,7 @@
                         <ProgressBar
                             android:id="@+id/progressBar5"
                             style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="103dp"
+                            android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_marginHorizontal="5dp"
                             android:layout_weight="1" />
@@ -377,7 +377,7 @@
                         <ProgressBar
                             android:id="@+id/progressBar4"
                             style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="103dp"
+                            android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_marginHorizontal="5dp"
                             android:layout_weight="1" />
@@ -408,7 +408,7 @@
                         <ProgressBar
                             android:id="@+id/progressBar3"
                             style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="103dp"
+                            android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_marginHorizontal="5dp"
                             android:layout_weight="1" />
@@ -440,7 +440,7 @@
                         <ProgressBar
                             android:id="@+id/progressBar2"
                             style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="103dp"
+                            android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_marginHorizontal="5dp"
                             android:layout_weight="1" />
@@ -471,7 +471,7 @@
                         <ProgressBar
                             android:id="@+id/progressBar1"
                             style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="103dp"
+                            android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_marginHorizontal="5dp"
                             android:layout_weight="1" />

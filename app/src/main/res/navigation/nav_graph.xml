@@ -114,6 +114,11 @@
                 android:name="book"
                 app:argType="com.example.biblioteca_nazionale.model.Book" />
         </action>
+        <action
+            android:id="@+id/action_writeReviewFragment_to_myReviewsFragment"
+            app:destination="@id/myReviewsFragment"
+            app:popUpTo="@id/myReviewsFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/deleteBookingFragment2"
@@ -149,5 +154,12 @@
         android:id="@+id/myReviewsFragment"
         android:name="com.example.biblioteca_nazionale.fragments.MyReviewsFragment"
         android:label="fragment_my_reviews"
-        tools:layout="@layout/fragment_my_reviews" />
+        tools:layout="@layout/fragment_my_reviews" >
+        <action
+            android:id="@+id/action_myReviewsFragment_to_writeReviewFragment"
+            app:destination="@id/writeReviewFragment"
+            app:popUpTo="@id/writeReviewFragment"
+            app:popUpToInclusive="true"
+            />
+    </fragment>
 </navigation>

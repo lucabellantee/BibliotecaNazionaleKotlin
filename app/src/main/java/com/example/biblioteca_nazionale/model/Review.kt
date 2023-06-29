@@ -10,7 +10,8 @@ data class Review(
     var isbn: String,
     var vote: Float,
     var date: String,
-    var title: String
+    var title: String,
+    var image: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().orEmpty(),
@@ -18,6 +19,7 @@ data class Review(
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
         parcel.readFloat(),
+        parcel.readString().orEmpty(),
         parcel.readString().orEmpty(),
         parcel.readString().orEmpty()
     )
@@ -30,6 +32,7 @@ data class Review(
         parcel.writeFloat(vote)
         parcel.writeString(date)
         parcel.writeString(title)
+        parcel.writeString(image)
     }
 
     override fun describeContents(): Int {

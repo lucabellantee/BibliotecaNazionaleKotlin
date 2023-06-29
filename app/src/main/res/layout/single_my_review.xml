@@ -13,17 +13,18 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="100dp"
-                android:layout_height="match_parent">
+                android:layout_width="160dp"
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/imageViewCover"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="10dp"
                     android:scaleType="fitCenter"
@@ -120,7 +121,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="10dp"
                 android:gravity="left"
                 android:text="@string/change_my_review"
                 android:textColor="@color/primary_color" />
@@ -136,7 +137,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="10dp"
                     android:gravity="right"
                     android:text="Leggi di più"
                     android:textColor="@color/primary_color" />
