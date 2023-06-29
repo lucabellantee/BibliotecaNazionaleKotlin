@@ -194,20 +194,23 @@ class FirebaseViewModel : ViewModel() {
         val reviews = MutableLiveData<ArrayList<Review>?>()
 
         if (uid != null) {
-            val currentUser = this.getCurrentUser()
+            val currentUser = getCurrentUser()
             currentUser.thenAccept { user ->
-                if (user.userSettings != null) {
+                if (user?.userSettings != null) {
                     reviews.postValue(user.userSettings!!.commenti)
                 } else {
                     reviews.postValue(null)
                 }
-                reviews.postValue(null) // Nessuna recensione trovata, passa null
+            }.exceptionally { error ->
+                reviews.postValue(null) // Gestione dell'errore, passa null
+                null
             }
         } else {
             reviews.postValue(null) // Nessun utente corrente, passa null
         }
         return reviews
     }
+
 
 
     fun getAllCommentsByIsbn(isbn: String): LiveData<ArrayList<Review>> {

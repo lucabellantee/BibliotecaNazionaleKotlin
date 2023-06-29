@@ -149,5 +149,9 @@
         android:id="@+id/myReviewsFragment"
         android:name="com.example.biblioteca_nazionale.fragments.MyReviewsFragment"
         android:label="fragment_my_reviews"
-        tools:layout="@layout/fragment_my_reviews" />
+        tools:layout="@layout/fragment_my_reviews" >
+        <action
+            android:id="@+id/action_myReviewsFragment_to_writeReviewFragment"
+            app:destination="@id/writeReviewFragment" />
+    </fragment>
 </navigation>
