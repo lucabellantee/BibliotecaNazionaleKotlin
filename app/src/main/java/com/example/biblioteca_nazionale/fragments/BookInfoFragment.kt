@@ -1,7 +1,5 @@
 package com.example.biblioteca_nazionale.fragments
 
-
-import RequestViewModel
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -27,6 +25,7 @@ import com.example.biblioteca_nazionale.cache.GeocodingCache
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
+import com.example.biblioteca_nazionale.viewmodel.RequestViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
