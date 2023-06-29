@@ -99,8 +99,8 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                                 book.id,
                                 ratingBar.rating,
                                 null,
-                                it
-                            )
+                                it,
+                                book.info.imageLinks?.thumbnail.toString()                            )
                         }
                     } else {
                         fbViewModel.removeCommentUserSide(review.idComment)
@@ -111,7 +111,8 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                                 book.id,
                                 ratingBar.rating,
                                 review.idComment,
-                                it
+                                it,
+                                book.info.imageLinks?.thumbnail.toString()
                             )
                         }
                     }

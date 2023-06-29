@@ -45,9 +45,10 @@ class FirebaseViewModel : ViewModel() {
         val vote = hashMap["vote"].toString().toFloat()
         val date = hashMap["date"] as? String ?: ""
         val title = hashMap["title"] as? String ?: ""
+        val image = hashMap["image"] as? String ?: ""
 
 
-        return Review(idComment, reviewText, reviewTitle, isbn, vote, date, title)
+        return Review(idComment, reviewText, reviewTitle, isbn, vote, date, title,image)
     }
 
 
@@ -186,6 +187,26 @@ class FirebaseViewModel : ViewModel() {
             review.postValue(null) // Nessun utente corrente, passa null
         }
         return review
+    }
+
+    fun getUsersComments(): MutableLiveData<ArrayList<Review>?> {
+        val uid = firebase.getCurrentUid()
+        val reviews = MutableLiveData<ArrayList<Review>?>()
+
+        if (uid != null) {
+            val currentUser = this.getCurrentUser()
+            currentUser.thenAccept { user ->
+                if (user.userSettings != null) {
+                    reviews.postValue(user.userSettings!!.commenti)
+                } else {
+                    reviews.postValue(null)
+                }
+                reviews.postValue(null) // Nessuna recensione trovata, passa null
+            }
+        } else {
+            reviews.postValue(null) // Nessun utente corrente, passa null
+        }
+        return reviews
     }
 
 
@@ -392,12 +413,16 @@ class FirebaseViewModel : ViewModel() {
         isbn: String,
         vote: Float,
         idComment: String? = null,
-        title: String
+        title: String,
+        image:String
     ) {
         val currentUser =
             this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
-            user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote, idComment, title)
+            if (user.userSettings == null) {
+                user.userSettings = UserSettings(ArrayList(), ArrayList())
+            }
+            user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote, idComment, title,image)
             firebase.addCommentUserSide(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente

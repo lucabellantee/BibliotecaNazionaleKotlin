@@ -41,7 +41,7 @@ data class UserSettings(
         }
     }
 
-    fun addNewComment(reviewText: String, reviewTitle: String, isbn: String, vote: Float,idComment: String? = null,title: String) {
+    fun addNewComment(reviewText: String, reviewTitle: String, isbn: String, vote: Float,idComment: String? = null,title: String,image:String) {
 
         val currentDateTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
@@ -53,7 +53,7 @@ data class UserSettings(
         else{
             idC=idComment
         }
-        val newComment = Review(idC, reviewText, reviewTitle, isbn, vote, formattedDateTime,title)
+        val newComment = Review(idC, reviewText, reviewTitle, isbn, vote, formattedDateTime,title,image)
 
         println(newComment)
 
