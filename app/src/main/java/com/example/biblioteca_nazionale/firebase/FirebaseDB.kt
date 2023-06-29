@@ -96,14 +96,9 @@ class FirebaseDB {
                 .document(uid)
                 .set(newUser, SetOptions.merge())
                 .addOnSuccessListener {
-                    Log.d("/FirebaseViewModel", "Documento utente aggiornato correttamente.")
                     futureResult.complete(null)
                 }
                 .addOnFailureListener { e ->
-                    Log.e(
-                        "/FirebaseViewModel",
-                        "Errore nell'aggiornamento del documento utente: ${e.message}"
-                    )
                     futureResult.completeExceptionally(e)
                 }
         } else {
