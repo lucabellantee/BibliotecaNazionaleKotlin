@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentDeleteBookingBinding
-import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 

@@ -1,12 +1,14 @@
 package com.example.biblioteca_nazionale.fragments
 
 import android.content.Context
+import java.util.concurrent.TimeUnit
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.RatingBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -16,6 +18,8 @@ import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.Review
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.CompletableFuture
 
 class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
@@ -36,6 +40,8 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
         val review = arguments?.getParcelable<Review>("review")
 
         ratingBar = binding.ratingBarReview
+
+        binding.buttonEliminaRecensione.visibility = View.GONE
 
         binding.reviewTitle.requestFocus()
 
@@ -62,8 +68,27 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                 .into(binding.imageViewBook)
 
             review?.let {
-                binding.reviewTitle.setText(it.reviewText)
+                binding.reviewTitle.setText(it.reviewTitle)
                 binding.reviewText.setText(it.reviewText)
+
+                binding.buttonEliminaRecensione.visibility = View.VISIBLE
+
+                binding.buttonEliminaRecensione.setOnClickListener {
+                    fbViewModel.removeCommentUserSide(review.idComment).thenAccept {
+
+                        val action =
+                            WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(
+                                book
+                            )
+                        findNavController().navigate(action)
+
+                        Toast.makeText(
+                            requireContext(),
+                            "La recensione è stata eliminata",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
 
             reviewVote?.let {
@@ -75,16 +100,34 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
             if (review != null) {
                 binding.textViewBookName.text = review.title ?: ""
 
-                //binding.textViewAutore.text = book.info?.authors?.toString() ?: ""
-                binding.textViewAutore.visibility=View.GONE
+                binding.textViewAutore.visibility = View.GONE
 
                 Glide.with(requireContext())
                     .load(review.image)
                     .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                     .into(binding.imageViewBook)
 
+                binding.buttonEliminaRecensione.visibility = View.VISIBLE
+
+                binding.buttonEliminaRecensione.setOnClickListener {
+
+                    fbViewModel.removeCommentUserSide(review.idComment).thenAccept {
+
+                        val action =
+                            WriteReviewFragmentDirections.actionWriteReviewFragmentToMyReviewsFragment()
+                        findNavController().navigate(action)
+
+                        Toast.makeText(
+                            requireContext(),
+                            "La recensione è stata eliminata",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
                 review?.let {
-                    binding.reviewTitle.setText(it.reviewText)
+                    println(review)
+                    binding.reviewTitle.setText(it.reviewTitle)
                     binding.reviewText.setText(it.reviewText)
                 }
 
@@ -94,7 +137,6 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
                 manageToolbarFromMyReviews(review)
             }
-
         }
     }
 
@@ -124,21 +166,16 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                                 book.info.imageLinks?.thumbnail.toString()
                             )
                         }
+                        val action =
+                            WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
+                        findNavController().navigate(action)
                     } else {
-                        updateReview(review)
+                        val action =
+                            WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(
+                                book
+                            )
+                        updateReview(review, action)
                     }
-
-                    Toast.makeText(
-                        requireContext(),
-                        "La recensione è andata a buon fine",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    val action =
-                        WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(
-                            book
-                        )
-                    findNavController().navigate(action)
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -167,18 +204,13 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                 if (binding.reviewText.text.toString()
                         .isNotEmpty() && binding.reviewTitle.text.toString().isNotEmpty()
                 ) {
-
-                    updateReview(review)
-
-                    Toast.makeText(
-                        requireContext(),
-                        "La recensione è andata a buon fine",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    println(review)
 
                     val action =
                         WriteReviewFragmentDirections.actionWriteReviewFragmentToMyReviewsFragment()
-                    findNavController().navigate(action)
+
+                    updateReview(review, action)
+
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -193,17 +225,31 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
         }
     }
 
-    private fun updateReview(review: Review) {
-        fbViewModel.removeCommentUserSide(review.idComment)
+    private fun updateReview(review: Review, action: NavDirections) {
+        fbViewModel.getCurrentUser().thenAccept { currentUser ->
+            val commentToUpdate = currentUser.userSettings?.commenti?.find { it.idComment == review.idComment }
 
-        fbViewModel.addNewCommentUserSide(
-            binding.reviewText.text.toString(),
-            binding.reviewTitle.text.toString(),
-            review.isbn,
-            ratingBar.rating,
-            review.idComment,
-            review.title,
-            review.image
-        )
+            if (commentToUpdate != null) {
+                commentToUpdate.reviewText = binding.reviewText.text.toString()
+                commentToUpdate.reviewTitle = binding.reviewTitle.text.toString()
+                commentToUpdate.isbn = review.isbn
+                commentToUpdate.vote = ratingBar.rating
+                commentToUpdate.title = review.title
+                commentToUpdate.image = review.image
+
+                fbViewModel.firebase.updateBookPrenoted(currentUser).thenAccept {
+                    Toast.makeText(requireContext(), "Review updated", Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(action)
+                }.exceptionally { throwable ->
+                    Toast.makeText(requireContext(), "Problems occurred during update", Toast.LENGTH_SHORT).show()
+                    null
+                }
+            } else {
+                Toast.makeText(requireContext(), "Comment not found", Toast.LENGTH_SHORT).show()
+            }
+        }.exceptionally { throwable ->
+            Toast.makeText(requireContext(), "Error occurred while getting user information", Toast.LENGTH_SHORT).show()
+            null
+        }
     }
 }

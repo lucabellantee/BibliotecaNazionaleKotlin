@@ -4,18 +4,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
+import com.example.biblioteca_nazionale.cache.GeocodingCache
+import com.example.biblioteca_nazionale.cache.ReviewCache
 import com.example.biblioteca_nazionale.model.BooksResponse
+import com.example.biblioteca_nazionale.model.Review
+import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 
 
 class BookListAdapter(var data: BooksResponse) :
     RecyclerView.Adapter<BookListAdapter.BookViewHolder>() {
 
     private lateinit var mListner: OnBookClickListener
+    private var fbModel: FirebaseViewModel = FirebaseViewModel()
 
 
     interface OnBookClickListener {
@@ -33,6 +39,8 @@ class BookListAdapter(var data: BooksResponse) :
         val desc: TextView = itemView.findViewById(R.id.book_description)
         val author: TextView = itemView.findViewById(R.id.book_author)
         val cover: ImageView = itemView.findViewById(R.id.imageViewCover)
+        val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
+        val numRating: TextView = itemView.findViewById(R.id.totalRating)
 
         init {
             itemView.setOnClickListener {
@@ -49,9 +57,62 @@ class BookListAdapter(var data: BooksResponse) :
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val currentBook = data.items[position]
+
+
         holder.title.text = currentBook?.info?.title ?: ""
         holder.desc.text = currentBook?.info?.description ?: "Descrizione non disponibile"
         holder.author.text = currentBook?.info?.authors.toString()
+
+        val cacheKey = ReviewCache.getCacheKey(currentBook.id)
+        val cachedResult = ReviewCache.getResult(cacheKey)
+
+        if (cachedResult != null) {
+            var totalRating = 0f
+            var numReviews = 0
+
+            if (cachedResult != null) {
+                for (review in cachedResult) {
+                    totalRating += review.vote
+                    numReviews++
+                }
+            }
+
+            val averageRating = totalRating / numReviews
+            val formattedAverage =
+                if (averageRating.isNaN()) "0.0" else String.format("%.2f", averageRating)
+            if (numReviews > 0) {
+                holder.ratingBar.rating = averageRating
+                holder.numRating.text = "${formattedAverage}  (${numReviews.toString()})"
+            } else {
+                holder.ratingBar.rating = 0f
+                holder.numRating.text = "0.0  (0)"
+            }
+        } else {
+            fbModel.getAllCommentsByIsbn(currentBook.id).observeForever { allReviewsFuture ->
+
+                var totalRating = 0f
+                var numReviews = 0
+
+                if (allReviewsFuture != null) {
+                    for (review in allReviewsFuture) {
+                        totalRating += review.vote
+                        numReviews++
+                    }
+                }
+
+                val averageRating = totalRating / numReviews
+                val formattedAverage =
+                    if (averageRating.isNaN()) "0.0" else String.format("%.2f", averageRating)
+                if (numReviews > 0) {
+                    holder.ratingBar.rating = averageRating
+                    holder.numRating.text = "${formattedAverage}  (${numReviews.toString()})"
+                } else {
+                    holder.ratingBar.rating = 0f
+                    holder.numRating.text = "0.0  (0)"
+                }
+            }
+
+        }
 
         Glide.with(holder.itemView)
             .load(currentBook?.info?.imageLinks?.thumbnail.toString())
@@ -61,6 +122,5 @@ class BookListAdapter(var data: BooksResponse) :
 
     override fun getItemCount(): Int {
         return (data.items?.size ?: 0)
-        //return data?.items?.size ?: 0
     }
 }

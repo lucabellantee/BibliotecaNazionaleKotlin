@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 data class UserSettings(
-    //var libriPrenotati: HashMap<String, ArrayList<String>>?,
     var libriPrenotati: ArrayList<MiniBook>?,
     var commenti: ArrayList<Review>
 ) {
@@ -72,6 +71,7 @@ data class UserSettings(
                 val comment = iterator.next()
                 if (comment.idComment == idComment) {
                     iterator.remove()
+                    println(commenti)
                     break
                 }
             }
