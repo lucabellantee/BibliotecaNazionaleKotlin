@@ -1,6 +1,5 @@
 package com.example.biblioteca_nazionale.fragments
 
-import NotificationAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
+import com.example.biblioteca_nazionale.adapter.NotificationAdapter
 import com.example.biblioteca_nazionale.databinding.FragmentNotificationsBinding
 import com.example.biblioteca_nazionale.utils.NotificationReceiver
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel

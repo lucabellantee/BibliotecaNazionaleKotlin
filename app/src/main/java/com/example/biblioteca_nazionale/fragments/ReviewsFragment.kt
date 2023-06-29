@@ -1,12 +1,12 @@
 package com.example.biblioteca_nazionale.fragments
 
-import ReviewsAdapter
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
+import com.example.biblioteca_nazionale.adapter.ReviewsAdapter
 import com.example.biblioteca_nazionale.databinding.FragmentReviewsBinding
 import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel

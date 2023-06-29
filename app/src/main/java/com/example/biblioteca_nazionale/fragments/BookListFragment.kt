@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -67,9 +68,6 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
             }
         })
 
-
-        Log.d("yolxzxzoddd", binding.searchView.hasFocus().toString())
-
     }
 
     private fun performBookSearch(query: String) {
@@ -86,7 +84,7 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
                         val action = BookListFragmentDirections.actionBookListFragmentToBookInfoFragment(libro)
                         findNavController().navigate(action)
                     } else {
-                        // Gestisci il caso in cui il libro è nullo
+                        Toast.makeText(requireContext(), "Book not found", Toast.LENGTH_SHORT).show()
                     }
                 }
             })

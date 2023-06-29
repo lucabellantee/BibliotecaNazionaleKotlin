@@ -2,7 +2,6 @@ package com.example.biblioteca_nazionale.cache
 
 import android.util.LruCache
 import com.example.biblioteca_nazionale.model.RequestCodeLocation
-import com.google.maps.model.GeocodingResult
 
 object LibrariesCache {
     private const val CACHE_SIZE = 50 // Dimensione massima della cache

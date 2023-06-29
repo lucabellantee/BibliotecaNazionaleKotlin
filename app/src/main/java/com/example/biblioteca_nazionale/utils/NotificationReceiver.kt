@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
@@ -49,7 +48,6 @@ class NotificationReceiver : BroadcastReceiver() {
             .setContentTitle(title)
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            //.setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.logo_welcome))
 
         val notificationManager = context?.getSystemService(NotificationManager::class.java)
         notificationManager?.notify(notificationId, notificationBuilder.build())

@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
-import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.adapter.MyReviewsAdapter
 import com.example.biblioteca_nazionale.databinding.FragmentMyReviewsBinding
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel

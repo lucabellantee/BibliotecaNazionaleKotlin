@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 data class UserSettings(
-    //var libriPrenotati: HashMap<String, ArrayList<String>>?,
     var libriPrenotati: ArrayList<MiniBook>?,
     var commenti: ArrayList<Review>
 ) {

@@ -1,20 +1,14 @@
 package com.example.biblioteca_nazionale.activity
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import com.example.biblioteca_nazionale.MainActivity
-import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.RegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -28,8 +22,6 @@ class RegistrationActivity : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
 
-        //val db = Firebase.firestore
-        //val firestoreDb = FirebaseFirestore.getInstance()
         val db = FirebaseFirestore.getInstance()
 
         binding.textViewLoginFromReg.setOnClickListener {
