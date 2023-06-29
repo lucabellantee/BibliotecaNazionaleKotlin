@@ -1,10 +1,8 @@
 package com.example.biblioteca_nazionale.fragments
 
 import NotificationAdapter
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,9 +13,6 @@ import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentNotificationsBinding
 import com.example.biblioteca_nazionale.utils.NotificationReceiver
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 
 class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
 

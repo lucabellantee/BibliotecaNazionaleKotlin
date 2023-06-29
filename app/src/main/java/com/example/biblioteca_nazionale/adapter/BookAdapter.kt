@@ -43,7 +43,7 @@ class BookAdapter(private val books: List<MiniBook>) : RecyclerView.Adapter<Book
         private val libraryTextView: TextView = itemView.findViewById(R.id.library)
 
         fun bind(book: MiniBook) {
-            titleTextView.text = "Id:${book.isbn}"
+            titleTextView.text = "${book.title}"
             dateTextView.text = "Expiration date:${book.date}"
             libraryTextView.text = book.bookPlace
             Glide.with(itemView)

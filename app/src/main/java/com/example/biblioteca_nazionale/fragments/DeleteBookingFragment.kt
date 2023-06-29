@@ -27,8 +27,9 @@ class DeleteBookingFragment : Fragment(R.layout.fragment_delete_booking) {
 
         book?.let {
             val isbn = it.isbn
-            binding.textViewBookName.text = it.bookPlace
-            binding.textViewAutore.text = it.isbn
+            binding.textViewBookName.text = it.title
+            binding.textViewBiblioteca.text = it.bookPlace
+            binding.textViewId.text = "Id: ${it.isbn}"
             binding.textViewDataRiconsegna.text = "${binding.textViewDataRiconsegna.text} ${it.date}"
 
             binding.buttonCancella.setOnClickListener {
