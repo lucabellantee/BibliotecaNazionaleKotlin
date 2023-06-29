@@ -42,10 +42,8 @@
                     android:id="@+id/bookTitleItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="cursive"
                     android:gravity="center|left"
                     android:text="dcbsjcscr"
-                    android:textColor="@android:color/black"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -63,7 +61,6 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:text="csarvaeev c"
-                    android:textColor="@android:color/black"
                     android:textSize="18sp" />
 
             </LinearLayout>
