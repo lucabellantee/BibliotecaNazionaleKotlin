@@ -439,29 +439,5 @@ class FirebaseViewModel : ViewModel() {
         return result
     }
 
-    fun getAllComments(isbn: String): CompletableFuture<List<Review>> {
-        val completableFuture = CompletableFuture<List<Review>>()
-
-        this.getAllDocument().observeForever { allDocument ->
-            val allComments = ArrayList<Review>()
-            for (document in allDocument) {
-                val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
-                val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
-
-                val commenti =
-                    commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
-
-                // Aggiungi i commenti che hanno il valore di ISBN desiderato
-                commenti?.let {
-                    val filteredComments = it.filter { comment -> comment.isbn == isbn }
-                    allComments.addAll(filteredComments)
-                }
-            }
-            completableFuture.complete(allComments)
-        }
-
-        return completableFuture
-    }
-
 }
 

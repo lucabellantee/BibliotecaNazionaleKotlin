@@ -208,6 +208,7 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
                     val action =
                         WriteReviewFragmentDirections.actionWriteReviewFragmentToMyReviewsFragment()
+
                     updateReview(review, action)
 
                 } else {

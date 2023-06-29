@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
+import com.example.biblioteca_nazionale.cache.GeocodingCache
+import com.example.biblioteca_nazionale.cache.ReviewCache
 import com.example.biblioteca_nazionale.model.BooksResponse
+import com.example.biblioteca_nazionale.model.Review
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 
 
@@ -38,7 +41,6 @@ class BookListAdapter(var data: BooksResponse) :
         val cover: ImageView = itemView.findViewById(R.id.imageViewCover)
         val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
         val numRating: TextView = itemView.findViewById(R.id.totalRating)
-        val ratingAverage: TextView = itemView.findViewById(R.id.Rating)
 
         init {
             itemView.setOnClickListener {
@@ -55,34 +57,62 @@ class BookListAdapter(var data: BooksResponse) :
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         val currentBook = data.items[position]
-        val allReviewsFuture = fbModel.getAllCommentsByIsbn(currentBook.id)
-        val allReviews = allReviewsFuture.value
+
 
         holder.title.text = currentBook?.info?.title ?: ""
         holder.desc.text = currentBook?.info?.description ?: "Descrizione non disponibile"
         holder.author.text = currentBook?.info?.authors.toString()
 
-        var totalRating = 0f
-        var numReviews = 0
+        val cacheKey = ReviewCache.getCacheKey(currentBook.id)
+        val cachedResult = ReviewCache.getResult(cacheKey)
 
-        if (allReviews != null) {
-            for(review in allReviews){
-                totalRating += review.vote
-                numReviews++
+        if (cachedResult != null) {
+            var totalRating = 0f
+            var numReviews = 0
+
+            if (cachedResult != null) {
+                for (review in cachedResult) {
+                    totalRating += review.vote
+                    numReviews++
+                }
             }
-        }
 
-        val averageRating = totalRating / numReviews
-        val formattedAverage = if (averageRating.isNaN()) "0.0" else String.format("%.2f", averageRating)
-        if (numReviews > 0) {
-            holder.ratingBar.rating = averageRating
-            holder.ratingAverage.text = formattedAverage
+            val averageRating = totalRating / numReviews
+            val formattedAverage =
+                if (averageRating.isNaN()) "0.0" else String.format("%.2f", averageRating)
+            if (numReviews > 0) {
+                holder.ratingBar.rating = averageRating
+                holder.numRating.text = "${formattedAverage}  (${numReviews.toString()})"
+            } else {
+                holder.ratingBar.rating = 0f
+                holder.numRating.text = "0.0  (0)"
+            }
         } else {
-            holder.ratingBar.rating = 0f
-            holder.ratingAverage.text = "0"
-        }
+            fbModel.getAllCommentsByIsbn(currentBook.id).observeForever { allReviewsFuture ->
 
-        holder.numRating.text = numReviews.toString()
+                var totalRating = 0f
+                var numReviews = 0
+
+                if (allReviewsFuture != null) {
+                    for (review in allReviewsFuture) {
+                        totalRating += review.vote
+                        numReviews++
+                    }
+                }
+
+                val averageRating = totalRating / numReviews
+                val formattedAverage =
+                    if (averageRating.isNaN()) "0.0" else String.format("%.2f", averageRating)
+                if (numReviews > 0) {
+                    holder.ratingBar.rating = averageRating
+                    holder.numRating.text = "${formattedAverage}  (${numReviews.toString()})"
+                } else {
+                    holder.ratingBar.rating = 0f
+                    holder.numRating.text = "0.0  (0)"
+                }
+            }
+
+        }
 
         Glide.with(holder.itemView)
             .load(currentBook?.info?.imageLinks?.thumbnail.toString())
