@@ -1,8 +1,6 @@
 package com.example.biblioteca_nazionale.adapter
 
-import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

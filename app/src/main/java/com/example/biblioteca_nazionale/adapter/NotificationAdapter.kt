@@ -1,4 +1,5 @@
-import android.content.Context
+package com.example.biblioteca_nazionale.adapter
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

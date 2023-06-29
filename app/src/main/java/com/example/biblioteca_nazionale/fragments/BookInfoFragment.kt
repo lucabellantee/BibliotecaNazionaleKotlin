@@ -2,7 +2,6 @@ package com.example.biblioteca_nazionale.fragments
 
 
 import RequestViewModel
-import ReviewsAdapter
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -11,7 +10,6 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RatingBar
@@ -25,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
+import com.example.biblioteca_nazionale.adapter.ReviewsAdapter
 import com.example.biblioteca_nazionale.cache.GeocodingCache
 import com.example.biblioteca_nazionale.databinding.FragmentBookInfoBinding
 import com.example.biblioteca_nazionale.model.Book

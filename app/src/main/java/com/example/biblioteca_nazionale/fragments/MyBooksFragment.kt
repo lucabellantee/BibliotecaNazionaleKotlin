@@ -1,6 +1,5 @@
 package com.example.biblioteca_nazionale.fragments
 
-import BookAdapter
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -9,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.biblioteca_nazionale.R
+import com.example.biblioteca_nazionale.adapter.BookAdapter
 import com.example.biblioteca_nazionale.databinding.FragmentMyBooksBinding
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel

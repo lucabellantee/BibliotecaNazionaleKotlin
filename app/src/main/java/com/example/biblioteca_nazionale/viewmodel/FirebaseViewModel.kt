@@ -20,10 +20,6 @@ import java.time.temporal.ChronoUnit
 class FirebaseViewModel : ViewModel() {
 
     val firebase = FirebaseDB()
-    /*
-    fun getUserInfo(): MutableLiveData<List<DocumentSnapshot>> {
-        return firebase.getAllUserInfo()
-    } */
 
     private fun convertHashMapToMiniBook(hashMap: HashMap<*, *>): MiniBook {
         val isbn = hashMap["isbn"] as? String ?: ""
@@ -59,11 +55,6 @@ class FirebaseViewModel : ViewModel() {
     fun getAllDocument(): MutableLiveData<ArrayList<DocumentSnapshot>> {
         return firebase.getAllUserFromDB()
     }
-
-
-    /*   fun saveNewUser(uid: String, email: String){
-           firebase.saveNewUser(Users(uid,email))
-       }*/
 
     fun getEmailLoggedUser(): String = firebase.getCurrentEmail().toString()
 
@@ -102,7 +93,6 @@ class FirebaseViewModel : ViewModel() {
         val allUserLiveData = MutableLiveData<ArrayList<Users>>()
 
         this.getAllDocument().observeForever { allDocument ->
-            println(allDocument)
             val allUser = ArrayList<Users>()
             for (document in allDocument) {
                 val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
@@ -218,7 +208,6 @@ class FirebaseViewModel : ViewModel() {
         val allCommentsLiveData = MutableLiveData<ArrayList<Review>>()
 
         this.getAllDocument().observeForever { allDocument ->
-            println(allDocument)
             val allComments = ArrayList<Review>()
             for (document in allDocument) {
                 val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
@@ -248,12 +237,7 @@ class FirebaseViewModel : ViewModel() {
         val data = allData.value?.data
         val allComment =
             data?.get("Commenti") as? HashMap<String, HashMap<String, HashMap<String, String>>>
-        // Log.d("/FirebaseViewModel", allComment.toString())
-        // val libriPrenotatiData = impostazioniData?.get("libriPrenotati") as? HashMap<String, ArrayList<String>>
-        //val comment = allComment?.get("uid utente") as? HashMap<Any,Any>
-        //Log.d("/FirebaseViewModel", comment.toString())
         val allRankingStar = data?.get("Stelle recensioni") as? HashMap<String, String>
-        // Log.d("/FirebaseViewModel", allRankingStar.toString())
 
         return BookFirebase(allComment!!, allRankingStar!!)
     }
@@ -267,23 +251,13 @@ class FirebaseViewModel : ViewModel() {
         title: String
     ): CompletableFuture<Boolean> {
         val uid = firebase.getCurrentUid()
-        Log.d("UID: ", firebase.getCurrentUid().toString())
-        Log.d("STRINGAA3", idLibro + "" + isbn)
         val result = CompletableFuture<Boolean>()
         val currentUser = this.getCurrentUser()
         currentUser.thenAccept { utente ->
-            //Log.d("ISBN:  ", isbn)
-            //Log.d("IdLibro:  ", idLibro)
-            println(title)
             if (utente.userSettings == null) {
                 utente.userSettings = UserSettings(ArrayList(), ArrayList())
             }
             utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image, title)
-            //Log.d("DOPO" , idLibro + " " + isbn + " " + placeBooked + " " + image)
-            //Log.d("USER", utente.toString())
-            // Log.d("USERRR", user.email)
-            //Log.d("UIDDD", user.UID)
-            //Log.d("USER", utente.toString())
             firebase.updateBookPrenoted(utente)
                 .thenApply {
                     result.complete(true)
@@ -292,31 +266,10 @@ class FirebaseViewModel : ViewModel() {
             println(utente.userSettings?.libriPrenotati?.get(utente.userSettings?.libriPrenotati!!.size - 1))
         }.exceptionally { throwable ->
             result.complete(false)
-            // Gestione di eventuali errori nel recupero dell'utente
-            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             null
         }
         return result
     }
-
-    /*
-    fun newExpirationDate(id: String) {
-        var expirationDate: String? = null
-
-        firebase.getExpirationDate(id) { dataScadenza ->
-            if (dataScadenza != null) {
-                Log.d("DATAAA", dataScadenza)
-                Log.d("DATAAA1", expirationDate.toString())
-                expirationDate = dataScadenza
-            } else {
-                println("Libro non trovato o errore durante il recupero della data di scadenza.")
-            }
-        }
-        if (expirationDate != null) {
-            Log.d("DATAAA12", expirationDate.toString())
-            println("Data di scadenza: $expirationDate")
-        }
-    } */
 
 
     fun getExpirationDate(idBook: String, place: String): CompletableFuture<String> {
@@ -325,8 +278,6 @@ class FirebaseViewModel : ViewModel() {
         this.getCurrentUser().thenAccept { user ->
             println(user)
             var foundMatchingBook = false
-            Log.d("idBook ", idBook)
-            Log.d("place ", place)
 
             for (libroPrenotato in user.userSettings?.libriPrenotati!!) {
                 Log.d("idBook-user ", libroPrenotato.isbn)
@@ -338,7 +289,6 @@ class FirebaseViewModel : ViewModel() {
                 if ((libroPrenotato.isbn == idBook) && (libroPrenotato.bookPlace == place)) {
                     val inputFormat = "yyyy-MM-dd"
                     val outputFormat = "dd/MM/yyyy"
-                    Log.d("Data scadenza", libroPrenotato.date.toString())
 
                     // Creazione dell'oggetto DateTimeFormatter per l'input
                     val inputFormatter = DateTimeFormatter.ofPattern(inputFormat)
@@ -356,14 +306,11 @@ class FirebaseViewModel : ViewModel() {
                     futureExpiringDate.complete(expiringDate)
 
                     break
-                    //   foundMatchingBook = true
 
                 }
             }
 
-            // if (!foundMatchingBook) {
             futureExpiringDate.complete("")
-            //  }
         }
         return futureExpiringDate
     }
@@ -385,8 +332,6 @@ class FirebaseViewModel : ViewModel() {
             }
             futureIsBooked.complete(isBooked)
         }.exceptionally { throwable ->
-            // Gestione di eventuali errori nel recupero dell'utente
-            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             futureIsBooked.complete(false)
             null
         }
@@ -405,7 +350,6 @@ class FirebaseViewModel : ViewModel() {
             firebase.updateBookPrenoted(user)
             onSuccess() // Richiama il callback in caso di successo
         }.exceptionally { throwable ->
-            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             onError() // Richiama il callback in caso di errore
             null
         }
@@ -422,7 +366,7 @@ class FirebaseViewModel : ViewModel() {
         image:String
     ) {
         val currentUser =
-            this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
+            this.getCurrentUser()
         currentUser.thenAccept { user ->
             if (user.userSettings == null) {
                 user.userSettings = UserSettings(ArrayList(), ArrayList())
@@ -430,8 +374,6 @@ class FirebaseViewModel : ViewModel() {
             user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote, idComment, title,image)
             firebase.addCommentUserSide(user)
         }.exceptionally { throwable ->
-            // Gestione di eventuali errori nel recupero dell'utente
-            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             null
         }
 
@@ -461,13 +403,11 @@ class FirebaseViewModel : ViewModel() {
 
     fun removeCommentUserSide(idComment: String) {
         val currentUser =
-            this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
+            this.getCurrentUser()
         currentUser.thenAccept { user ->
             user.userSettings?.removeComment(idComment)
             firebase.removeCommentUserSide(user)
         }.exceptionally { throwable ->
-            // Gestione di eventuali errori nel recupero dell'utente
-            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             null
         }
 

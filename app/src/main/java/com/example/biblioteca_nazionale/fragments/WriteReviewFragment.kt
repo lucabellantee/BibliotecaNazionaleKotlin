@@ -75,7 +75,6 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
             if (review != null) {
                 binding.textViewBookName.text = review.title ?: ""
 
-                //binding.textViewAutore.text = book.info?.authors?.toString() ?: ""
                 binding.textViewAutore.visibility=View.GONE
 
                 Glide.with(requireContext())
