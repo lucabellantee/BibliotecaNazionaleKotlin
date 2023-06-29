@@ -48,7 +48,7 @@ class FirebaseViewModel : ViewModel() {
         val image = hashMap["image"] as? String ?: ""
 
 
-        return Review(idComment, reviewText, reviewTitle, isbn, vote, date, title,image)
+        return Review(idComment, reviewText, reviewTitle, isbn, vote, date, title, image)
     }
 
 
@@ -210,7 +210,6 @@ class FirebaseViewModel : ViewModel() {
         }
         return reviews
     }
-
 
 
     fun getAllCommentsByIsbn(isbn: String): LiveData<ArrayList<Review>> {
@@ -409,6 +408,22 @@ class FirebaseViewModel : ViewModel() {
         }
     }
 
+    fun removeComment(idComment: String, onSuccess: () -> Unit, onError: () -> Unit) {
+
+        val uid = getUidLoggedUser()
+        val currentUser = this.getCurrentUser()
+
+        currentUser.thenAccept { user ->
+            user.userSettings?.removeComment(idComment)
+            firebase.updateBookPrenoted(user).thenAccept {  onSuccess()}
+             // Richiama il callback in caso di successo
+        }.exceptionally { throwable ->
+            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
+            onError() // Richiama il callback in caso di errore
+            null
+        }
+    }
+
 
     fun addNewCommentUserSide(
         reviewText: String,
@@ -417,22 +432,35 @@ class FirebaseViewModel : ViewModel() {
         vote: Float,
         idComment: String? = null,
         title: String,
-        image:String
-    ) {
+        image: String
+    ) : CompletableFuture<Void> {
+
+        val result = CompletableFuture<Void>()
+
         val currentUser =
             this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
             if (user.userSettings == null) {
                 user.userSettings = UserSettings(ArrayList(), ArrayList())
             }
-            user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote, idComment, title,image)
-            firebase.addCommentUserSide(user)
+            user.userSettings?.addNewComment(
+                reviewText,
+                reviewTitle,
+                isbn,
+                vote,
+                idComment,
+                title,
+                image
+            )
+            firebase.updateBookPrenoted(user).thenAccept {
+                result.complete(null)
+            }
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             null
         }
-
+        return result
     }
 
     fun getAllDate(): CompletableFuture<List<MiniBook>> {
@@ -457,18 +485,22 @@ class FirebaseViewModel : ViewModel() {
         return result
     }
 
-    fun removeCommentUserSide(idComment: String) {
+    fun removeCommentUserSide(idComment: String): CompletableFuture<Void> {
+        val result = CompletableFuture<Void>()
         val currentUser =
             this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
             user.userSettings?.removeComment(idComment)
-            firebase.removeCommentUserSide(user)
+            println(user.userSettings)
+            firebase.updateBookPrenoted(user).thenAccept {
+                result.complete(null)
+            }
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
             Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
             null
         }
-
+        return result
     }
 
 }

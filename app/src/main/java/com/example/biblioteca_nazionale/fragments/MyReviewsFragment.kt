@@ -28,6 +28,7 @@ class MyReviewsFragment : Fragment(R.layout.fragment_my_reviews) {
                     val adapter = MyReviewsAdapter(reviewsList)
                     adapter.setOnReviewClickListener(object : MyReviewsAdapter.OnReviewClickListener {
                         override fun onReviewClick(position: Int) {
+                            println(position)
                             val bundle = Bundle().apply {
                                 putFloat("reviewVote", reviewsList[position].vote)
                                 putParcelable("book", null)
