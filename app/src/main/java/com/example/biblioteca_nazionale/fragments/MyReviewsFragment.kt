@@ -33,7 +33,7 @@ class MyReviewsFragment : Fragment(R.layout.fragment_my_reviews) {
                                 putParcelable("book", null)
                                 putParcelable("review", reviewsList[position])
                             }*/
-                            val action =    MyReviewsFragmentDirections.actionMyReviewsFragmentToWriteReviewFragment(bundle)
+                            val action =    MyReviewsFragmentDirections.actionMyReviewsFragmentToWriteReviewFragment()
                             findNavController().navigate(action)
                         }
                     })
