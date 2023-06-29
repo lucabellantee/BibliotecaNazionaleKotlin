@@ -42,7 +42,7 @@ class RegisterTest {
 
         Intents.intended(IntentMatchers.hasComponent(RegistrationActivity::class.java.name))
 
-        Espresso.onView(ViewMatchers.withId(R.id.emailTextViewInsert)).perform(ViewActions.typeText("topolino@gmail.com"))
+        Espresso.onView(ViewMatchers.withId(R.id.emailTextViewInsert)).perform(ViewActions.typeText("topolini23@gmail.com"))
         Espresso.onView(ViewMatchers.withId(R.id.passwordTextViewInsert)).perform(ViewActions.typeText("Topolino1234"))
         Espresso.onView(ViewMatchers.withId(R.id.passConfirmTextViewInsert)).perform(ViewActions.typeText("Topolino1234"))
 
