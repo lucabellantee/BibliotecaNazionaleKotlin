@@ -153,7 +153,6 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                         .isNotEmpty() && binding.reviewTitle.text.toString().isNotEmpty()
                 ) {
                     if (review == null) {
-                        println(review)
                         book.info.title?.let {
                             fbViewModel.addNewCommentUserSide(
                                 binding.reviewText.text.toString(),
@@ -204,6 +203,7 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
                     val action =
                         WriteReviewFragmentDirections.actionWriteReviewFragmentToMyReviewsFragment()
+
                     updateReview(review, action)
 
                 } else {
@@ -221,8 +221,6 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
     }
 
     private fun updateReview(review: Review, action: NavDirections) {
-
-        println(review)
 
         fbViewModel.removeComment(review.idComment, onSuccess = {
             fbViewModel.addNewCommentUserSide(

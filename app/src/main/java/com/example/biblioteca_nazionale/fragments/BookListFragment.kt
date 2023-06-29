@@ -21,6 +21,9 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
     private lateinit var firebaseAuth: FirebaseAuth
     private val model: BooksViewModel = BooksViewModel()
 
+    private var lastQuery: String = ""
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -38,18 +41,32 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
             }, 1)
         }
 
+        // Dichiarazione della variabile per memorizzare l'ultima query
+
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                println(query)
-                performBookSearch(query)
+                val trimmedQuery = query.trim() // Rimuovi gli spazi vuoti dalla nuova query
+                val trimmedLastQuery = lastQuery.trim() // Rimuovi gli spazi vuoti dall'ultima query
+
+                if (!trimmedQuery.equals(trimmedLastQuery, ignoreCase = true)) { // Confronto tra la nuova query e l'ultima query senza spazi vuoti
+                    lastQuery = query // Aggiornamento dell'ultima query
+                    performBookSearch(query) // Esegui la ricerca dei libri
+                }
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                performBookSearch(newText)
+                val trimmedText = newText.trim() // Rimuovi gli spazi vuoti dal nuovo testo
+                val trimmedLastQuery = lastQuery.trim() // Rimuovi gli spazi vuoti dall'ultima query
+
+                if (!trimmedText.equals(trimmedLastQuery, ignoreCase = true)) { // Confronto tra il nuovo testo e l'ultima query senza spazi vuoti
+                    lastQuery = newText // Aggiornamento dell'ultima query
+                    performBookSearch(newText) // Esegui la ricerca dei libri
+                }
                 return true
             }
         })
+
 
         Log.d("yolxzxzoddd", binding.searchView.hasFocus().toString())
 
