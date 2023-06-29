@@ -19,7 +19,7 @@
     <TextView
         android:id="@+id/textViewCreatePassword"
         android:layout_width="370dp"
-        android:layout_height="78dp"
+        android:layout_height="90dp"
         android:layout_marginTop="10dp"
         android:text="@string/Hello_reg_to_star"
         android:textColor="#000000"

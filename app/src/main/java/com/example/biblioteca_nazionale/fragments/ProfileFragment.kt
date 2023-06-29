@@ -61,31 +61,31 @@ class ProfileFragment : Fragment() {
             user?.updateEmail(newEmail)
                 ?.addOnCompleteListener { emailTask ->
                     if (emailTask.isSuccessful) {
-                        Toast.makeText(context, "Operazione di cambio email completata con successo!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Email changed succesfully!", Toast.LENGTH_SHORT).show()
 
                         user.updatePassword(newPassword)
                             .addOnCompleteListener { passwordTask ->
                                 if (passwordTask.isSuccessful) {
-                                    Toast.makeText(context, "Operazione di cambio password completata con successo!", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Password changed succesfully!", Toast.LENGTH_SHORT).show()
                                 } else {
-                                    Toast.makeText(context, "Operazione di cambio password non completata!", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Password change operation not completed!", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         val navController = Navigation.findNavController(binding.root)
                         navController.navigate(R.id.action_profileInfoFragment_to_credentialUpdated)
                     } else {
-                        Toast.makeText(context, "Operazione di cambio credenziali non completata!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Credential not changed, problems occured", Toast.LENGTH_SHORT).show()
                     }
                 }
         } else if (!binding.editTextTextEmailAddress.text.isEmpty() && binding.editTextTextPassword.text.isEmpty()) {
             user?.updateEmail(newEmail)
                 ?.addOnCompleteListener { emailTask ->
                     if (emailTask.isSuccessful) {
-                        Toast.makeText(context, "Operazione di cambio email completata con successo!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Email changed succesfully!", Toast.LENGTH_SHORT).show()
                         val action = ProfileFragmentDirections.actionProfileInfoFragmentToCredentialUpdated()
                         findNavController().navigate(action)
                     } else {
-                        Toast.makeText(context, "Operazione di cambio email non completata!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Email not changed, problems occured!", Toast.LENGTH_SHORT).show()
                     }
                 }
         } else if (binding.editTextTextEmailAddress.text.isEmpty() && !binding.editTextTextPassword.text.isEmpty()) {
@@ -93,18 +93,18 @@ class ProfileFragment : Fragment() {
                 user?.updatePassword(newPassword)
                     ?.addOnCompleteListener { passwordTask ->
                         if (passwordTask.isSuccessful) {
-                            Toast.makeText(context, "Operazione di cambio password completata con successo!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Password changed succesfully!", Toast.LENGTH_SHORT).show()
                             val action = ProfileFragmentDirections.actionProfileInfoFragmentToCredentialUpdated()
                             findNavController().navigate(action)
                         } else {
-                            Toast.makeText(context, "Operazione di cambio password non completata!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Password not changed, problems occured!", Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {
-                Toast.makeText(context, "Le password non coincidono, riprova", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Password must have the same lenght and characters", Toast.LENGTH_SHORT).show()
             }
         } else if (binding.editTextTextEmailAddress.text.isEmpty() && binding.editTextTextPassword.text.isEmpty()) {
-            Toast.makeText(context, "Non hai inserito nessuna nuova credenziale", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "No new credential inserted", Toast.LENGTH_SHORT).show()
         }
     }
 

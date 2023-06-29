@@ -47,7 +47,6 @@ class RequestViewModel : ViewModel() {
                     fetchDataCode(request, cacheKey)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    // Gestisci l'eccezione
                 }
             }
         }
@@ -77,7 +76,6 @@ class RequestViewModel : ViewModel() {
                     localizzazioniList.addAll(requestCode.localizzazioni)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    // Gestisci l'eccezione
                 }
             }
         }

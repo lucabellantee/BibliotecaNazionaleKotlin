@@ -82,7 +82,7 @@ class FirebaseViewModel : ViewModel() {
                 val users = Users(uid, email, userSettings)
                 futureResult.complete(users)
             } else {
-                futureResult.completeExceptionally(Exception("Dati mancanti o nulli"))
+                futureResult.completeExceptionally(Exception("Missing or null data"))
             }
         }
         return futureResult
