@@ -28,13 +28,15 @@ class MyReviewsFragment : Fragment(R.layout.fragment_my_reviews) {
                     val adapter = MyReviewsAdapter(reviewsList)
                     adapter.setOnReviewClickListener(object : MyReviewsAdapter.OnReviewClickListener {
                         override fun onReviewClick(position: Int) {
-                            /*val bundle = Bundle().apply {
+                            val bundle = Bundle().apply {
                                 putFloat("reviewVote", reviewsList[position].vote)
                                 putParcelable("book", null)
                                 putParcelable("review", reviewsList[position])
-                            }*/
-                            val action =    MyReviewsFragmentDirections.actionMyReviewsFragmentToWriteReviewFragment()
-                            findNavController().navigate(action)
+                            }
+
+                            findNavController().navigate(
+                                R.id.action_myReviewsFragment_to_writeReviewFragment, bundle
+                            )
                         }
                     })
                     val layoutManager = LinearLayoutManager(requireContext())
