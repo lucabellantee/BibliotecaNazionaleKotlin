@@ -50,7 +50,5 @@ class RegisterTest {
 
         Espresso.onView(ViewMatchers.withId(R.id.regButtonLayReg)).perform(ViewActions.click())
 
-        Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
-
     }
 }

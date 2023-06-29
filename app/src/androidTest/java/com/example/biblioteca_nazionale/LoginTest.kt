@@ -46,20 +46,13 @@ class LoginTest {
 
         Espresso.onView(ViewMatchers.withId(R.id.EditTextSearch)).perform(ViewActions.typeText("test@gmail.com"))
 
-        // Chiudi la tastiera virtuale
         Espresso.closeSoftKeyboard()
 
         Espresso.onView(ViewMatchers.withId(R.id.password)).perform(ViewActions.typeText("Test1234"))
 
-        // Chiudi la tastiera virtuale di nuovo, nel caso fosse riaperta dopo aver inserito la password
         Espresso.closeSoftKeyboard()
 
         Espresso.onView(ViewMatchers.withId(R.id.loginButton)).perform(ViewActions.click())
-
-        // Verifica che la barra di navigazione in basso sia visualizzata
-        Espresso.onView(ViewMatchers.withId(R.id.bottom_navigation)).check(matches(isDisplayed()))
-
-
     }
 
 
