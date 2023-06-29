@@ -1,17 +1,9 @@
 package com.example.biblioteca_nazionale.viewmodel
 
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.util.Log
-import android.widget.Toast
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.firebase.FirebaseDB
 import com.example.biblioteca_nazionale.model.BookFirebase
 import com.example.biblioteca_nazionale.model.UserSettings
@@ -20,12 +12,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import java.util.concurrent.CompletableFuture
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.model.Review
-import com.example.biblioteca_nazionale.utils.NotificationReceiver
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.util.Calendar
 
 
 class FirebaseViewModel : ViewModel() {
@@ -174,7 +163,7 @@ class FirebaseViewModel : ViewModel() {
         return allUserLiveData
     }
 
-    fun getUsersComment(isbn: String): LiveData<Review?> {
+    fun getUsersCommentByIsbn(isbn: String): LiveData<Review?> {
         val uid = firebase.getCurrentUid()
         val review = MutableLiveData<Review?>()
 

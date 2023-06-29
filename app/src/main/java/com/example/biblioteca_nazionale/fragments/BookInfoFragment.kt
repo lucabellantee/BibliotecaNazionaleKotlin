@@ -4,9 +4,6 @@ package com.example.biblioteca_nazionale.fragments
 import RequestViewModel
 import ReviewsAdapter
 import android.Manifest
-import android.animation.Animator
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
@@ -16,11 +13,8 @@ import android.text.TextUtils
 import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.LinearInterpolator
 import android.widget.ProgressBar
 import android.widget.RatingBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -236,38 +230,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     }
                 }
             }
-            fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
-                val commentsList = ArrayList<TemporaryReview>()
-                for (user in users) {
-                    for (comment in user.userSettings?.commenti!!) {
-                        if (comment.isbn == book.id) {
-                            commentsList.add(
-                                TemporaryReview(
-                                    comment.idComment,
-                                    comment.reviewText,
-                                    comment.reviewTitle,
-                                    comment.isbn,
-                                    comment.vote,
-                                    comment.date,
-                                    user.email
-                                )
-                            )
-                        }
-                    }
-                }
-                if (commentsList.isNotEmpty()) {
-                    binding.layoutReviews.visibility=View.VISIBLE
-                    binding.textViewTitleRecensioni.text="Reviews"
-                    binding.layoutReviews.setOnClickListener {
-                        val action =
-                            BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
-                        findNavController().navigate(action)
-                    }
-                }else{
-                    binding.layoutReviews.visibility=View.GONE
-                    binding.textViewTitleRecensioni.text="No reviews found"
-                }
-            }
         }
     }
 
@@ -374,7 +336,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         } else {
             withContext(Dispatchers.IO) {
                 fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    Log.d("Mannaia", "Mannaia$location")
                     if (location != null) {
                         val latitude = location.latitude
                         val longitude = location.longitude
@@ -489,7 +450,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             val numReviews1 = comments.count { it.vote == 1.0f }
 
             val reviewsAverage = comments.map { it.vote }.average()
-            val formattedAverage = String.format("%.2f", reviewsAverage)
+            val formattedAverage = if (reviewsAverage.isNaN()) "0.0" else String.format("%.2f", reviewsAverage)
             val perc5Star = (numReviews5.toFloat() / numReviews.toFloat()) * 100
             val perc4Star = (numReviews4.toFloat() / numReviews.toFloat()) * 100
             val perc3Star = (numReviews3.toFloat() / numReviews.toFloat()) * 100
@@ -499,29 +460,31 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             ratingDetail.text = "${formattedAverage} su 5.0  ${numReviews} valutazioni"
 
             textRatingIndicator.text = "${formattedAverage}"
-            ratingBarIndicator.rating = reviewsAverage.toFloat()
+            ratingBarIndicator.rating = if (reviewsAverage.isNaN()) 0.0f else reviewsAverage.toFloat()
 
-            textratingBarStella1.text = "${perc1Star.roundToInt()}%"
-            progressBar1.progress = perc1Star.roundToInt()
 
-            textratingBarStella2.text = "${perc2Star.roundToInt()}%"
-            progressBar2.progress = perc2Star.roundToInt()
+            textratingBarStella1.text = if (perc1Star.isNaN()) "0%" else "${perc1Star.roundToInt()}%"
+            progressBar1.progress = if (perc1Star.isNaN()) 0 else perc1Star.roundToInt()
 
-            textratingBarStella3.text = "${perc3Star.roundToInt()}%"
-            progressBar3.progress = perc3Star.roundToInt()
+            textratingBarStella2.text = if (perc2Star.isNaN()) "0%" else "${perc2Star.roundToInt()}%"
+            progressBar2.progress = if (perc2Star.isNaN()) 0 else perc2Star.roundToInt()
 
-            textratingBarStella4.text = "${perc4Star.roundToInt()}%"
-            progressBar4.progress = perc4Star.roundToInt()
+            textratingBarStella3.text = if (perc3Star.isNaN()) "0%" else "${perc3Star.roundToInt()}%"
+            progressBar3.progress = if (perc3Star.isNaN()) 0 else perc3Star.roundToInt()
 
-            textratingBarStella5.text = "${perc5Star.roundToInt()}%"
-            progressBar5.progress = perc5Star.roundToInt()
+            textratingBarStella4.text = if (perc4Star.isNaN()) "0%" else "${perc4Star.roundToInt()}%"
+            progressBar4.progress = if (perc4Star.isNaN()) 0 else perc4Star.roundToInt()
+
+            textratingBarStella5.text = if (perc5Star.isNaN()) "0%" else "${perc5Star.roundToInt()}%"
+            progressBar5.progress = if (perc5Star.isNaN()) 0 else perc5Star.roundToInt()
+
         }
 
         val ratingBar: RatingBar = binding.ratingBarInserimento
 
         val buttonReview = binding.buttonScriviRecensione
 
-        fbViewModel.getUsersComment(book.id).observe(viewLifecycleOwner) { review ->
+        fbViewModel.getUsersCommentByIsbn(book.id).observe(viewLifecycleOwner) { review ->
 
             println(review)
 
@@ -610,7 +573,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
             val commentsList = ArrayList<TemporaryReview>()
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-            println(users)
+
             for (user in users) {
                 for (comment in user.userSettings?.commenti!!) {
                     if (comment.isbn == book.id) {
@@ -627,6 +590,19 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         )
                     }
                 }
+            }
+
+            if (commentsList.isNotEmpty()) {
+                binding.layoutReviews.visibility=View.VISIBLE
+                binding.textViewTitleRecensioni.text="Reviews"
+                binding.layoutReviews.setOnClickListener {
+                    val action =
+                        BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
+                    findNavController().navigate(action)
+                }
+            }else{
+                binding.layoutReviews.visibility=View.GONE
+                binding.textViewTitleRecensioni.text="No reviews found"
             }
 
             commentsList.sortByDescending { dateFormat.parse(it.date) }
