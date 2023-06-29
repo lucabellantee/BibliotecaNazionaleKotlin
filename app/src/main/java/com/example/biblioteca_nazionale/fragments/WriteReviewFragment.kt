@@ -92,21 +92,28 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                         .isNotEmpty() && binding.reviewTitle.text.toString().isNotEmpty()
                 ) {
                     if (review == null) {
-                        fbViewModel.addNewCommentUserSide(
-                            binding.reviewText.text.toString(),
-                            binding.reviewTitle.text.toString(),
-                            book.id,
-                            ratingBar.rating
-                        )
+                        book.info.title?.let {
+                            fbViewModel.addNewCommentUserSide(
+                                binding.reviewText.text.toString(),
+                                binding.reviewTitle.text.toString(),
+                                book.id,
+                                ratingBar.rating,
+                                null,
+                                it
+                            )
+                        }
                     } else {
                         fbViewModel.removeCommentUserSide(review.idComment)
-                        fbViewModel.addNewCommentUserSide(
-                            binding.reviewText.text.toString(),
-                            binding.reviewTitle.text.toString(),
-                            book.id,
-                            ratingBar.rating,
-                            review.idComment
-                        )
+                        book.info.title?.let {
+                            fbViewModel.addNewCommentUserSide(
+                                binding.reviewText.text.toString(),
+                                binding.reviewTitle.text.toString(),
+                                book.id,
+                                ratingBar.rating,
+                                review.idComment,
+                                it
+                            )
+                        }
                     }
 
                     Toast.makeText(

@@ -309,12 +309,18 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         nomeBiblioteca
                     )
                 } else if (isBooked == false) {
-                    fbViewModel.addNewBookBooked(
-                        book.id,
-                        book.id,
-                        binding.textViewNomeBiblioteca.text.toString(),
-                        book?.info?.imageLinks?.thumbnail.toString()
-                    )
+                    println(book.info)
+
+                    book?.info?.title?.let { it1 ->
+                        fbViewModel.addNewBookBooked(
+                            book.id,
+                            book.id,
+                            binding.textViewNomeBiblioteca.text.toString(),
+                            book?.info?.imageLinks?.thumbnail.toString(),
+                            it1
+                        )
+                    }
+
                     Toast.makeText(
                         requireContext(),
                         "Your book has booked succesfully!",
@@ -515,6 +521,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         val buttonReview = binding.buttonScriviRecensione
 
         fbViewModel.getUsersComment(book.id).observe(viewLifecycleOwner) { review ->
+
+            println(review)
 
             if (review != null) {
                 binding.textViewVote.text = "Your vote:"

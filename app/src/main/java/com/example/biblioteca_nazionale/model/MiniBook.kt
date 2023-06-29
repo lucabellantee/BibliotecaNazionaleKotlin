@@ -7,9 +7,11 @@ data class MiniBook(
     var isbn: String,
     var bookPlace: String,
     var image: String,
-    var date: String
+    var date: String,
+    var title: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
@@ -21,6 +23,7 @@ data class MiniBook(
         parcel.writeString(bookPlace)
         parcel.writeString(image)
         parcel.writeString(date)
+        parcel.writeString(title)
     }
 
     override fun describeContents(): Int {
