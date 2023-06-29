@@ -40,27 +40,31 @@
 
                 <TextView
                     android:id="@+id/bookTitleItem"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/id"
+                    android:fontFamily="cursive"
+                    android:gravity="center|left"
+                    android:text="dcbsjcscr"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp" />
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/bookDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/expi_date"
-                    android:textColor="@color/red"
-                    android:textSize="20sp" />
+                    android:textColor="@color/primary_color"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/library"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:fontFamily="sans-serif"
+                    android:text="csarvaeev c"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
         </LinearLayout>
