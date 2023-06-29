@@ -62,8 +62,8 @@ class MyReviewsAdapter(private val reviews: ArrayList<Review>) :
         private val textTitleReview = itemView.findViewById<TextView>(R.id.textTitleReview1)
         private val textReview = itemView.findViewById<TextView>(R.id.textReview1)
         private val bookCover = itemView.findViewById<ImageView>(R.id.imageViewCover)
-        private val changeReview = itemView.findViewById<TextView>(R.id.textChangeReview)
-        private val textChangeReview = itemView.findViewById<TextView>(R.id.textChangeReview)
+        private val readMoreText = itemView.findViewById<TextView>(R.id.textMoreDescription)
+        private val modifyReview = itemView.findViewById<TextView>(R.id.textChangeReview)
 
         //private var isExpanded = false
 
@@ -71,11 +71,11 @@ class MyReviewsAdapter(private val reviews: ArrayList<Review>) :
 
 
         init {
-            changeReview.setOnClickListener {
+            modifyReview.setOnClickListener {
                 listner.onReviewClick(adapterPosition)
             }
 
-            textChangeReview.setOnClickListener {
+            readMoreText.setOnClickListener {
                 isExpanded = !isExpanded
                 updateTextReviewVisibility()
                 updateTextChangeReviewText()
@@ -94,7 +94,7 @@ class MyReviewsAdapter(private val reviews: ArrayList<Review>) :
                 val date: Date = inputFormat.parse(review.date)
                 val outputDateString: String = outputFormat.format(date)
 
-                textReviewDate.text = "${review.title}   ${outputDateString}"
+                textReviewDate.text = "${review.title}\n${outputDateString}"
                 textTitleReview.text = review.reviewTitle
                 textReview.text = review.reviewText
 
@@ -105,7 +105,7 @@ class MyReviewsAdapter(private val reviews: ArrayList<Review>) :
 
                 textReview.post {
                     if (textReview.lineCount < 5 && textTitleReview.lineCount < 2) {
-                        textChangeReview.visibility = View.GONE
+                        readMoreText.visibility = View.GONE
                     } else {
                         println(textReview.lineCount)
                         if (textReview.lineCount > 5) {
@@ -116,7 +116,7 @@ class MyReviewsAdapter(private val reviews: ArrayList<Review>) :
                             textTitleReview.maxLines = 2
                             textTitleReview.ellipsize = TextUtils.TruncateAt.END
                         }
-                        textChangeReview.visibility = View.VISIBLE
+                        readMoreText.visibility = View.VISIBLE
                     }
 
                     updateTextReviewVisibility()
@@ -145,7 +145,7 @@ class MyReviewsAdapter(private val reviews: ArrayList<Review>) :
         private fun updateTextChangeReviewText() {
             val context = itemView.context
             val textResId = if (isExpanded) R.string.read_less else R.string.read_more
-            textChangeReview.text = context.getString(textResId)
+            readMoreText.text = context.getString(textResId)
         }
     }
 }

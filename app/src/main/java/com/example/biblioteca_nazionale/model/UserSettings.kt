@@ -71,6 +71,7 @@ data class UserSettings(
                 val comment = iterator.next()
                 if (comment.idComment == idComment) {
                     iterator.remove()
+                    println(commenti)
                     break
                 }
             }

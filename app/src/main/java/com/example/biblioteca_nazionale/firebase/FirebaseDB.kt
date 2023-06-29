@@ -61,20 +61,24 @@ class FirebaseDB {
                 allUserInfoLiveData.value = documentList
             }
             .addOnFailureListener {
-                Log.e("/FirebaseDB",it.toString())
+                Log.e("/FirebaseDB", it.toString())
             }
 
         return allUserInfoLiveData
     }
 
 
-
-    fun saveNewUser(newUser: Users){
+    fun saveNewUser(newUser: Users) {
 
         db.collection("utenti").document(newUser.UID)
             .set(newUser)
-            .addOnSuccessListener { Log.d("/HomePageActivity", "DocumentSnapshot successfully written!") }
-            .addOnFailureListener {Log.d("/HomePageActivity", "Error writing document") }
+            .addOnSuccessListener {
+                Log.d(
+                    "/HomePageActivity",
+                    "DocumentSnapshot successfully written!"
+                )
+            }
+            .addOnFailureListener { Log.d("/HomePageActivity", "Error writing document") }
 
     }
 
@@ -96,7 +100,10 @@ class FirebaseDB {
                     futureResult.complete(null)
                 }
                 .addOnFailureListener { e ->
-                    Log.e("/FirebaseViewModel", "Errore nell'aggiornamento del documento utente: ${e.message}")
+                    Log.e(
+                        "/FirebaseViewModel",
+                        "Errore nell'aggiornamento del documento utente: ${e.message}"
+                    )
                     futureResult.completeExceptionally(e)
                 }
         } else {
@@ -112,17 +119,30 @@ class FirebaseDB {
         db.collection("utenti").document(newUser.UID).set(newUser)
     }
 
-    fun addCommentUserSide(newUser: Users){
+    fun addCommentUserSide(newUser: Users) {
         db.collection("utenti").document(newUser.UID).delete()
         db.collection("utenti").document(newUser.UID).set(newUser)
     }
 
-    fun removeCommentUserSide(newUser: Users){
-        db.collection("utenti").document(newUser.UID).delete()
-        db.collection("utenti").document(newUser.UID).set(newUser)
+
+    fun removeCommentUserSide(user: Users): CompletableFuture<Void> {
+        val futureResult = CompletableFuture<Void>()
+
+        val documentRef = db.collection("utenti").document(user.UID)
+        documentRef.set(user, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.d("/FirebaseViewModel", "Documento utente aggiornato correttamente.")
+                futureResult.complete(null)
+            }
+            .addOnFailureListener { e ->
+                Log.e("/FirebaseViewModel", "Errore nell'aggiornamento del documento utente: ${e.message}")
+                futureResult.completeExceptionally(e)
+            }
+
+        return futureResult
     }
 
-    var bookInfoLiveData: MutableLiveData<DocumentSnapshot> =  MutableLiveData()
+    var bookInfoLiveData: MutableLiveData<DocumentSnapshot> = MutableLiveData()
     fun getAllBookInfoFromId(idLibro: String): MutableLiveData<DocumentSnapshot> {
 
         val docRef = db.collection("libri").document("ID_LIBRO")

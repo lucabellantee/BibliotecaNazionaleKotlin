@@ -134,6 +134,16 @@
                     android:numStars="5"
                     android:stepSize="1.0" />
 
+                <Button
+                    android:id="@+id/buttonEliminaRecensione"
+                    android:layout_width="323dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="@color/white"
+                    android:endColor="@color/grey"
+                    android:text="@string/delete_your_review"
+                    android:textColor="@color/black" />
+
                 <TextView
                     android:id="@+id/textView5"
                     android:layout_width="375dp"
