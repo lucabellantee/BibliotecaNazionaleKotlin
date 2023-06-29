@@ -29,9 +29,6 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
         var flag = true
     }
 
-    private val notificationPermission = Manifest.permission.ACCESS_NOTIFICATION_POLICY
-    private val notificationPermissionRequestCode = 3
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -41,14 +38,6 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (checkSelfPermissionCompat(notificationPermission) == PackageManager.PERMISSION_GRANTED) {
-            // Permesso già concesso
-            showSnackbar(getString(R.string.notification_permission_granted))
-        } else {
-            // Richiedi il permesso
-            requestNotificationPermission()
-        }
 
         if (flag) {
             flag = false
@@ -94,53 +83,5 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun requestNotificationPermission() {
-        if (shouldShowRequestPermissionRationaleCompat(notificationPermission)) {
-            // Fornisci una spiegazione aggiuntiva all'utente se il permesso non è stato concesso in precedenza
-            showPermissionRationaleSnackbar()
-        } else {
-            // Richiedi il permesso direttamente
-            requestPermissions(arrayOf(notificationPermission), notificationPermissionRequestCode)
-        }
-    }
-
-    private fun showPermissionRationaleSnackbar() {
-        Snackbar.make(binding.root, R.string.notification_access_required, Snackbar.LENGTH_INDEFINITE)
-            .setAction(R.string.ok_notification) {
-                requestPermissions(
-                    arrayOf(notificationPermission),
-                    notificationPermissionRequestCode
-                )
-            }.show()
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
-    ) {
-        if (requestCode == notificationPermissionRequestCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permesso concessso dall'utente
-                showSnackbar(getString(R.string.notification_permission_granted))
-            } else {
-                // Permesso negato dall'utente
-                showSnackbar(getString(R.string.notification_permission_denied))
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
-    }
-
-    private fun showSnackbar(message: String) {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun checkSelfPermissionCompat(permission: String): Int {
-        return ContextCompat.checkSelfPermission(requireContext(), permission)
-    }
-
-    private fun shouldShowRequestPermissionRationaleCompat(permission: String): Boolean {
-        return ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permission)
     }
 }
