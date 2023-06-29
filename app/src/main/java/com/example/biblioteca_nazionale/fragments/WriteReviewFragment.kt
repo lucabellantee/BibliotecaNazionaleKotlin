@@ -83,7 +83,7 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
                         Toast.makeText(
                             requireContext(),
-                            "La recensione è stata eliminata",
+                            "Review deleted succesfully",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -118,7 +118,7 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
                         Toast.makeText(
                             requireContext(),
-                            "La recensione è stata eliminata",
+                            "Review deleted succesfully",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -178,7 +178,7 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                 } else {
                     Toast.makeText(
                         requireContext(),
-                        "Devi inserire il titolo della recensione e la recensione",
+                        "You must enter the title of the review and the review",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -213,7 +213,7 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                 } else {
                     Toast.makeText(
                         requireContext(),
-                        "Devi inserire il titolo della recensione e la recensione",
+                        "You must enter the title of the review and the review",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

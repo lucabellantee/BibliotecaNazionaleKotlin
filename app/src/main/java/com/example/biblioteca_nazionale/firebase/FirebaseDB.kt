@@ -36,11 +36,11 @@ class FirebaseDB {
 
 
                 } else {
-                    // Log.d("/FirebaseDB", "Documento vuoto")
+                     Log.d("/FirebaseDB", "Documento vuoto")
                 }
             }
             .addOnFailureListener { exception ->
-                Log.d("/FirebaseDB", "Errore lettura dati !!!")
+                Log.d("/FirebaseDB", "${exception.message}")
             }
 
         return userInfoLiveData
@@ -73,10 +73,7 @@ class FirebaseDB {
         db.collection("utenti").document(newUser.UID)
             .set(newUser)
             .addOnSuccessListener {
-                Log.d(
-                    "/HomePageActivity",
-                    "DocumentSnapshot successfully written!"
-                )
+                Log.d("/HomePageActivity", "DocumentSnapshot successfully written!")
             }
             .addOnFailureListener { Log.d("/HomePageActivity", "Error writing document") }
 
