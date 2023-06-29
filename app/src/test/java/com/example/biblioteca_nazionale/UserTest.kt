@@ -67,16 +67,31 @@ class UserTest {
 
 
 
-    @Test(expected = NoSuchElementException::class)
+    @Test  //(expected = NoSuchElementException::class)
     fun removeCommentTest(){
+
+
+        // Aggiungo un commento
+        this.addComment()
+
         // Gli passo l'id del primo(ed unico) commento di prova
         val idComment = newUser.userSettings?.commenti!!.first().idComment
 
         // Siccome ho un unico commento, se lo RIMUOVO ENTRO IN ECCEZIONE:
         newUser.userSettings?.removeComment(idComment)
 
-        //assertEquals(newUser.userSettings!!.commenti.isEmpty() , true)
+        assertEquals(newUser.userSettings!!.commenti.isEmpty() , true)
 
+    }
+
+
+
+    private fun addComment(){
+        newUser.userSettings?.addNewComment("reviewText", "reviewTitle",
+            "isbn", 7f,  "title" , "title" , "image")
+        val currentDateTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        val formattedDateTime = currentDateTime.format(formatter)
     }
 
 }

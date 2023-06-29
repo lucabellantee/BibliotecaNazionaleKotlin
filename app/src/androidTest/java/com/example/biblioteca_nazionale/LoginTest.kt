@@ -39,7 +39,7 @@ class LoginTest {
 
 
     @Test
-    fun testLogin() {
+    fun loginTest() {
 
         Espresso.onView(ViewMatchers.withId(R.id.loginButtonWelcPage)).perform(ViewActions.click())
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
@@ -54,6 +54,9 @@ class LoginTest {
 
         Espresso.onView(ViewMatchers.withId(R.id.loginButton)).perform(ViewActions.click())
     }
+
+
+
 
 
 }

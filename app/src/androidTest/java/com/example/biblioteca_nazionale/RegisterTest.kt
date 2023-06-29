@@ -36,7 +36,7 @@ class RegisterTest {
     var activityRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    fun testRegister() {
+    fun registerTest() {
 
         Espresso.onView(ViewMatchers.withId(R.id.loginButtonWelcPage2)).perform(ViewActions.click())
 

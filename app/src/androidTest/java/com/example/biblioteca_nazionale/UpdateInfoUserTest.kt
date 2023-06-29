@@ -42,7 +42,7 @@ class UpdateInfoUserTest {
 
 
     @Test
-    fun testUpdateEmail() {
+    fun updateEmailTest() {
 
         onView(withId(R.id.loginButtonWelcPage)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
