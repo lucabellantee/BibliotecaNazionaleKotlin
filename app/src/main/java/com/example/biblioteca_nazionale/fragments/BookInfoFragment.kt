@@ -366,7 +366,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
     }
 
-
     private fun noLibraryFound() {
         binding.textViewNomeBiblioteca.text = "Nessuna biblioteca trovata"
 
@@ -568,7 +567,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             .start()
     }
 
-
     private fun manageRecyclerView(book: Book) {
         fbViewModel.getUserByCommentsOfBooks(book.id).observe(viewLifecycleOwner) { users ->
             val commentsList = ArrayList<TemporaryReview>()
@@ -651,7 +649,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             }
         }
     }
-
 
     override fun onResume() {
         super.onResume()

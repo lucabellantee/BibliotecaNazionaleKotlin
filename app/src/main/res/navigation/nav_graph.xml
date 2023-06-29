@@ -44,7 +44,9 @@
             app:exitAnim="@anim/slide_down"></action>
         <action
             android:id="@+id/action_bookInfoFragment_to_reviewsFragment"
-            app:destination="@id/reviewsFragment">
+            app:destination="@id/reviewsFragment"
+            app:popUpTo="@id/reviewsFragment"
+            app:popUpToInclusive="true">
             <argument
                 android:name="book"
                 app:argType="com.example.biblioteca_nazionale.model.Book" />
@@ -108,8 +110,7 @@
         <action
             android:id="@+id/action_writeReviewFragment_to_bookInfoFragment"
             app:destination="@id/bookInfoFragment"
-            app:enterAnim="@anim/slide_down"
-            app:exitAnim="@anim/slide_up">
+            app:popUpTo="@id/bookInfoFragment">
             <argument
                 android:name="book"
                 app:argType="com.example.biblioteca_nazionale.model.Book" />

@@ -39,6 +39,7 @@ class MyReviewsFragment : Fragment(R.layout.fragment_my_reviews) {
                             )
                         }
                     })
+
                     val layoutManager = LinearLayoutManager(requireContext())
                     binding.recyclerViewReviews.layoutManager = layoutManager
                     binding.recyclerViewReviews.adapter = adapter

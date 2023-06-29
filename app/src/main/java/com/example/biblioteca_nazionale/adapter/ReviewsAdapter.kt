@@ -1,3 +1,4 @@
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,11 +24,8 @@ class ReviewsAdapter(private val reviews: ArrayList<TemporaryReview>) :
         val review = reviews[position]
         holder.bind(review)
 
-        if (position == reviews.size-1) {
-            holder.itemView.findViewById<View>(R.id.view).visibility = View.GONE
-        } else {
-            holder.itemView.findViewById<View>(R.id.view).visibility = View.VISIBLE
-        }
+        val viewSeparator = holder.itemView.findViewById<View>(R.id.view)
+        viewSeparator.visibility = if (position == reviews.size - 1) View.GONE else View.VISIBLE
     }
 
     override fun getItemCount(): Int {
@@ -35,15 +33,24 @@ class ReviewsAdapter(private val reviews: ArrayList<TemporaryReview>) :
     }
 
     inner class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // Dichiarazioni degli elementi dell'interfaccia utente
         private val ratingReview = itemView.findViewById<RatingBar>(R.id.ratingReview2)
         private val textReviewUtente = itemView.findViewById<TextView>(R.id.textReviewUtente)
         private val textReviewDate = itemView.findViewById<TextView>(R.id.textReviewDate)
         private val textTitleReview = itemView.findViewById<TextView>(R.id.textTitleReview1)
         private val textReview = itemView.findViewById<TextView>(R.id.textReview1)
+        private val textChangeReview = itemView.findViewById<TextView>(R.id.textChangeReview)
+
+        private var isExpanded = false
+
+        init {
+            textChangeReview.setOnClickListener {
+                isExpanded = !isExpanded
+                updateTextReviewVisibility()
+                updateTextChangeReviewText()
+            }
+        }
 
         fun bind(review: TemporaryReview) {
-            // Collegamento dei dati agli elementi dell'interfaccia utente
             ratingReview.rating = review.vote
             textReviewUtente.text = "Valutazione di ${review.email}:"
 
@@ -56,7 +63,52 @@ class ReviewsAdapter(private val reviews: ArrayList<TemporaryReview>) :
             textReviewDate.text = outputDateString
             textTitleReview.text = review.reviewTitle
             textReview.text = review.reviewText
+
+            println(textReview.lineCount)
+
+            textReview.post {
+                if (textReview.lineCount < 5 && textTitleReview.lineCount < 2) {
+                    textChangeReview.visibility = View.GONE
+                } else {
+                    println(textReview.lineCount)
+                    if (textReview.lineCount > 5) {
+                        textReview.maxLines = 5
+                        textReview.ellipsize = TextUtils.TruncateAt.END
+                    }
+                    if (textTitleReview.lineCount > 2) {
+                        textTitleReview.maxLines = 2
+                        textTitleReview.ellipsize = TextUtils.TruncateAt.END
+                    }
+                    textChangeReview.visibility = View.VISIBLE
+                }
+
+                updateTextReviewVisibility()
+                updateTextChangeReviewText()
+            }
+        }
+
+        private fun updateTextReviewVisibility() {
+            if (isExpanded) {
+                textReview.maxLines = Integer.MAX_VALUE
+                textTitleReview.maxLines = Integer.MAX_VALUE
+                textReview.ellipsize = null
+                textTitleReview.ellipsize = null
+            } else {
+                if (textReview.lineCount > 5) {
+                    textReview.maxLines = 5
+                    textReview.ellipsize = TextUtils.TruncateAt.END
+                }
+                if (textTitleReview.lineCount > 2) {
+                    textTitleReview.maxLines = 2
+                    textTitleReview.ellipsize = TextUtils.TruncateAt.END
+                }
+            }
+        }
+
+        private fun updateTextChangeReviewText() {
+            val context = itemView.context
+            val textResId = if (isExpanded) R.string.read_less else R.string.read_more
+            textChangeReview.text = context.getString(textResId)
         }
     }
-
 }
