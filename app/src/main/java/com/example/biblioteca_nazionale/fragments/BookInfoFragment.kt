@@ -54,6 +54,7 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.roundToInt
 
 
 class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
@@ -500,20 +501,20 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             textRatingIndicator.text = "${formattedAverage}"
             ratingBarIndicator.rating = reviewsAverage.toFloat()
 
-            textratingBarStella1.text = "${perc1Star.toInt()}%"
-            progressBar1.progress = perc1Star.toInt()
+            textratingBarStella1.text = "${perc1Star.roundToInt()}%"
+            progressBar1.progress = perc1Star.roundToInt()
 
-            textratingBarStella2.text = "${perc2Star.toInt()}%"
-            progressBar2.progress = perc2Star.toInt()
+            textratingBarStella2.text = "${perc2Star.roundToInt()}%"
+            progressBar2.progress = perc2Star.roundToInt()
 
-            textratingBarStella3.text = "${perc3Star.toInt()}%"
-            progressBar3.progress = perc3Star.toInt()
+            textratingBarStella3.text = "${perc3Star.roundToInt()}%"
+            progressBar3.progress = perc3Star.roundToInt()
 
-            textratingBarStella4.text = "${perc4Star.toInt()}%"
-            progressBar4.progress = perc4Star.toInt()
+            textratingBarStella4.text = "${perc4Star.roundToInt()}%"
+            progressBar4.progress = perc4Star.roundToInt()
 
-            textratingBarStella5.text = "${perc5Star.toInt()}%"
-            progressBar5.progress = perc5Star.toInt()
+            textratingBarStella5.text = "${perc5Star.roundToInt()}%"
+            progressBar5.progress = perc5Star.roundToInt()
         }
 
         val ratingBar: RatingBar = binding.ratingBarInserimento

@@ -44,7 +44,7 @@ class FirebaseViewModel : ViewModel() {
         val title = hashMap["title"] as? String ?: ""
 
 
-        return MiniBook(isbn, bookPlace, image, date,title)
+        return MiniBook(isbn, bookPlace, image, date, title)
     }
 
     private fun convertHashMapToReview(hashMap: HashMap<*, *>): Review {
@@ -58,7 +58,7 @@ class FirebaseViewModel : ViewModel() {
         val title = hashMap["title"] as? String ?: ""
 
 
-        return Review(idComment, reviewText, reviewTitle, isbn, vote, date,title)
+        return Review(idComment, reviewText, reviewTitle, isbn, vote, date, title)
     }
 
 
@@ -181,21 +181,23 @@ class FirebaseViewModel : ViewModel() {
         if (uid != null) {
             val currentUser = this.getCurrentUser()
             currentUser.thenAccept { user ->
-                for (commento in user.userSettings?.commenti!!) {
-                    if (commento.isbn == isbn) {
-                        review.postValue(commento)
-                        return@thenAccept
+                if (user.userSettings != null) {
+                    for (commento in user.userSettings!!.commenti!!) {
+                        if (commento.isbn == isbn) {
+                            review.postValue(commento)
+                            return@thenAccept
+                        }
                     }
+                } else {
+                    review.postValue(null)
                 }
                 review.postValue(null) // Nessuna recensione trovata, passa null
             }
         } else {
             review.postValue(null) // Nessun utente corrente, passa null
         }
-
         return review
     }
-
 
 
     fun getAllCommentsByIsbn(isbn: String): LiveData<ArrayList<Review>> {
@@ -258,10 +260,10 @@ class FirebaseViewModel : ViewModel() {
             //Log.d("ISBN:  ", isbn)
             //Log.d("IdLibro:  ", idLibro)
             println(title)
-            if (utente.userSettings==null){
-                utente.userSettings= UserSettings(ArrayList(), ArrayList())
+            if (utente.userSettings == null) {
+                utente.userSettings = UserSettings(ArrayList(), ArrayList())
             }
-            utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image,title)
+            utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image, title)
             //Log.d("DOPO" , idLibro + " " + isbn + " " + placeBooked + " " + image)
             //Log.d("USER", utente.toString())
             // Log.d("USERRR", user.email)
@@ -395,11 +397,18 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-    fun addNewCommentUserSide(reviewText: String, reviewTitle: String, isbn: String, vote: Float, idComment: String? = null,title:String) {
+    fun addNewCommentUserSide(
+        reviewText: String,
+        reviewTitle: String,
+        isbn: String,
+        vote: Float,
+        idComment: String? = null,
+        title: String
+    ) {
         val currentUser =
             this.getCurrentUser()  // TODO METTERE: firebase.getCurrentUid()
         currentUser.thenAccept { user ->
-            user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote,idComment,title)
+            user.userSettings?.addNewComment(reviewText, reviewTitle, isbn, vote, idComment, title)
             firebase.addCommentUserSide(user)
         }.exceptionally { throwable ->
             // Gestione di eventuali errori nel recupero dell'utente
