@@ -77,4 +77,29 @@ data class UserSettings(
             }
         }
     }
+
+
+
+
+
+    /* fun removeComment(idComment: String): Boolean{
+     val iterator = commenti?.iterator()
+     var check = true
+     if (iterator != null) {
+         if(commenti.isNotEmpty()) {
+             while (iterator.hasNext()) {
+                 val comment = iterator.next()
+                 if (comment.idComment == idComment) {
+                     iterator.remove()
+                     break
+                 }
+             }
+             return check
+         } else {   // Se il commento è unico, allora faccio ritornare un emptyList
+             check = false
+             return check
+         }
+     }
+     return check
+ }*/
 }
