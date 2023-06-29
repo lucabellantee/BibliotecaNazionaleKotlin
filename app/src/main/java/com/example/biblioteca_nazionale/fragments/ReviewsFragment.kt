@@ -2,7 +2,6 @@ package com.example.biblioteca_nazionale.fragments
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,22 +32,21 @@ class ReviewsFragment : Fragment(R.layout.fragment_reviews) {
                 val commentsList = ArrayList<TemporaryReview>()
                 println(users)
                 for (user in users) {
-                        for (comment in user.userSettings?.commenti!!) {
-                            if (comment.isbn == book.id) {
-                                commentsList.add(
-                                    TemporaryReview(
-                                        comment.idComment,
-                                        comment.reviewText,
-                                        comment.reviewTitle,
-                                        comment.isbn,
-                                        comment.vote,
-                                        comment.date,
-                                        user.email
-                                    )
+                    for (comment in user.userSettings?.commenti!!) {
+                        if (comment.isbn == book.id) {
+                            commentsList.add(
+                                TemporaryReview(
+                                    comment.idComment,
+                                    comment.reviewText,
+                                    comment.reviewTitle,
+                                    comment.isbn,
+                                    comment.vote,
+                                    comment.date,
+                                    user.email
                                 )
-                            }
+                            )
                         }
-
+                    }
                 }
                 val adapter = ReviewsAdapter(commentsList)
                 val layoutManager = LinearLayoutManager(requireContext())
