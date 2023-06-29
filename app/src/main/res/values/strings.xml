@@ -53,6 +53,10 @@
     <string name="my_reviews">My reviews</string>
     <string name="your_vote">Your vote:</string>
     <string name="change_my_review">Change review</string>
+    <string name="notification_access_required">Notification access required</string>
+    <string name="ok_notification">Notification already set</string>
+    <string name="notification_permission_granted">Notification permission granted</string>
+    <string name="notification_permission_denied">Notification permission denied</string>
 
 
 

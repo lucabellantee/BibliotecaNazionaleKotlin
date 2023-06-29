@@ -17,7 +17,6 @@ import com.example.biblioteca_nazionale.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
-    private val notificationPermissionRequestCode = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,27 +38,5 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        requestNotificationPermission()
-    }
-
-    private fun requestNotificationPermission() {
-        if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
-            val intent = Intent(
-                "android.settings.APPLICATION_DETAILS_SETTINGS",
-                android.net.Uri.parse("package:$packageName")
-            )
-            startActivityForResult(intent, notificationPermissionRequestCode)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == notificationPermissionRequestCode) {
-            if (NotificationManagerCompat.from(this).areNotificationsEnabled()) {
-                Toast.makeText(this, "Notifications enabled", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Notifications are not enabled. Enable notifications to receive alerts from the app.", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 }
