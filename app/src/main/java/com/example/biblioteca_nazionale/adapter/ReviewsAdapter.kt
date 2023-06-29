@@ -38,12 +38,12 @@ class ReviewsAdapter(private val reviews: ArrayList<TemporaryReview>) :
         private val textReviewDate = itemView.findViewById<TextView>(R.id.textReviewDate)
         private val textTitleReview = itemView.findViewById<TextView>(R.id.textTitleReview1)
         private val textReview = itemView.findViewById<TextView>(R.id.textReview1)
-        private val textChangeReview = itemView.findViewById<TextView>(R.id.textChangeReview)
+        private val readMoreText = itemView.findViewById<TextView>(R.id.textChangeReview)
 
         private var isExpanded = false
 
         init {
-            textChangeReview.setOnClickListener {
+            readMoreText.setOnClickListener {
                 isExpanded = !isExpanded
                 updateTextReviewVisibility()
                 updateTextChangeReviewText()
@@ -68,7 +68,7 @@ class ReviewsAdapter(private val reviews: ArrayList<TemporaryReview>) :
 
             textReview.post {
                 if (textReview.lineCount < 5 && textTitleReview.lineCount < 2) {
-                    textChangeReview.visibility = View.GONE
+                    readMoreText.visibility = View.GONE
                 } else {
                     println(textReview.lineCount)
                     if (textReview.lineCount > 5) {
@@ -79,7 +79,7 @@ class ReviewsAdapter(private val reviews: ArrayList<TemporaryReview>) :
                         textTitleReview.maxLines = 2
                         textTitleReview.ellipsize = TextUtils.TruncateAt.END
                     }
-                    textChangeReview.visibility = View.VISIBLE
+                    readMoreText.visibility = View.VISIBLE
                 }
 
                 updateTextReviewVisibility()
@@ -108,7 +108,7 @@ class ReviewsAdapter(private val reviews: ArrayList<TemporaryReview>) :
         private fun updateTextChangeReviewText() {
             val context = itemView.context
             val textResId = if (isExpanded) R.string.read_less else R.string.read_more
-            textChangeReview.text = context.getString(textResId)
+            readMoreText.text = context.getString(textResId)
         }
     }
 }

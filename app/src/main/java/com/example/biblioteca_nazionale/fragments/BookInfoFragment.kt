@@ -8,10 +8,7 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RatingBar
@@ -59,7 +56,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     private val fbViewModel: FirebaseViewModel = FirebaseViewModel()
     val db = Firebase.firestore
 
-    private var isExpanded = false
+    private var isExpandedReview = false
+    private var isExpandedDescription = false
+
 
     private lateinit var progressBar: ProgressBar
 
@@ -449,7 +448,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             val numReviews1 = comments.count { it.vote == 1.0f }
 
             val reviewsAverage = comments.map { it.vote }.average()
-            val formattedAverage = if (reviewsAverage.isNaN()) "0.0" else String.format("%.2f", reviewsAverage)
+            val formattedAverage =
+                if (reviewsAverage.isNaN()) "0.0" else String.format("%.2f", reviewsAverage)
             val perc5Star = (numReviews5.toFloat() / numReviews.toFloat()) * 100
             val perc4Star = (numReviews4.toFloat() / numReviews.toFloat()) * 100
             val perc3Star = (numReviews3.toFloat() / numReviews.toFloat()) * 100
@@ -459,22 +459,28 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             ratingDetail.text = "${formattedAverage} su 5.0  ${numReviews} valutazioni"
 
             textRatingIndicator.text = "${formattedAverage}"
-            ratingBarIndicator.rating = if (reviewsAverage.isNaN()) 0.0f else reviewsAverage.toFloat()
+            ratingBarIndicator.rating =
+                if (reviewsAverage.isNaN()) 0.0f else reviewsAverage.toFloat()
 
 
-            textratingBarStella1.text = if (perc1Star.isNaN()) "0%" else "${perc1Star.roundToInt()}%"
+            textratingBarStella1.text =
+                if (perc1Star.isNaN()) "0%" else "${perc1Star.roundToInt()}%"
             progressBar1.progress = if (perc1Star.isNaN()) 0 else perc1Star.roundToInt()
 
-            textratingBarStella2.text = if (perc2Star.isNaN()) "0%" else "${perc2Star.roundToInt()}%"
+            textratingBarStella2.text =
+                if (perc2Star.isNaN()) "0%" else "${perc2Star.roundToInt()}%"
             progressBar2.progress = if (perc2Star.isNaN()) 0 else perc2Star.roundToInt()
 
-            textratingBarStella3.text = if (perc3Star.isNaN()) "0%" else "${perc3Star.roundToInt()}%"
+            textratingBarStella3.text =
+                if (perc3Star.isNaN()) "0%" else "${perc3Star.roundToInt()}%"
             progressBar3.progress = if (perc3Star.isNaN()) 0 else perc3Star.roundToInt()
 
-            textratingBarStella4.text = if (perc4Star.isNaN()) "0%" else "${perc4Star.roundToInt()}%"
+            textratingBarStella4.text =
+                if (perc4Star.isNaN()) "0%" else "${perc4Star.roundToInt()}%"
             progressBar4.progress = if (perc4Star.isNaN()) 0 else perc4Star.roundToInt()
 
-            textratingBarStella5.text = if (perc5Star.isNaN()) "0%" else "${perc5Star.roundToInt()}%"
+            textratingBarStella5.text =
+                if (perc5Star.isNaN()) "0%" else "${perc5Star.roundToInt()}%"
             progressBar5.progress = if (perc5Star.isNaN()) 0 else perc5Star.roundToInt()
 
         }
@@ -484,8 +490,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         val buttonReview = binding.buttonScriviRecensione
 
         fbViewModel.getUsersCommentByIsbn(book.id).observe(viewLifecycleOwner) { review ->
-
-            println(review)
 
             if (review != null) {
                 binding.textViewVote.text = "Your vote:"
@@ -502,6 +506,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 binding.textReviewDate.text = outputDateString
                 binding.textTitleReview1.text = review.reviewTitle
                 binding.textReview1.text = review.reviewText
+
+                manageMyReview()
 
                 binding.buttonModificaRecensione.setOnClickListener {
                     val bundle = Bundle().apply {
@@ -591,16 +597,16 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             }
 
             if (commentsList.isNotEmpty()) {
-                binding.layoutReviews.visibility=View.VISIBLE
-                binding.textViewTitleRecensioni.text="Reviews"
+                binding.layoutReviews.visibility = View.VISIBLE
+                binding.textViewTitleRecensioni.text = "Reviews"
                 binding.layoutReviews.setOnClickListener {
                     val action =
                         BookInfoFragmentDirections.actionBookInfoFragmentToReviewsFragment(book)
                     findNavController().navigate(action)
                 }
-            }else{
-                binding.layoutReviews.visibility=View.GONE
-                binding.textViewTitleRecensioni.text="No reviews found"
+            } else {
+                binding.layoutReviews.visibility = View.GONE
+                binding.textViewTitleRecensioni.text = "No reviews found"
             }
 
             commentsList.sortByDescending { dateFormat.parse(it.date) }
@@ -614,11 +620,46 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         }
     }
 
+    private fun manageMyReview() {
+        binding.textShowMyReview.text = requireContext().getString(R.string.read_more)
+
+        binding.textReview1.post {
+            if (binding.textReview1.lineCount < 5 && binding.textTitleReview1.lineCount < 2) {
+                binding.textReview1.visibility = View.GONE
+            } else {
+                binding.textShowMyReview.visibility = View.VISIBLE
+                binding.textShowMyReview.setOnClickListener {
+                    isExpandedReview = !isExpandedReview
+
+                    binding.textReview1.maxLines = if (isExpandedReview) Integer.MAX_VALUE else 5
+                    binding.textTitleReview1.maxLines =
+                        if (isExpandedReview) Integer.MAX_VALUE else 2
+
+                    var buttonText = ""
+                    if (isExpandedReview) {
+                        buttonText = requireContext().getString(R.string.read_less)
+                        binding.textReview1.ellipsize = null
+                        binding.textTitleReview1.ellipsize = null
+                    } else {
+                        buttonText = requireContext().getString(R.string.read_more)
+                        if (binding.textReview1.lineCount > 5) {
+                            binding.textReview1.ellipsize = TextUtils.TruncateAt.END
+                        }
+                        if (binding.textTitleReview1.lineCount > 2) {
+                            binding.textTitleReview1.ellipsize = TextUtils.TruncateAt.END
+                        }
+                    }
+                    binding.textShowMyReview.text = buttonText
+                }
+                binding.textShowMyReview.maxLines = 5
+                binding.textShowMyReview.ellipsize = TextUtils.TruncateAt.END
+            }
+        }
+    }
+
     private fun manageDescription() {
 
-        val spannableString = SpannableString("Leggi di più")
-        spannableString.setSpan(UnderlineSpan(), 0, "Leggi di più".length, 0)
-        binding.textMoreDescription.text = spannableString
+        binding.textMoreDescription.text = requireContext().getString(R.string.read_more)
 
         binding.textViewDescription.post {
             if (binding.textViewDescription.lineCount < 5) {
@@ -626,23 +667,19 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             } else {
                 binding.textMoreDescription.visibility = View.VISIBLE
                 binding.textMoreDescription.setOnClickListener {
-                    isExpanded = !isExpanded
-                    val maxLines = if (isExpanded) Integer.MAX_VALUE else 5
+                    isExpandedDescription = !isExpandedDescription
+                    val maxLines = if (isExpandedDescription) Integer.MAX_VALUE else 5
                     binding.textViewDescription.maxLines = maxLines
 
                     var buttonText = ""
-                    if (isExpanded) {
-                        buttonText = "Leggi meno"
-                        //showTextWithAnimation(binding.textViewDescription)
+                    if (isExpandedDescription) {
+                        buttonText = requireContext().getString(R.string.read_less)
                         binding.textViewDescription.ellipsize = null
                     } else {
-                        buttonText = "Leggi di più"
-                        //hideTextWithAnimation(binding.textViewDescription)
+                        buttonText = requireContext().getString(R.string.read_more)
                         binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
                     }
-                    val spannableString = SpannableString(buttonText)
-                    spannableString.setSpan(UnderlineSpan(), 0, buttonText.length, 0)
-                    binding.textMoreDescription.text = spannableString
+                    binding.textMoreDescription.text = buttonText
                 }
                 binding.textViewDescription.maxLines = 5
                 binding.textViewDescription.ellipsize = TextUtils.TruncateAt.END
