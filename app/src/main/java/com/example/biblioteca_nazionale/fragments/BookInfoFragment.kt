@@ -250,49 +250,56 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     }
 
     private fun setDefaultLibrary(marker: MyItem, book: Book) {
-        Log.d("prima: ", marker.title)
-        binding.textViewNomeBiblioteca.text = marker.title
-        expirationDate(book.id, marker.title.toString())
-
+        //Log.d("prima: ", marker.title)
+        binding.textViewNomeBiblioteca.text =
+            marker.title
+        expirationDate(
+            book.id,
+            marker.title.toString()
+        )
         binding.buttonPrenota.setOnClickListener {
-            val nomeBiblioteca = binding.textViewNomeBiblioteca.text.toString()
-            val user = auth.currentUser
+            var nomeBiblioteca =
+                binding.textViewNomeBiblioteca.text.toString()
+            fbViewModel.bookIsBooked(
+                book.id,
+                nomeBiblioteca
+            ).thenAccept { isBooked ->
+                if (isBooked == true) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Book already reserved for the same library",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    //Log.d("dentro IsBooked = true : ", marker.title)
+                    expirationDate(
+                        book.id.toString(),
+                        marker.title.toString()
+                    )
+                } else if (isBooked == false) {
+                    println(book.info)
 
-            if (user != null) {
-                // Verifica se il libro è già prenotato per la stessa biblioteca
-                fbViewModel.bookIsBooked(book.id, nomeBiblioteca).thenAccept { isBooked ->
-                    if (isBooked == true) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Book already reserved for the same library",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.d("dentro IsBooked = true : ", marker.title)
-                        expirationDate(book.id.toString(), marker.title.toString())
-                    } else if (isBooked == false) {
-                        // Esegui la prenotazione del libro
-                        val bookTitle = book.info?.title
-                        val thumbnailUrl = book.info?.imageLinks?.thumbnail
-
-                        if (bookTitle != null && thumbnailUrl != null) {
-                            fbViewModel.addNewBookBooked(
-                                user.uid,
-                                book.id,
-                                nomeBiblioteca,
-                                thumbnailUrl,
-                                bookTitle
-                            ).thenAccept { result ->
-                                if (result) {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Your book has been booked successfully!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    expirationDate(book.id, marker.title.toString())
-                                }
+                    book?.info?.title?.let { it1 ->
+                        fbViewModel.addNewBookBooked(
+                            book.id,
+                            book.id,
+                            binding.textViewNomeBiblioteca.text.toString(),
+                            book?.info?.imageLinks?.thumbnail.toString(),
+                            it1
+                        ).thenAccept { result ->
+                            if (result) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Your book has booked succesfully!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                expirationDate(
+                                    book.id,
+                                    marker.title.toString()
+                                )
                             }
                         }
                     }
+
                 }
             } else {
                 // L'utente non è autenticato
@@ -303,10 +310,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 ).show()
                 // Effettua qui eventuali azioni aggiuntive per gestire l'accesso degli utenti non autenticati
             }
+            /*binding.buttonPrenota.isEnabled =
+                false */
         }
+
     }
-
-
     private fun expirationDate(bookId: String, nomeBiblioteca: String) {
         fbViewModel.getExpirationDate(
             bookId,

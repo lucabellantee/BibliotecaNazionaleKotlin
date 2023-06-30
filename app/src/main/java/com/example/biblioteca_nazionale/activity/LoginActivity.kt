@@ -153,7 +153,7 @@ class LoginActivity : AppCompatActivity() {
                 firebaseViewModel.getAllUser().observe(this) { arrayOfUser ->
                     var userIsPresent = false
                     // val app = ArrayList<Boolean>()
-                    Log.d("arrayOfUser", arrayOfUser.size.toString())
+                    //Log.d("arrayOfUser", arrayOfUser.size.toString())
                     for (utente in arrayOfUser) {
                         if ((utente.UID.equals(account.idToken.toString())) && (utente.email.equals(
                                 account.email
@@ -163,9 +163,11 @@ class LoginActivity : AppCompatActivity() {
                         println(userIsPresent)
                     }
                     if (userIsPresent == false) {
-                        Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
+                        println(account.id)
+                        println(account.email.toString())
+                        //Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
                         val newUser =
-                            Users(account.idToken.toString(), account.email.toString(), null)
+                            Users(firebaseAuth.uid.toString(), account.email.toString(), null)
                         firebase.saveNewUser(newUser)
 
                     }
