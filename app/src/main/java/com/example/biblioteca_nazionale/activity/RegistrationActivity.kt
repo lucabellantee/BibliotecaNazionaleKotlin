@@ -44,6 +44,7 @@ class RegistrationActivity : AppCompatActivity() {
 
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                         if (it.isSuccessful) {
+                            firebaseAuth.signOut()
                             val intent = Intent(this, LoginActivity::class.java)
                             startActivity(intent)
                         } else {
