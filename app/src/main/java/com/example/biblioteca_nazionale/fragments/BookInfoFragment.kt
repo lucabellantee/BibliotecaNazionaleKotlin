@@ -316,7 +316,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             if (!(expirationDate.equals(""))) {
                 showViewWithAnimation(binding.textViewDataRiconsegna)
                 binding.textViewDataRiconsegna.text =
-                    "To be returned by" + expirationDate.toString()
+                    "To be returned by " + expirationDate.toString()
             } else hideViewWithAnimation(binding.textViewDataRiconsegna)
         }
     }
