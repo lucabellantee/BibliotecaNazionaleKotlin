@@ -1,12 +1,14 @@
 package com.example.biblioteca_nazionale.firebase
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
+import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
 
 
@@ -82,7 +84,7 @@ class FirebaseDB {
     fun getCurrentEmail(): String? = firebaseAuth.currentUser?.email
 
     fun getCurrentUid(): String? {
-        println(firebaseAuth.currentUser?.uid )
+        println(firebaseAuth.currentUser?.uid)
         return firebaseAuth.currentUser?.uid
     }
 
@@ -114,9 +116,16 @@ class FirebaseDB {
         db.collection("utenti").document(newUser.UID).set(newUser)
     }
 
-    fun deleteUser(uid: String){
-        db.collection("utenti").document(uid).delete()
-        user?.delete()
+    fun deleteUser(uid: String): CompletableFuture<Void>  {
+        val result = CompletableFuture<Void>()
+        println(uid)
+        db.collection("utenti").document(uid).delete().addOnSuccessListener {
+            println(firebaseAuth.currentUser)
+            firebaseAuth.currentUser?.delete()
+            firebaseAuth.signOut()
+            result.complete(null)
+        }
+        return result
     }
 
     fun addCommentUserSide(newUser: Users) {

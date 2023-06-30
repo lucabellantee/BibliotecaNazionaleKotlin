@@ -12,12 +12,16 @@ import com.google.firebase.firestore.DocumentSnapshot
 import java.util.concurrent.CompletableFuture
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.model.Review
+import com.google.firebase.auth.FirebaseAuth
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 
 class FirebaseViewModel : ViewModel() {
+
+
+    val auth = FirebaseAuth.getInstance()
 
     val firebase = FirebaseDB()
 
@@ -65,6 +69,7 @@ class FirebaseViewModel : ViewModel() {
 
         this.getUserInfo(getUidLoggedUser()).observeForever { documentSnapshot ->
             val data = documentSnapshot
+            println(documentSnapshot)
             val impostazioniData = data?.get("userSettings") as? HashMap<*, *>
             val libriPrenotatiData =
                 impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
@@ -364,7 +369,6 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-
     fun addNewCommentUserSide(
         reviewText: String,
         reviewTitle: String,
@@ -373,7 +377,7 @@ class FirebaseViewModel : ViewModel() {
         idComment: String? = null,
         title: String,
         image: String
-    ) : CompletableFuture<Void> {
+    ): CompletableFuture<Void> {
 
         val result = CompletableFuture<Void>()
 
@@ -440,10 +444,20 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-    fun deleteAccount(){
-        this.getCurrentUser().thenAccept {
-            user -> this.firebase.deleteUser(user.UID.toString())
+    fun deleteAccount(): CompletableFuture<Void> {
+        val result = CompletableFuture<Void>()
+
+        println("yolo")
+
+        this.getCurrentUser().thenAccept { user ->
+            println(user)
+            this.firebase.deleteUser(user.UID).thenAccept {
+                result.complete(null)
+            }
+        }.exceptionally {
+            null
         }
+        return result
     }
 
 }

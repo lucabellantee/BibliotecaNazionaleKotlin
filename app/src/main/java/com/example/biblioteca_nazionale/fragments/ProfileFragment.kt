@@ -1,6 +1,7 @@
 package com.example.biblioteca_nazionale.fragments
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +10,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.example.biblioteca_nazionale.MainActivity
 import com.example.biblioteca_nazionale.R
+import com.example.biblioteca_nazionale.activity.HomePageActivity
 import com.example.biblioteca_nazionale.databinding.FragmentProfileBinding
+import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
@@ -18,6 +22,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 class ProfileFragment : Fragment() {
 
     lateinit var binding: FragmentProfileBinding
+
+    private val fbViewModel: FirebaseViewModel = FirebaseViewModel()
+
     val auth = FirebaseAuth.getInstance()
 
     override fun onCreateView(
@@ -49,6 +56,7 @@ class ProfileFragment : Fragment() {
                 binding.editTextTextPassword.isEnabled = false
                 binding.editTextTextPassword2.isEnabled = false
                 binding.updateButtonFrag.isEnabled = false
+                binding.deleteButton.isEnabled = false
             } else {
                 binding.updateButtonFrag.setOnClickListener {
                     updateAll()
@@ -61,9 +69,15 @@ class ProfileFragment : Fragment() {
             return@setOnMenuItemClickListener true
         }
 
-        /*binding.logoutButton.setOnClickListener {
-            showLogoutConfirmationDialog()
-        }*/
+        binding.deleteButton.setOnClickListener {
+            Toast.makeText(
+                context,
+                "Profile deleted",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            deleteAccount()
+        }
     }
 
     private fun showLogoutConfirmationDialog() {
@@ -77,7 +91,7 @@ class ProfileFragment : Fragment() {
             .show()
     }
 
-    fun updateAll() {
+    private fun updateAll() {
         val user = auth.currentUser
 
         val newEmail = binding.editTextTextEmailAddress.text.toString()
@@ -172,9 +186,23 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    fun logout() {
+    private fun logout() {
         auth.signOut()
         val navController = Navigation.findNavController(binding.root)
         navController.navigate(R.id.action_profileInfoFragment_to_mainActivity)
+    }
+
+    private fun deleteAccount() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirm delete")
+            .setMessage("Are you sure you want to delete your account?")
+            .setPositiveButton("Confirm") { dialog, which ->
+                fbViewModel.deleteAccount().thenAccept {
+                    val intent = Intent(requireContext(), MainActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }
