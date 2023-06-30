@@ -192,10 +192,16 @@ class ProfileFragment : Fragment() {
     }
 
     private fun deleteAccount() {
-        println("777")
-        fbViewModel.deleteAccount().thenAccept {
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            startActivity(intent)
-        }
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Confirm delete")
+            .setMessage("Are you sure you want to delete your account?")
+            .setPositiveButton("Confirm") { dialog, which ->
+                fbViewModel.deleteAccount().thenAccept {
+                    val intent = Intent(requireContext(), MainActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }

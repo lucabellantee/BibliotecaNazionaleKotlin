@@ -1,12 +1,14 @@
 package com.example.biblioteca_nazionale.firebase
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
+import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
 
 
@@ -114,14 +116,15 @@ class FirebaseDB {
         db.collection("utenti").document(newUser.UID).set(newUser)
     }
 
-    fun deleteUser(uid: String):CompletableFuture<Void> {
+    fun deleteUser(uid: String): CompletableFuture<Void>  {
         val result = CompletableFuture<Void>()
+        println(uid)
         db.collection("utenti").document(uid).delete().addOnSuccessListener {
-            user?.delete()?.addOnSuccessListener {
-                result.complete(null)
-            }
+            println(firebaseAuth.currentUser)
+            firebaseAuth.currentUser?.delete()
+            firebaseAuth.signOut()
+            result.complete(null)
         }
-
         return result
     }
 
