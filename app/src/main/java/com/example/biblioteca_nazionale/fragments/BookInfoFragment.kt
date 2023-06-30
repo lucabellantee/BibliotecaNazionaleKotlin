@@ -310,7 +310,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             if (!(expirationDate.equals(""))) {
                 showViewWithAnimation(binding.textViewDataRiconsegna)
                 binding.textViewDataRiconsegna.text =
-                    "Da riconsegnare entro il " + expirationDate.toString()
+                    "To be returned by" + expirationDate.toString()
             } else hideViewWithAnimation(binding.textViewDataRiconsegna)
         }
     }
@@ -366,7 +366,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     }
 
     private fun noLibraryFound() {
-        binding.textViewNomeBiblioteca.text = "Nessuna biblioteca trovata"
+        binding.textViewNomeBiblioteca.text = "No library found"
 
         binding.textViewDataRiconsegna.visibility = View.GONE
 
@@ -456,7 +456,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             val perc2Star = (numReviews2.toFloat() / numReviews.toFloat()) * 100
             val perc1Star = (numReviews1.toFloat() / numReviews.toFloat()) * 100
 
-            ratingDetail.text = "${formattedAverage} on 5.0  ${numReviews} valutations"
+            ratingDetail.text = "${formattedAverage} over 5.0  ${numReviews} reviews"
 
             textRatingIndicator.text = "${formattedAverage}"
             ratingBarIndicator.rating =

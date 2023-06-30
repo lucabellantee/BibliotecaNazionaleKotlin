@@ -82,7 +82,7 @@ class FirebaseViewModel : ViewModel() {
                 val users = Users(uid, email, userSettings)
                 futureResult.complete(users)
             } else {
-                futureResult.completeExceptionally(Exception("Dati mancanti o nulli"))
+                futureResult.completeExceptionally(Exception("Missing or null data"))
             }
         }
         return futureResult
@@ -270,7 +270,6 @@ class FirebaseViewModel : ViewModel() {
         return result
     }
 
-
     fun getExpirationDate(idBook: String, place: String): CompletableFuture<String> {
         val futureExpiringDate = CompletableFuture<String>()
         val firebase = FirebaseDB()
@@ -354,21 +353,16 @@ class FirebaseViewModel : ViewModel() {
         }
     }
 
-    fun removeComment(idComment: String, onSuccess: () -> Unit, onError: () -> Unit) {
-
+    fun removeComment(idComment: String): CompletableFuture<Void> {
         val uid = getUidLoggedUser()
         val currentUser = this.getCurrentUser()
 
-        currentUser.thenAccept { user ->
+        return currentUser.thenCompose { user ->
             user.userSettings?.removeComment(idComment)
-            firebase.updateBookPrenoted(user).thenAccept {  onSuccess()}
-             // Richiama il callback in caso di successo
-        }.exceptionally { throwable ->
-            Log.e("/FirebaseViewModel", "Errore nel recupero dell'utente: ${throwable.message}")
-            onError() // Richiama il callback in caso di errore
-            null
-        }
+            firebase.updateBookPrenoted(user)
+        }.thenApply { null }
     }
+
 
 
     fun addNewCommentUserSide(

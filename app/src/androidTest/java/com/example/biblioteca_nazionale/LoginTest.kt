@@ -2,7 +2,6 @@ package com.example.biblioteca_nazionale
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -15,7 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import org.junit.After
 
 @RunWith(AndroidJUnit4::class)
@@ -39,7 +37,7 @@ class LoginTest {
 
 
     @Test
-    fun testLogin() {
+    fun loginTest() {
 
         Espresso.onView(ViewMatchers.withId(R.id.loginButtonWelcPage)).perform(ViewActions.click())
         Intents.intended(IntentMatchers.hasComponent(LoginActivity::class.java.name))
@@ -54,6 +52,9 @@ class LoginTest {
 
         Espresso.onView(ViewMatchers.withId(R.id.loginButton)).perform(ViewActions.click())
     }
+
+
+
 
 
 }

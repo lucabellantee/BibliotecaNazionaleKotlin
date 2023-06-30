@@ -8,7 +8,6 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.example.biblioteca_nazionale.activity.LoginActivity
 import com.example.biblioteca_nazionale.activity.RegistrationActivity
 import org.junit.After
 import org.junit.Before
@@ -36,13 +35,13 @@ class RegisterTest {
     var activityRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    fun testRegister() {
+    fun registerTest() {
 
         Espresso.onView(ViewMatchers.withId(R.id.loginButtonWelcPage2)).perform(ViewActions.click())
 
         Intents.intended(IntentMatchers.hasComponent(RegistrationActivity::class.java.name))
 
-        Espresso.onView(ViewMatchers.withId(R.id.emailTextViewInsert)).perform(ViewActions.typeText("topolino@gmail.com"))
+        Espresso.onView(ViewMatchers.withId(R.id.emailTextViewInsert)).perform(ViewActions.typeText("topolini23@gmail.com"))
         Espresso.onView(ViewMatchers.withId(R.id.passwordTextViewInsert)).perform(ViewActions.typeText("Topolino1234"))
         Espresso.onView(ViewMatchers.withId(R.id.passConfirmTextViewInsert)).perform(ViewActions.typeText("Topolino1234"))
 
