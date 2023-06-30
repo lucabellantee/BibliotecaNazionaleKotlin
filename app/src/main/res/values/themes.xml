@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:textColor">@color/material_dynamic_neutral_variant50</item>
     </style>
 
     <style name="Search_view_theme" parent="Widget.AppCompat.SearchView">
