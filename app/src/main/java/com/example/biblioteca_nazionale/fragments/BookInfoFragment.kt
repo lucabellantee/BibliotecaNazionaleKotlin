@@ -7,7 +7,6 @@ import android.location.Location
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RatingBar
@@ -248,13 +247,12 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     }
 
     private fun setDefaultLibrary(marker: MyItem, book: Book) {
-        Log.d("prima: ", marker.title)
         binding.textViewNomeBiblioteca.text =
             marker.title
         expirationDate(
             book.id,
-            marker.title.toString()
-        )  //todo luca vedere qui
+            binding.textViewNomeBiblioteca.text.toString()
+        )
         binding.buttonPrenota.setOnClickListener {
             var nomeBiblioteca =
                 binding.textViewNomeBiblioteca.text.toString()
@@ -268,10 +266,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         "Book already reserved for the same library",
                         Toast.LENGTH_SHORT
                     ).show()
-                    Log.d("dentro IsBooked = true : ", marker.title)
                     expirationDate(
                         book.id.toString(),
-                        marker.title.toString()
+                        nomeBiblioteca
                     )
                 } else if (isBooked == false) {
                     println(book.info)
@@ -283,20 +280,18 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                             binding.textViewNomeBiblioteca.text.toString(),
                             book?.info?.imageLinks?.thumbnail.toString(),
                             it1
-                        ).thenAccept { result ->
-                            if (result) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Your book has booked succesfully!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                expirationDate(
-                                    book.id,
-                                    marker.title.toString()
-                                )
-                            }
-                        }
+                        )
                     }
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Your book has booked succesfully!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    expirationDate(
+                        book.id,
+                        nomeBiblioteca
+                    )
 
                 }
             }
@@ -304,7 +299,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             /*binding.buttonPrenota.isEnabled =
                 false */
         }
-
     }
 
     private fun expirationDate(bookId: String, nomeBiblioteca: String) {
@@ -316,7 +310,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             if (!(expirationDate.equals(""))) {
                 showViewWithAnimation(binding.textViewDataRiconsegna)
                 binding.textViewDataRiconsegna.text =
-                    "To be returned " + expirationDate.toString()
+                    "To be returned by" + expirationDate.toString()
             } else hideViewWithAnimation(binding.textViewDataRiconsegna)
         }
     }
