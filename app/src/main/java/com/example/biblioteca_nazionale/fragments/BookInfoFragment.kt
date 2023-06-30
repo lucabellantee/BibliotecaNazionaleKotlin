@@ -247,11 +247,12 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     }
 
     private fun setDefaultLibrary(marker: MyItem, book: Book) {
+        //Log.d("prima: ", marker.title)
         binding.textViewNomeBiblioteca.text =
             marker.title
         expirationDate(
             book.id,
-            binding.textViewNomeBiblioteca.text.toString()
+            marker.title.toString()
         )
         binding.buttonPrenota.setOnClickListener {
             var nomeBiblioteca =
@@ -266,9 +267,10 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         "Book already reserved for the same library",
                         Toast.LENGTH_SHORT
                     ).show()
+                    //Log.d("dentro IsBooked = true : ", marker.title)
                     expirationDate(
                         book.id.toString(),
-                        nomeBiblioteca
+                        marker.title.toString()
                     )
                 } else if (isBooked == false) {
                     println(book.info)
@@ -280,27 +282,28 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                             binding.textViewNomeBiblioteca.text.toString(),
                             book?.info?.imageLinks?.thumbnail.toString(),
                             it1
-                        )
+                        ).thenAccept { result ->
+                            if (result) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Your book has booked succesfully!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                expirationDate(
+                                    book.id,
+                                    marker.title.toString()
+                                )
+                            }
+                        }
                     }
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Your book has booked succesfully!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    expirationDate(
-                        book.id,
-                        nomeBiblioteca
-                    )
 
                 }
             }
-
             /*binding.buttonPrenota.isEnabled =
                 false */
         }
-    }
 
+    }
     private fun expirationDate(bookId: String, nomeBiblioteca: String) {
         fbViewModel.getExpirationDate(
             bookId,

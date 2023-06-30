@@ -36,7 +36,7 @@ class FirebaseDB {
 
 
                 } else {
-                     Log.d("/FirebaseDB", "Documento vuoto")
+                    Log.d("/FirebaseDB", "Documento vuoto")
                 }
             }
             .addOnFailureListener { exception ->
@@ -81,7 +81,10 @@ class FirebaseDB {
 
     fun getCurrentEmail(): String? = firebaseAuth.currentUser?.email
 
-    fun getCurrentUid(): String? = firebaseAuth.currentUser?.uid
+    fun getCurrentUid(): String? {
+        println(firebaseAuth.currentUser?.uid )
+        return firebaseAuth.currentUser?.uid
+    }
 
 
     fun updateBookPrenoted(newUser: Users): CompletableFuture<Void> {
@@ -106,7 +109,7 @@ class FirebaseDB {
     }
 
 
-    fun deleteBookPrenoted(newUser: Users){
+    fun deleteBookPrenoted(newUser: Users) {
         db.collection("utenti").document(newUser.UID).delete()
         db.collection("utenti").document(newUser.UID).set(newUser)
     }
@@ -127,7 +130,10 @@ class FirebaseDB {
                 futureResult.complete(null)
             }
             .addOnFailureListener { e ->
-                Log.e("/FirebaseViewModel", "Errore nell'aggiornamento del documento utente: ${e.message}")
+                Log.e(
+                    "/FirebaseViewModel",
+                    "Errore nell'aggiornamento del documento utente: ${e.message}"
+                )
                 futureResult.completeExceptionally(e)
             }
 
