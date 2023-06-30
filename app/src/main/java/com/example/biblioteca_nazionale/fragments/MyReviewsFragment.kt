@@ -26,6 +26,7 @@ class MyReviewsFragment : Fragment(R.layout.fragment_my_reviews) {
 
 
         fbViewModel.getUsersComments().observe(viewLifecycleOwner) { reviewsList ->
+            println(reviewsList)
             if (reviewsList != null) {
                 if (reviewsList.isNotEmpty()) {
                     binding.progressBar.visibility = View.GONE
@@ -52,6 +53,10 @@ class MyReviewsFragment : Fragment(R.layout.fragment_my_reviews) {
                     val layoutManager = LinearLayoutManager(requireContext())
                     binding.recyclerViewReviews.layoutManager = layoutManager
                     binding.recyclerViewReviews.adapter = adapter
+                }else{
+                    binding.progressBar.visibility = View.GONE
+                    binding.layoutPrincipale.visibility = View.VISIBLE
+                    binding.layoutTotal.visibility=View.VISIBLE
                 }
             } else {
                 binding.progressBar.visibility = View.GONE

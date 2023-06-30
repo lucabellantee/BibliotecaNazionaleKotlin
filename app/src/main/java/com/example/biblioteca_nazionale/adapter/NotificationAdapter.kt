@@ -31,19 +31,13 @@ class NotificationAdapter(private val notificationList: List<Triple<Int, String,
     inner class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val titleTextView: TextView = itemView.findViewById(R.id.notificationTitle)
         private val textTextView: TextView = itemView.findViewById(R.id.notificationText)
-        private val logoImageView: ImageView = itemView.findViewById(R.id.notificationsImageItem)
 
         fun bind(notification: Triple<Int, String, String>) {
-            val notificationId = notification.first
             val title = notification.second
             val text = notification.third
             titleTextView.text = title
             textTextView.text = text
-            Glide.with(itemView)
-                .load(R.drawable.ic_launcher_foreground)
-                .apply(RequestOptions().centerCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(logoImageView)
+
         }
     }
 }

@@ -34,6 +34,9 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.progressBar.visibility = View.VISIBLE
+        binding.layoutTotal.visibility=View.GONE
+
         if (flag) {
             flag = false
             model.getAllDate().thenAccept { expirationBook ->
@@ -67,13 +70,21 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
         }
 
         val notificationList = mutableListOf<Triple<Int, String, String>>()
-        if (notificationIds != null) {
+        if (filteredNotificationIds.isNotEmpty()) {
+            binding.progressBar.visibility = View.GONE
+            binding.layoutPrincipale.visibility = View.GONE
+            binding.layoutTotal.visibility=View.VISIBLE
+
             for (notificationId in filteredNotificationIds) {
                 val title = sharedPreferences.getString("title_$notificationId", "")
                 val text = sharedPreferences.getString("text_$notificationId", "")
                 val notificationInfo = Triple(notificationId, title, text)
                 notificationList.add(notificationInfo as Triple<Int, String, String>)
             }
+        }else{
+            binding.progressBar.visibility = View.GONE
+            binding.layoutPrincipale.visibility = View.VISIBLE
+            binding.layoutTotal.visibility=View.VISIBLE
         }
 
         val layoutManager = LinearLayoutManager(requireContext())
