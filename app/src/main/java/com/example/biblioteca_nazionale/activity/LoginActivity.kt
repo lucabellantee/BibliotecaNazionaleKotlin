@@ -27,8 +27,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private var firebase: FirebaseDB = FirebaseDB()
     private val firebaseViewModel: FirebaseViewModel by viewModels()
+
     // login google
-    private lateinit var googleSignInClient : GoogleSignInClient
+    private lateinit var googleSignInClient: GoogleSignInClient
     private var isLoggingIn = false
     // login google
 
@@ -44,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
             .requestEmail()
             .build()
 
-        googleSignInClient = GoogleSignIn.getClient(this , gso)
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         binding.googleReg.setOnClickListener {
             signInGoogle()
@@ -66,31 +67,38 @@ class LoginActivity : AppCompatActivity() {
                 val pass = binding.password.text.toString()
 
                 if (email.isNotEmpty() && pass.isNotEmpty()) {
-                    firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
-                        isLoggingIn = false
-                        if (task.isSuccessful) {
-                            firebaseViewModel.getAllUser().observe(this, { arrayOfUser ->
-                                var userIsPresent = false
-                                Log.d("arrayOfUser", arrayOfUser.size.toString())
-                                for (utente in arrayOfUser) {
-                                    if (utente.UID == firebaseAuth.currentUser?.uid.toString()) {
-                                        userIsPresent = true
+                    firebaseAuth.signInWithEmailAndPassword(email, pass)
+                        .addOnCompleteListener { task ->
+                            isLoggingIn = false
+                            if (task.isSuccessful) {
+                                firebaseViewModel.getAllUser().observe(this) { arrayOfUser ->
+                                    var userIsPresent = false
+                                    Log.d("arrayOfUser", arrayOfUser.size.toString())
+                                    for (utente in arrayOfUser) {
+                                        if (utente.UID == firebaseAuth.currentUser?.uid.toString() && utente.email.equals(
+                                                firebaseAuth.currentUser?.email.toString()
+                                            )
+                                        ) {
+                                            userIsPresent = true
+                                        }
+                                    }
+                                    if (!userIsPresent) {
+                                        Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
+                                        val newUser =
+                                            Users(firebaseAuth.uid.toString(), email, null)
+                                        firebase.saveNewUser(newUser)
                                     }
                                 }
-                                if (!userIsPresent) {
-                                    Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
-                                    val newUser = Users(firebaseAuth.uid.toString(), email, null)
-                                    firebase.saveNewUser(newUser)
-                                }
-                            })
-                            val intent = Intent(this, HomePageActivity::class.java)
-                            startActivity(intent)
-                        } else {
-                            Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this, HomePageActivity::class.java)
+                                startActivity(intent)
+                            } else {
+                                Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                         }
-                    }
                 } else {
-                    Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -102,68 +110,73 @@ class LoginActivity : AppCompatActivity() {
 
         firebaseAuth.signOut()
 
-     if (firebaseAuth.currentUser != null) {
+        if (firebaseAuth.currentUser != null) {
             val intent = Intent(this, HomePageActivity::class.java)
             startActivity(intent)
         }
     }
 
 
-        // INIZIO FUNZIONI LOGIN GOOGLE
+    // INIZIO FUNZIONI LOGIN GOOGLE
 
-        private fun signInGoogle(){
-            val signInIntent = googleSignInClient.signInIntent
-            launcher.launch(signInIntent)
-        }
+    private fun signInGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        launcher.launch(signInIntent)
+    }
 
-        private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-                result ->
-            if (result.resultCode == Activity.RESULT_OK){
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
 
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 handleResults(task)
             }
         }
 
-        private fun handleResults(task: Task<GoogleSignInAccount>) {
-            if (task.isSuccessful){
-                val account : GoogleSignInAccount? = task.result
-                if (account != null){
-                    updateUI(account)
-                }
-            }else{
-                Toast.makeText(this, task.exception.toString() , Toast.LENGTH_SHORT).show()
+    private fun handleResults(task: Task<GoogleSignInAccount>) {
+        if (task.isSuccessful) {
+            val account: GoogleSignInAccount? = task.result
+            if (account != null) {
+                updateUI(account)
             }
+        } else {
+            Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
         }
+    }
 
-        private fun updateUI(account: GoogleSignInAccount) {
-            val credential = GoogleAuthProvider.getCredential(account.idToken , null)
-            firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
-                if (it.isSuccessful){
-                    // Salvo i miei dati su FireBase nella collection "Utenti"
-                    val firebaseViewModel: FirebaseViewModel by viewModels()
+    private fun updateUI(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
+            if (it.isSuccessful) {
+                // Salvo i miei dati su FireBase nella collection "Utenti"
 
-                    firebaseViewModel.getAllUser().observe(this, { arrayOfUser ->
-                        var userIsPresent = false
-                        val app = ArrayList<Boolean>()
-                        Log.d("arrayOfUser", arrayOfUser.size.toString())
-                        for(utente in arrayOfUser){
-                            if((utente.UID.equals(account.idToken.toString()))) userIsPresent = true
-                            app.add(userIsPresent)
-                        }
-                        if(userIsPresent == false) {
-                            Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
-                            val newUser = Users(account.idToken.toString(),account.email.toString(),null)
-                            firebase.saveNewUser(newUser)
-                        }
-                    })
+                firebaseViewModel.getAllUser().observe(this) { arrayOfUser ->
+                    var userIsPresent = false
+                    // val app = ArrayList<Boolean>()
+                    Log.d("arrayOfUser", arrayOfUser.size.toString())
+                    for (utente in arrayOfUser) {
+                        if ((utente.UID.equals(account.idToken.toString())) && (utente.email.equals(
+                                account.email
+                            ))
+                        ) userIsPresent =
+                            true
+                        println(userIsPresent)
+                    }
+                    if (userIsPresent == false) {
+                        Log.d("/LoginActivity", "SALVO IL NUOVO UTENTE !!!!")
+                        val newUser =
+                            Users(account.idToken.toString(), account.email.toString(), null)
+                        firebase.saveNewUser(newUser)
+
+                    }
+
+                    Toast.makeText(this, "Login successfully", Toast.LENGTH_LONG).show()
                     // Se corretto entro nella HomePageActivity, attivandola con questo comadno
                     startActivity(Intent(this , HomePageActivity::class.java))
-                }else{
-                    // Toast.makeText(this, it.exception.toString() , Toast.LENGTH_SHORT).show()
-                    Toast.makeText(this, "Error login with Google" , Toast.LENGTH_LONG).show()
                 }
+
             }
         }
+    }
 
 }
