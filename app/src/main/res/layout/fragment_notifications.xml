@@ -81,7 +81,6 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutPrincipale"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -91,11 +90,21 @@
                 android:layout_height="wrap_content"
                 android:text="@string/no_notifications_found"
                 android:textAlignment="center"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="0dp"
+                android:layout_height="250dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/types_of_push_notifications"
+                app:layout_constraintBottom_toTopOf="@+id/textViewPrincipale"
+                app:layout_constraintEnd_toEndOf="@+id/textViewPrincipale"
+                app:layout_constraintStart_toStartOf="@+id/textViewPrincipale" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
