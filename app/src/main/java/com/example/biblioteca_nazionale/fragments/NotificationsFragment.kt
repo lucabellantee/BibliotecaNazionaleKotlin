@@ -40,6 +40,8 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
                 for (book in expirationBook) {
                     val context: Context = requireContext()
                     val intent = Intent(context, NotificationReceiver::class.java)
+                    val uid = model.firebase.getCurrentUid()
+                    intent.putExtra("uid", uid)
                     intent.putExtra("title", "Book return")
                     intent.putExtra(
                         "text",
@@ -54,16 +56,23 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
             requireContext().getSharedPreferences("notification_data", Context.MODE_PRIVATE)
         val allEntries = sharedPreferences.all
 
-        val notificationIds = allEntries.keys.filter { it.startsWith("title_") }
-            .map { it.removePrefix("title_").toInt() }.toSet()
+        val notificationIds = allEntries.keys
+            .filter { it.startsWith("title_") }
+            .map { it.removePrefix("title_").toInt() }
+            .toSet()
 
-        val notificationList = mutableListOf<Pair<String, String>>()
+        val uid = model.firebase.getCurrentUid()
+        val filteredNotificationIds = notificationIds.filter { notificationId ->
+            sharedPreferences.getString("uid_$notificationId", "") == uid
+        }
+
+        val notificationList = mutableListOf<Triple<Int, String, String>>()
         if (notificationIds != null) {
-            for (notificationId in notificationIds) {
+            for (notificationId in filteredNotificationIds) {
                 val title = sharedPreferences.getString("title_$notificationId", "")
                 val text = sharedPreferences.getString("text_$notificationId", "")
-                val notificationInfo = Pair(title, text)
-                notificationList.add(notificationInfo as Pair<String, String>)
+                val notificationInfo = Triple(notificationId, title, text)
+                notificationList.add(notificationInfo as Triple<Int, String, String>)
             }
         }
 
