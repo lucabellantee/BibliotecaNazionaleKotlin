@@ -456,7 +456,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             val perc2Star = (numReviews2.toFloat() / numReviews.toFloat()) * 100
             val perc1Star = (numReviews1.toFloat() / numReviews.toFloat()) * 100
 
-            ratingDetail.text = "${formattedAverage} su 5.0  ${numReviews} valutazioni"
+            ratingDetail.text = "${formattedAverage} on 5.0  ${numReviews} valutations"
 
             textRatingIndicator.text = "${formattedAverage}"
             ratingBarIndicator.rating =
@@ -492,7 +492,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         fbViewModel.getUsersCommentByIsbn(book.id).observe(viewLifecycleOwner) { review ->
 
             if (review != null) {
-                binding.textViewVote.text = "Your vote:"
+                binding.textViewVote.text = requireContext().getText(R.string.your_vote)
                 ratingBar.rating = review.vote
                 ratingBar.setIsIndicator(true)
                 binding.myReview.visibility = View.VISIBLE
@@ -554,7 +554,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     }
 
                     Toast.makeText(
-                        requireContext(), "Hai votato: $ratingValue", Toast.LENGTH_SHORT
+                        requireContext(), "Your vote: $ratingValue", Toast.LENGTH_SHORT
                     ).show()
                 }
             }

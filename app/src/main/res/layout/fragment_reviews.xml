@@ -45,7 +45,7 @@
                 app:closeIcon="@drawable/round_close_24"
                 app:commitIcon="@drawable/round_north_west_24"
                 app:iconifiedByDefault="false"
-                app:queryHint="Cerca"
+                app:queryHint="@string/search"
                 app:searchHintIcon="@drawable/round_search__white_24"
                 app:searchIcon="@drawable/round_search__white_24" />
 

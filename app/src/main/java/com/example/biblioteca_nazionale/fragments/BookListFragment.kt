@@ -30,6 +30,8 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
 
         binding = FragmentBookListBinding.bind(view)
 
+        binding.textViewPrincipale.visibility=View.VISIBLE
+
         var focusSearchView = arguments?.getBoolean("focusSearchView") ?: false
         if (focusSearchView) {
             binding.searchView.postDelayed({
@@ -42,10 +44,19 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
             }, 1)
         }
 
+        binding.searchView.setOnQueryTextFocusChangeListener { v, hasFocus ->
+            if(binding.layoutPrincipale.visibility==View.VISIBLE){
+                binding.layoutPrincipale.visibility=View.GONE
+            }
+        }
+
+
+
         // Dichiarazione della variabile per memorizzare l'ultima query
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
+
                 val trimmedQuery = query.trim() // Rimuovi gli spazi vuoti dalla nuova query
                 val trimmedLastQuery = lastQuery.trim() // Rimuovi gli spazi vuoti dall'ultima query
 
@@ -57,6 +68,7 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
+
                 val trimmedText = newText.trim() // Rimuovi gli spazi vuoti dal nuovo testo
                 val trimmedLastQuery = lastQuery.trim() // Rimuovi gli spazi vuoti dall'ultima query
 

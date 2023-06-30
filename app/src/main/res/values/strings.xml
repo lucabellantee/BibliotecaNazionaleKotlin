@@ -60,6 +60,16 @@
     <string name="notification_permission_granted">Notification permission granted</string>
     <string name="notification_permission_denied">Notification permission denied</string>
 
+    <string name="no_notifications_found">No notifications found</string>
+    <string name="no_books_found">No books found</string>
+    <string name="no_reviews_found">No reviews found</string>
+
+    <string name="search">Search</string>
+
+
+
+
+
 
 
 
@@ -74,5 +84,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="confirm">conferma</string>
+    <string name="welcome_string">Welcome to the app of\nBiblioteca nazionale</string>
+    <string name="description">Description</string>
+    <string name="valutation_details">valutation details</string>
 
 </resources>

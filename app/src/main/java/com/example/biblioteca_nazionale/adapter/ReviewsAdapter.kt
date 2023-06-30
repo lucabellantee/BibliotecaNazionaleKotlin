@@ -54,7 +54,7 @@ class ReviewsAdapter(private val reviews: ArrayList<TemporaryReview>) :
 
         fun bind(review: TemporaryReview) {
             ratingReview.rating = review.vote
-            textReviewUtente.text = "Valutazione di ${review.email}:"
+            textReviewUtente.text = "Valutation of ${review.email}:"
 
             val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
             val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
