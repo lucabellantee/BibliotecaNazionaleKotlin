@@ -31,6 +31,7 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
         binding = FragmentBookListBinding.bind(view)
 
         binding.textViewPrincipale.visibility=View.VISIBLE
+        binding.progressBar.visibility = View.GONE
 
         var focusSearchView = arguments?.getBoolean("focusSearchView") ?: false
         if (focusSearchView) {
@@ -52,29 +53,32 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
 
 
 
-        // Dichiarazione della variabile per memorizzare l'ultima query
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
 
-                val trimmedQuery = query.trim() // Rimuovi gli spazi vuoti dalla nuova query
-                val trimmedLastQuery = lastQuery.trim() // Rimuovi gli spazi vuoti dall'ultima query
+                val trimmedQuery = query.trim()
+                val trimmedLastQuery = lastQuery.trim()
 
-                if (!trimmedQuery.equals(trimmedLastQuery, ignoreCase = true)) { // Confronto tra la nuova query e l'ultima query senza spazi vuoti
-                    lastQuery = query // Aggiornamento dell'ultima query
-                    performBookSearch(query) // Esegui la ricerca dei libri
+                if (!trimmedQuery.equals(trimmedLastQuery, ignoreCase = true)) {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.recyclerViewBooks.visibility=View.GONE
+                    lastQuery = query
+                    performBookSearch(query)
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
 
-                val trimmedText = newText.trim() // Rimuovi gli spazi vuoti dal nuovo testo
-                val trimmedLastQuery = lastQuery.trim() // Rimuovi gli spazi vuoti dall'ultima query
+                val trimmedText = newText.trim()
+                val trimmedLastQuery = lastQuery.trim()
 
-                if (!trimmedText.equals(trimmedLastQuery, ignoreCase = true)) { // Confronto tra il nuovo testo e l'ultima query senza spazi vuoti
-                    lastQuery = newText // Aggiornamento dell'ultima query
-                    performBookSearch(newText) // Esegui la ricerca dei libri
+                if (!trimmedText.equals(trimmedLastQuery, ignoreCase = true)) {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.recyclerViewBooks.visibility=View.GONE
+                    lastQuery = newText
+                    performBookSearch(newText)
                 }
                 return true
             }
@@ -83,10 +87,9 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
     }
 
     private fun performBookSearch(query: String) {
-        model.searchBooks(query)
         val layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewBooks.layoutManager = layoutManager
-        model.getLibriLiveData().observe(viewLifecycleOwner) { libriList ->
+        model.searchBooks(query).observe(viewLifecycleOwner) { libriList ->
             println(libriList)
             val adapter = BookListAdapter(libriList)
             adapter.setOnBookClickListener(object : BookListAdapter.OnBookClickListener {
@@ -101,6 +104,8 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
                 }
             })
             binding.recyclerViewBooks.adapter = adapter
+            binding.progressBar.visibility = View.GONE
+            binding.recyclerViewBooks.visibility=View.VISIBLE
         }
     }
 }

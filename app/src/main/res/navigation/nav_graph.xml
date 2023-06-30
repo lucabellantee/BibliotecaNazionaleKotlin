@@ -157,9 +157,7 @@
         </action>
         <action
             android:id="@+id/action_reviewsFragment_to_bookListFragment"
-            app:destination="@id/bookListFragment"
-            app:popUpTo="@id/bookListFragment"
-            app:popUpToInclusive="true">
+            app:destination="@id/bookListFragment">
             <argument
                 android:name="focusSearchView"
                 android:defaultValue="false"

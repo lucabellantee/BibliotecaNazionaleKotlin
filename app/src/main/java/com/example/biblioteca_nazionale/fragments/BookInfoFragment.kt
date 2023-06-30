@@ -7,6 +7,7 @@ import android.location.Location
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RatingBar
@@ -315,7 +316,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             if (!(expirationDate.equals(""))) {
                 showViewWithAnimation(binding.textViewDataRiconsegna)
                 binding.textViewDataRiconsegna.text =
-                    "To be returned " + expirationDate.toString()
+                    "To be returned by" + expirationDate.toString()
             } else hideViewWithAnimation(binding.textViewDataRiconsegna)
         }
     }
