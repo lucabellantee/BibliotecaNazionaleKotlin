@@ -33,7 +33,7 @@ class NotificationReceiver : BroadcastReceiver() {
         editor?.putString("uid_$notificationId", uid)
         editor?.putString("title_$notificationId", title)
         editor?.putString("text_$notificationId", text)
-        editor?.putInt("logo_$notificationId", R.drawable.ic_launcher_foreground)
+        editor?.putInt("logo_$notificationId", R.drawable.round_menu_book_48)
         editor?.apply()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -46,7 +46,7 @@ class NotificationReceiver : BroadcastReceiver() {
         }
 
         val notificationBuilder = NotificationCompat.Builder(context!!, channelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.round_menu_book_48)
             .setContentTitle(title)
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
