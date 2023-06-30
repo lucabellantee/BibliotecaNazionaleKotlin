@@ -37,6 +37,7 @@
     <string name="write_review">Write a review</string>
     <string name="reviews">Reviews</string>
     <string name="logout">Logout</string>
+    <string name="delete">Delete account</string>
     <string name="expi_date">Expiration date:</string>
     <string name="id">Id:</string>
     <string name="book_title">Book title</string>

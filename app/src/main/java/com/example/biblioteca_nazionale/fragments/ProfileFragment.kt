@@ -36,9 +36,14 @@ class ProfileFragment : Fragment() {
             updateAll()
         }
 
-        binding.logoutButton.setOnClickListener {
+        binding.toolbarMyProfile.setOnMenuItemClickListener {
             showLogoutConfirmationDialog()
+            return@setOnMenuItemClickListener true
         }
+
+        /*binding.logoutButton.setOnClickListener {
+            showLogoutConfirmationDialog()
+        }*/
     }
 
     private fun showLogoutConfirmationDialog() {
