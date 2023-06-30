@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.LoginBinding
 import com.example.biblioteca_nazionale.firebase.FirebaseDB
@@ -18,8 +19,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthEmailException
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.GoogleAuthProvider
+import java.net.SocketTimeoutException
 
 class LoginActivity : AppCompatActivity() {
 
@@ -92,8 +101,7 @@ class LoginActivity : AppCompatActivity() {
                                 val intent = Intent(this, HomePageActivity::class.java)
                                 startActivity(intent)
                             } else {
-                                Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT)
-                                    .show()
+                                loginErrorHandling(task)
                             }
                         }
                 } else {
@@ -179,6 +187,46 @@ class LoginActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    private fun loginErrorHandling(it: Task<AuthResult>){
+        when (it.exception) {
+            is FirebaseAuthInvalidCredentialsException -> {
+                alertDialog("Credential error","The credentials you entered are incorrect")
+            }
+            is FirebaseAuthEmailException -> {
+                alertDialog("Registration error","Email not valid, try again!")
+            }
+            is FirebaseAuthInvalidUserException -> {
+                alertDialog("User error","The supplied user does not exist or has been disabled")
+            }
+            is FirebaseAuthUserCollisionException -> {
+                alertDialog("Email collision","The email address provided is already associated with another account")
+            }
+            is FirebaseAuthException ->{
+                alertDialog("Authentication error","Generic authentication error")
+            }
+            is SocketTimeoutException -> {
+                alertDialog("Network error","Check your internet connection")
+            }
+            else -> {
+                alertDialog("General error","Pay attention")
+            }
+        }
+    }
+
+
+    private fun alertDialog(title: String , description: String){
+        var alertDialogBuilder = AlertDialog.Builder(this)
+
+        alertDialogBuilder.setTitle(title)
+        alertDialogBuilder.setMessage(description)
+        alertDialogBuilder.setPositiveButton("I understand") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+
     }
 
 }
