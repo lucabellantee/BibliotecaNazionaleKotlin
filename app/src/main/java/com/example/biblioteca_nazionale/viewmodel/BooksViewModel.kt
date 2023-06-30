@@ -14,11 +14,7 @@ class BooksViewModel : ViewModel() {
 
     private val _libriLiveData = MutableLiveData<BooksResponse>()
 
-    fun getLibriLiveData(): LiveData<BooksResponse> {
-        return _libriLiveData
-    }
-
-    fun searchBooks(query: String) {
+    fun searchBooks(query: String): MutableLiveData<BooksResponse> {
         viewModelScope.launch {
             try {
                 val response = googleBooksApiClient.getApiService().searchBooks(query, 20)
@@ -27,5 +23,7 @@ class BooksViewModel : ViewModel() {
                 Log.d("BooksViewModel", "Error exception: " + e.message)
             }
         }
+
+        return _libriLiveData
     }
 }
