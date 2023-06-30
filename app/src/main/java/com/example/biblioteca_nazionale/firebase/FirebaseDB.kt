@@ -82,7 +82,7 @@ class FirebaseDB {
     fun getCurrentEmail(): String? = firebaseAuth.currentUser?.email
 
     fun getCurrentUid(): String? {
-        println(firebaseAuth.currentUser?.uid )
+        println(firebaseAuth.currentUser?.uid)
         return firebaseAuth.currentUser?.uid
     }
 
@@ -114,9 +114,15 @@ class FirebaseDB {
         db.collection("utenti").document(newUser.UID).set(newUser)
     }
 
-    fun deleteUser(uid: String){
-        db.collection("utenti").document(uid).delete()
-        user?.delete()
+    fun deleteUser(uid: String):CompletableFuture<Void> {
+        val result = CompletableFuture<Void>()
+        db.collection("utenti").document(uid).delete().addOnSuccessListener {
+            user?.delete()?.addOnSuccessListener {
+                result.complete(null)
+            }
+        }
+
+        return result
     }
 
     fun addCommentUserSide(newUser: Users) {

@@ -364,7 +364,6 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-
     fun addNewCommentUserSide(
         reviewText: String,
         reviewTitle: String,
@@ -373,7 +372,7 @@ class FirebaseViewModel : ViewModel() {
         idComment: String? = null,
         title: String,
         image: String
-    ) : CompletableFuture<Void> {
+    ): CompletableFuture<Void> {
 
         val result = CompletableFuture<Void>()
 
@@ -440,10 +439,20 @@ class FirebaseViewModel : ViewModel() {
     }
 
 
-    fun deleteAccount(){
-        this.getCurrentUser().thenAccept {
-            user -> this.firebase.deleteUser(user.UID.toString())
+    fun deleteAccount(): CompletableFuture<Void> {
+        val result = CompletableFuture<Void>()
+
+        println("yolo")
+
+        this.getCurrentUser().thenAccept { user ->
+            println(user)
+            this.firebase.deleteUser(user.UID).thenAccept {
+                result.complete(null)
+            }
+        }.exceptionally {
+            null
         }
+        return result
     }
 
 }
