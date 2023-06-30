@@ -439,5 +439,12 @@ class FirebaseViewModel : ViewModel() {
         return result
     }
 
+
+    fun deleteAccount(){
+        this.getCurrentUser().thenAccept {
+            user -> this.firebase.deleteUser(user.UID.toString())
+        }
+    }
+
 }
 

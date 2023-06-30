@@ -114,6 +114,11 @@ class FirebaseDB {
         db.collection("utenti").document(newUser.UID).set(newUser)
     }
 
+    fun deleteUser(uid: String){
+        db.collection("utenti").document(uid).delete()
+        user?.delete()
+    }
+
     fun addCommentUserSide(newUser: Users) {
         db.collection("utenti").document(newUser.UID).delete()
         db.collection("utenti").document(newUser.UID).set(newUser)

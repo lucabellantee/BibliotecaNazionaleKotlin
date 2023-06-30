@@ -60,6 +60,8 @@
     <string name="delete_your_review">Delete your review</string>
     <string name="notification_permission_granted">Notification permission granted</string>
     <string name="notification_permission_denied">Notification permission denied</string>
+    <string name="not_modify">You cannot change your Google credentials, contact your provider</string>
+    <string name="modify_profile">Modify your profile</string>
 
     <string name="no_notifications_found">No notifications found</string>
     <string name="no_books_found">No books found</string>
