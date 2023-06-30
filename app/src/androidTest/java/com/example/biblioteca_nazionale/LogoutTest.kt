@@ -33,9 +33,10 @@ class LogoutTest {
 
         onView(withId(R.id.profileInfoFragment)).perform(click())
 
-        onView(withId(R.id.scrollViewInfoProfile)).perform(swipeUp())
-
-        onView(withId(R.id.logoutButton)).perform(click())
+       // onView(withId(R.id.scrollViewInfoProfile)).perform(swipeUp())
+       // onView(withId(R.id.logoutButton)).perform(click())
+        
+        onView(withId(R.id.toolbarMyProfile)).perform(click())
 
         onView(withText("Confirm Logout"))
             .inRoot(isDialog())
