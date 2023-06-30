@@ -56,6 +56,7 @@ class ProfileFragment : Fragment() {
                 binding.editTextTextPassword.isEnabled = false
                 binding.editTextTextPassword2.isEnabled = false
                 binding.updateButtonFrag.isEnabled = false
+                binding.deleteButton.isEnabled = false
             } else {
                 binding.updateButtonFrag.setOnClickListener {
                     updateAll()
