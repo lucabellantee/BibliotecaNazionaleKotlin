@@ -45,7 +45,7 @@
                 app:closeIcon="@drawable/round_close_24"
                 app:commitIcon="@drawable/round_north_west_24"
                 app:iconifiedByDefault="false"
-                app:queryHint="Cerca"
+                app:queryHint="@string/search"
                 app:searchHintIcon="@drawable/round_search__white_24"
                 app:searchIcon="@drawable/round_search__white_24" />
 
@@ -209,7 +209,7 @@
                     android:layout_marginHorizontal="50dp"
                     android:elegantTextHeight="true"
                     android:padding="2dp"
-                    android:text="Descrizione"
+                    android:text="@string/description"
                     android:textAlignment="textStart"
                     android:textSize="18sp" />
 
@@ -220,7 +220,7 @@
                     android:layout_marginHorizontal="50dp"
                     android:elegantTextHeight="true"
                     android:padding="2dp"
-                    android:text="Descrizione"
+                    android:text="@string/description"
                     android:textAlignment="textStart" />
 
                 <TextView
@@ -309,7 +309,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="Dettagli sulla valutazione"
+                    android:text="@string/valutation_details"
                     android:textAlignment="center"
                     android:textColor="#6D77FA" />
 

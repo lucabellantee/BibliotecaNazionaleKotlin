@@ -25,7 +25,12 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding = FragmentMyBooksBinding.bind(view)
+
+        binding.progressBar.visibility = View.VISIBLE
+        binding.layoutTotal.visibility = View.GONE
+
         firebaseViewModel = ViewModelProvider(requireActivity()).get(FirebaseViewModel::class.java)
         val appo: ArrayList<MiniBook> = ArrayList()
 
@@ -48,18 +53,31 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
             }
             println(appo)
             adapter = BookAdapter(appo)
-            adapter.setOnBookClickListener(object : BookAdapter.OnBookClickListener {
-                override fun onBookClick(position: Int) {
-                    val libro = appo[position]
-                    val action =
-                        MyBooksFragmentDirections.actionMyBooksFragmentToDeleteBookingFragment2(libro)
-                    findNavController().navigate(action)
-                }
-            })
+            if (appo.isNotEmpty()) {
 
-            val layoutManager = LinearLayoutManager(requireContext())
-            binding.recyclerViewMyBooks.layoutManager = layoutManager
-            binding.recyclerViewMyBooks.adapter = adapter
+                binding.progressBar.visibility = View.GONE
+                binding.layoutPrincipale.visibility = View.GONE
+                binding.layoutTotal.visibility=View.VISIBLE
+
+                adapter.setOnBookClickListener(object : BookAdapter.OnBookClickListener {
+                    override fun onBookClick(position: Int) {
+                        val libro = appo[position]
+                        val action =
+                            MyBooksFragmentDirections.actionMyBooksFragmentToDeleteBookingFragment2(
+                                libro
+                            )
+                        findNavController().navigate(action)
+                    }
+                })
+
+                val layoutManager = LinearLayoutManager(requireContext())
+                binding.recyclerViewMyBooks.layoutManager = layoutManager
+                binding.recyclerViewMyBooks.adapter = adapter
+            } else {
+                binding.progressBar.visibility = View.GONE
+                binding.layoutPrincipale.visibility = View.VISIBLE
+                binding.layoutTotal.visibility=View.VISIBLE
+            }
         }
     }
 }

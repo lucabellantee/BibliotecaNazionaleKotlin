@@ -11,7 +11,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.biblioteca_nazionale.R
 
-class NotificationAdapter(private val notificationList: List<Pair<String, String>>) :
+class NotificationAdapter(private val notificationList: List<Triple<Int, String, String>>) :
     RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
@@ -33,9 +33,10 @@ class NotificationAdapter(private val notificationList: List<Pair<String, String
         private val textTextView: TextView = itemView.findViewById(R.id.notificationText)
         private val logoImageView: ImageView = itemView.findViewById(R.id.notificationsImageItem)
 
-        fun bind(notification: Pair<String, String>) {
-            val title = notification.first
-            val text = notification.second
+        fun bind(notification: Triple<Int, String, String>) {
+            val notificationId = notification.first
+            val title = notification.second
+            val text = notification.third
             titleTextView.text = title
             textTextView.text = text
             Glide.with(itemView)

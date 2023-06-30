@@ -492,7 +492,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         fbViewModel.getUsersCommentByIsbn(book.id).observe(viewLifecycleOwner) { review ->
 
             if (review != null) {
-                binding.textViewVote.text = "Your vote:"
+                binding.textViewVote.text = requireContext().getText(R.string.your_vote)
                 ratingBar.rating = review.vote
                 ratingBar.setIsIndicator(true)
                 binding.myReview.visibility = View.VISIBLE
@@ -554,7 +554,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     }
 
                     Toast.makeText(
-                        requireContext(), "Hai votato: $ratingValue", Toast.LENGTH_SHORT
+                        requireContext(), "Your vote: $ratingValue", Toast.LENGTH_SHORT
                     ).show()
                 }
             }

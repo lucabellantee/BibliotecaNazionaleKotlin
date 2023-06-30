@@ -20,12 +20,21 @@ class MyReviewsFragment : Fragment(R.layout.fragment_my_reviews) {
 
         binding = FragmentMyReviewsBinding.bind(view)
 
+        binding.progressBar.visibility = View.VISIBLE
+        binding.layoutTotal.visibility=View.GONE
+
+
+
         fbViewModel.getUsersComments().observe(viewLifecycleOwner) { reviewsList ->
-            println(reviewsList)
             if (reviewsList != null) {
-                if (reviewsList.isNotEmpty()){
+                if (reviewsList.isNotEmpty()) {
+                    binding.progressBar.visibility = View.GONE
+                    binding.layoutPrincipale.visibility = View.GONE
+                    binding.layoutTotal.visibility=View.VISIBLE
+
                     val adapter = MyReviewsAdapter(reviewsList)
-                    adapter.setOnReviewClickListener(object : MyReviewsAdapter.OnReviewClickListener {
+                    adapter.setOnReviewClickListener(object :
+                        MyReviewsAdapter.OnReviewClickListener {
                         override fun onReviewClick(position: Int) {
                             println(position)
                             val bundle = Bundle().apply {
@@ -44,6 +53,10 @@ class MyReviewsFragment : Fragment(R.layout.fragment_my_reviews) {
                     binding.recyclerViewReviews.layoutManager = layoutManager
                     binding.recyclerViewReviews.adapter = adapter
                 }
+            } else {
+                binding.progressBar.visibility = View.GONE
+                binding.layoutPrincipale.visibility = View.VISIBLE
+                binding.layoutTotal.visibility=View.VISIBLE
             }
         }
     }
