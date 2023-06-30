@@ -301,17 +301,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     }
 
                 }
-            } else {
-                // L'utente non è autenticato
-                Toast.makeText(
-                    requireContext(),
-                    "You need to be logged in to book a book.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                // Effettua qui eventuali azioni aggiuntive per gestire l'accesso degli utenti non autenticati
             }
-            /*binding.buttonPrenota.isEnabled =
-                false */
         }
 
     }
