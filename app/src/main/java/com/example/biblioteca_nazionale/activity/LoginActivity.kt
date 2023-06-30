@@ -108,7 +108,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        firebaseAuth.signOut()
+        //firebaseAuth.signOut()
 
         if (firebaseAuth.currentUser != null) {
             val intent = Intent(this, HomePageActivity::class.java)

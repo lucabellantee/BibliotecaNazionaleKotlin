@@ -13,10 +13,14 @@ import com.example.biblioteca_nazionale.activity.HomePageActivity
 import com.example.biblioteca_nazionale.activity.LoginActivity
 import com.example.biblioteca_nazionale.activity.RegistrationActivity
 import com.example.biblioteca_nazionale.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+
+    private lateinit var firebaseAuth: FirebaseAuth
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +28,13 @@ class MainActivity : AppCompatActivity() {
 
         val loginButton: Button = findViewById(R.id.loginButtonWelcPage)
         val regButton: Button = findViewById(R.id.loginButtonWelcPage2)
+
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        if(firebaseAuth.currentUser!=null){
+            val intent = Intent(this, HomePageActivity::class.java)
+            startActivity(intent)
+        }
 
         loginButton.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)

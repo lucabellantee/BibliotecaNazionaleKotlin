@@ -55,6 +55,19 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.DeviceDefault.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginTop="-4dp"
+        android:indeterminate="true"
+        android:progressTint="@color/primary_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar" />
+
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -79,7 +92,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="0dp"
+                android:layout_height="250dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/best_home_library_apps"
+                app:layout_constraintBottom_toTopOf="@+id/textViewPrincipale"
+                app:layout_constraintEnd_toEndOf="@+id/textViewPrincipale"
+                app:layout_constraintStart_toStartOf="@+id/textViewPrincipale" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView

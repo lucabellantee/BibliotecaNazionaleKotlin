@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.ProgressBar
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.maps.GeoApiContext
@@ -55,6 +57,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     private val modelRequest: RequestViewModel = RequestViewModel()
     private val fbViewModel: FirebaseViewModel = FirebaseViewModel()
     val db = Firebase.firestore
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     private var isExpandedReview = false
     private var isExpandedDescription = false
@@ -298,6 +301,14 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     }
 
                 }
+            } else {
+                // L'utente non è autenticato
+                Toast.makeText(
+                    requireContext(),
+                    "You need to be logged in to book a book.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                // Effettua qui eventuali azioni aggiuntive per gestire l'accesso degli utenti non autenticati
             }
             /*binding.buttonPrenota.isEnabled =
                 false */
@@ -313,7 +324,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             if (!(expirationDate.equals(""))) {
                 showViewWithAnimation(binding.textViewDataRiconsegna)
                 binding.textViewDataRiconsegna.text =
-                    "To be returned by" + expirationDate.toString()
+                    "To be returned by " + expirationDate.toString()
             } else hideViewWithAnimation(binding.textViewDataRiconsegna)
         }
     }
