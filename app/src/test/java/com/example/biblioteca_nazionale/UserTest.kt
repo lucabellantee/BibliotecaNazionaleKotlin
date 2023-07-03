@@ -1,5 +1,6 @@
 package com.example.biblioteca_nazionale
 
+import com.example.biblioteca_nazionale.model.Like
 import com.example.biblioteca_nazionale.model.Review
 import com.example.biblioteca_nazionale.model.UserSettings
 import com.example.biblioteca_nazionale.model.Users
@@ -23,8 +24,7 @@ class UserTest {
     fun beforeTest() {
         uid = "123456"
         email = "emailProva@gmail.com"
-        userSettings = UserSettings(ArrayList(), ArrayList())
-
+        userSettings = UserSettings(ArrayList(), ArrayList(), null)
         newUser = Users(uid, email, userSettings)
     }
 
@@ -70,7 +70,6 @@ class UserTest {
     @Test  //(expected = NoSuchElementException::class)
     fun removeCommentTest(){
 
-
         // Aggiungo un commento
         this.addComment()
 
@@ -85,6 +84,18 @@ class UserTest {
     }
 
 
+    @Test
+    fun addNewLikeTest(){
+        newUser.userSettings?.addNewLike("ID_BOOK_LIKE")
+        assertEquals(newUser.userSettings?.miPiace?.first().toString() , Like("ID_BOOK_LIKE").toString() )
+    }
+
+    @Test
+    fun removeLikeTest(){
+        addLike()
+        newUser.userSettings?.deleteLike("ID_BOOK_LIKE")
+        assertEquals(newUser.userSettings?.miPiace?.isEmpty() , true)
+    }
 
     private fun addComment(){
         newUser.userSettings?.addNewComment("reviewText", "reviewTitle",
@@ -93,5 +104,8 @@ class UserTest {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val formattedDateTime = currentDateTime.format(formatter)
     }
+
+
+    private fun addLike() = newUser.userSettings?.addNewLike("ID_BOOK_LIKE")
 
 }
