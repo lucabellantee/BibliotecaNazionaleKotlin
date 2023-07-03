@@ -7,7 +7,8 @@ import java.util.UUID
 
 data class UserSettings(
     var libriPrenotati: ArrayList<MiniBook>?,
-    var commenti: ArrayList<Review>
+    var commenti: ArrayList<Review>,
+    var miPiace: ArrayList<Like>?
 ) {
 
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
@@ -21,8 +22,16 @@ data class UserSettings(
 
         libriPrenotati?.add(newElement)
 
-        println(newElement)
+    }
 
+    fun addNewLike(bookId:String) {
+        val newElement = Like(bookId)
+
+        if (miPiace == null) {
+            miPiace = ArrayList()
+        }
+
+        miPiace?.add(newElement)
     }
 
 
