@@ -34,6 +34,20 @@ data class UserSettings(
         miPiace?.add(newElement)
     }
 
+    fun deleteLike(bookId:String) {
+        val iterator = miPiace?.iterator()
+
+        if (iterator != null) {
+            while (iterator.hasNext()) {
+                val miPiace = iterator.next()
+                if (bookId == miPiace.bookId) {
+                    iterator.remove()
+                }
+            }
+        }
+    }
+
+
 
     fun removeBook(bookName: String) {
         val iterator = libriPrenotati?.iterator()

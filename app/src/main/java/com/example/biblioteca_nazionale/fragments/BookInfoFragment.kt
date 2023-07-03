@@ -240,30 +240,50 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
 
     private fun manageLikes(book: Book) {
 
-        fbViewModel.getMiPiace(book.id).thenAccept { likes->
-            binding.numLike.text=likes.count().toString()
-        }
 
-        fbViewModel.getUserMiPiace(book.id).thenAccept {likes->
+        fbViewModel.getUserMiPiace(book.id).thenAccept { likes ->
             var liked = false
 
-            for(like in likes){
-                if(like.bookId == book.id){
+            for (like in likes) {
+                if (like.bookId == book.id) {
                     liked = true
                 }
             }
 
-            if(!liked){
-                binding.likeImage.setOnClickListener {
-                    fbViewModel.addNewMiPiace(book.id).thenAccept {
-                        binding.likeImage.setImageDrawable(resources.getDrawable(R.drawable.round_favourite_24))
-                        binding.numLike.text= (binding.numLike.text.toString().toInt()+1).toString()
-                    }
-                    binding.likeImage.setOnClickListener{}
+            fbViewModel.getMiPiace(book.id).thenAccept { likes ->
+                binding.numLike.text = likes.count().toString()
+
+                val originalNumber = binding.numLike.text.toString().toInt()
+
+                if (!liked) {
+                    binding.likeImage.setImageDrawable(resources.getDrawable(R.drawable.round_favorite_border_24))
+                    setLike(book.id, originalNumber)
+
+                } else {
+                    binding.likeImage.setImageDrawable(resources.getDrawable(R.drawable.round_favourite_24))
+                    unSetLike(book.id, originalNumber)
                 }
-            }else{
-                binding.likeImage.setImageDrawable(resources.getDrawable(R.drawable.round_favourite_24))
             }
+        }
+    }
+
+    private fun setLike(bookId: String, originalNumber: Int) {
+        binding.likeImage.setOnClickListener {
+            fbViewModel.addNewMiPiace(bookId)
+            binding.likeImage.setImageDrawable(resources.getDrawable(R.drawable.round_favourite_24))
+            binding.numLike.text = (originalNumber + 1).toString()
+            unSetLike(bookId, originalNumber)
+
+        }
+
+    }
+
+    private fun unSetLike(bookId: String, originalNumber: Int) {
+        binding.likeImage.setOnClickListener {
+            fbViewModel.deleteMiPiace(bookId)
+            binding.likeImage.setImageDrawable(resources.getDrawable(R.drawable.round_favorite_border_24))
+            binding.numLike.text = (originalNumber).toString()
+            setLike(bookId, originalNumber)
         }
     }
 

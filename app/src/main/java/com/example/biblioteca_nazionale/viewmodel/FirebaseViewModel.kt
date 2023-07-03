@@ -287,6 +287,27 @@ class FirebaseViewModel : ViewModel() {
         return result
     }
 
+    fun deleteMiPiace(bookId: String): CompletableFuture<Boolean> {
+        val uid = firebase.getCurrentUid()
+        val result = CompletableFuture<Boolean>()
+        val currentUser = this.getCurrentUser()
+        currentUser.thenAccept { utente ->
+            if (utente.userSettings == null) {
+                utente.userSettings = UserSettings(ArrayList(), ArrayList(), ArrayList())
+            }
+            utente.userSettings?.deleteLike(bookId)
+            firebase.updateBookPrenoted(utente)
+                .thenApply {
+                    result.complete(true)
+                    true
+                }
+        }.exceptionally { throwable ->
+            result.complete(false)
+            null
+        }
+        return result
+    }
+
 
     fun addNewBookBooked(
         idLibro: String,
@@ -411,9 +432,11 @@ class FirebaseViewModel : ViewModel() {
         var likes = ArrayList<Like>()
 
         getCurrentUser().thenAccept { user ->
-            for (like in user.userSettings?.miPiace!!) {
-                if (like.bookId.equals(bookId)) {
-                    likes.add(like)
+            if (user.userSettings?.miPiace != null) {
+                for (like in user.userSettings?.miPiace!!) {
+                    if (like.bookId.equals(bookId)) {
+                        likes.add(like)
+                    }
                 }
             }
             result.complete(likes)
