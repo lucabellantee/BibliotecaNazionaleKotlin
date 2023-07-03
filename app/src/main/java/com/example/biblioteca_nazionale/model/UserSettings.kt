@@ -12,8 +12,8 @@ data class UserSettings(
 
     override fun toString(): String = "Libri prenotati: " + libriPrenotati.toString() + " " + "Commenti: " + commenti.toString()
 
-    fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String,title:String) {
-        val newElement = MiniBook(isbn, bookedPlace, image, LocalDate.now().plusDays(14).toString(),title)
+    fun addNewBook(bookName: String, isbn: String, bookedPlace: String, image: String,title:String, dateOfBooking: String) {
+        val newElement = MiniBook(isbn, bookedPlace, image, dateOfBooking ,title)
 
         if (libriPrenotati == null) {
             libriPrenotati = ArrayList()

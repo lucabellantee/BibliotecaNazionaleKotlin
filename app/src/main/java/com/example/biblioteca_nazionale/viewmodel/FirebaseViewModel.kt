@@ -13,9 +13,12 @@ import java.util.concurrent.CompletableFuture
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.model.Review
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.Calendar
 
 
 class FirebaseViewModel : ViewModel() {
@@ -252,7 +255,8 @@ class FirebaseViewModel : ViewModel() {
         isbn: String,
         placeBooked: String,
         image: String,
-        title: String
+        title: String,
+        dateOfBooked: String,
     ): CompletableFuture<Boolean> {
         val uid = firebase.getCurrentUid()
         val result = CompletableFuture<Boolean>()
@@ -261,7 +265,7 @@ class FirebaseViewModel : ViewModel() {
             if (utente.userSettings == null) {
                 utente.userSettings = UserSettings(ArrayList(), ArrayList())
             }
-            utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image, title)
+            utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image, title, dateOfBooked)
             firebase.updateBookPrenoted(utente)
                 .thenApply {
                     result.complete(true)
@@ -285,28 +289,26 @@ class FirebaseViewModel : ViewModel() {
             for (libroPrenotato in user.userSettings?.libriPrenotati!!) {
                 Log.d("idBook-user ", libroPrenotato.isbn)
                 Log.d("place-user ", libroPrenotato.bookPlace)
+                Log.d("date: ", libroPrenotato.date)
                 Log.d(
                     "Condizion nel if ",
                     ((libroPrenotato.isbn == idBook) && (libroPrenotato.bookPlace == place)).toString()
                 )
                 if ((libroPrenotato.isbn == idBook) && (libroPrenotato.bookPlace == place)) {
-                    val inputFormat = "yyyy-MM-dd"
+                    val inputFormat = "dd/MM/yyyy"
                     val outputFormat = "dd/MM/yyyy"
 
-                    // Creazione dell'oggetto DateTimeFormatter per l'input
-                    val inputFormatter = DateTimeFormatter.ofPattern(inputFormat)
+                    val inputFormatter = SimpleDateFormat(inputFormat)
+                    val outputFormatter = SimpleDateFormat(outputFormat)
 
-                    // Conversione della stringa di input in un oggetto LocalDate
-                    val date = LocalDate.parse(libroPrenotato.date.toString(), inputFormatter)
+                    val date = inputFormatter.parse(libroPrenotato.date)
+                    val calendar = Calendar.getInstance()
+                    calendar.time = date
+                    calendar.add(Calendar.DAY_OF_MONTH, 14)
+                    val datePlus14Days = calendar.time
+                    val datePlus14DaysString = outputFormatter.format(datePlus14Days)
 
-
-                    // Creazione dell'oggetto DateTimeFormatter per l'output
-                    val outputFormatter = DateTimeFormatter.ofPattern(outputFormat)
-
-                    // Conversione della data di output in una stringa nel formato desiderato
-                    val expiringDate = date.format(outputFormatter)
-
-                    futureExpiringDate.complete(expiringDate)
+                    futureExpiringDate.complete(datePlus14DaysString)
 
                     break
 
@@ -405,6 +407,7 @@ class FirebaseViewModel : ViewModel() {
         return result
     }
 
+    // Sommo alle date di prenotazione i 14 giorni
     fun getAllDate(): CompletableFuture<List<MiniBook>> {
         val currentUser = this.getCurrentUser()
         val today = LocalDate.now()
@@ -414,10 +417,21 @@ class FirebaseViewModel : ViewModel() {
             val userMiniList = user.userSettings?.libriPrenotati
             if (userMiniList != null) {
                 val miniList: MutableList<MiniBook> = mutableListOf()
+
+                val inputFormat = "dd/MM/yyyy"
+                val outputFormat = "dd/MM/yyyy"
+                val inputFormatter = SimpleDateFormat(inputFormat)
+                val outputFormatter = SimpleDateFormat(outputFormat)
+
                 for (libro in userMiniList) {
-                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    val date = LocalDate.parse(libro.date, formatter)
-                    if (ChronoUnit.DAYS.between(today, date) <= 2) {
+                    val date = inputFormatter.parse(libro.date)
+                    val calendar = Calendar.getInstance()
+                    calendar.time = date
+                    calendar.add(Calendar.DAY_OF_MONTH, 14)
+                    val datePlus14Days = calendar.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                    val today = LocalDate.now()
+                    //val prova= LocalDate.of(2023, 7, 28)
+                    if (ChronoUnit.DAYS.between(today, datePlus14Days) <= 2) {
                         miniList += libro
                     }
                 }
