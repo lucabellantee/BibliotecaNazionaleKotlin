@@ -288,6 +288,26 @@ class FirebaseViewModel : ViewModel() {
         return result
     }
 
+    fun updateUser(): CompletableFuture<Boolean> {
+        val uid = firebase.getCurrentUid()
+        val result = CompletableFuture<Boolean>()
+        val currentUser = this.getCurrentUser()
+        currentUser.thenAccept { utente ->
+            if (utente.userSettings == null) {
+                utente.userSettings = UserSettings(ArrayList(), ArrayList(), ArrayList())
+            }
+            firebase.updateBookPrenoted(utente)
+                .thenApply {
+                    result.complete(true)
+                    true
+                }
+        }.exceptionally { throwable ->
+            result.complete(false)
+            null
+        }
+        return result
+    }
+
     fun deleteMiPiace(bookId: String): CompletableFuture<Boolean> {
         val uid = firebase.getCurrentUid()
         val result = CompletableFuture<Boolean>()
