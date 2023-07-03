@@ -1,7 +1,6 @@
 package com.example.biblioteca_nazionale.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
 
@@ -427,7 +425,7 @@ class FirebaseViewModel : ViewModel() {
         return result
     }
 
-    fun getUserMiPiace(bookId: String): CompletableFuture<ArrayList<Like>> {
+    fun getUserMiPiaceById(bookId: String): CompletableFuture<ArrayList<Like>> {
 
         val result = CompletableFuture<ArrayList<Like>>()
 
@@ -445,6 +443,24 @@ class FirebaseViewModel : ViewModel() {
         }
         return result
     }
+
+    fun getUserMiPiace(): CompletableFuture<ArrayList<Like>> {
+
+        val result = CompletableFuture<ArrayList<Like>>()
+
+        var likes = ArrayList<Like>()
+
+        getCurrentUser().thenAccept { user ->
+            if (user.userSettings?.miPiace != null) {
+                for (like in user.userSettings?.miPiace!!) {
+                        likes.add(like)
+                }
+            }
+            result.complete(likes)
+        }
+        return result
+    }
+
 
 
     fun removeBookBooked(idLibro: String, onSuccess: () -> Unit, onError: () -> Unit) {

@@ -90,5 +90,8 @@
     <string name="welcome_string">Welcome to the app of\nBiblioteca nazionale</string>
     <string name="description">Description</string>
     <string name="valutation_details">valutation details</string>
+    <string name="my_likes">My likes</string>
+    <string name="no_likes_found">No likes found</string>
+    <string name="likes">Likes</string>
 
 </resources>

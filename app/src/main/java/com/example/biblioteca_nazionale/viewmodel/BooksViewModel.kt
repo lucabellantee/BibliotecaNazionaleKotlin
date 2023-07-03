@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.BooksResponse
 import com.example.biblioteca_nazionale.utils.GoogleBooksApiClient
 import kotlinx.coroutines.launch
@@ -25,5 +26,21 @@ class BooksViewModel : ViewModel() {
         }
 
         return _libriLiveData
+    }
+
+    fun searchBooksById(query: String): MutableLiveData<Book> {
+
+        val _LikeLiveData = MutableLiveData<Book>()
+
+        viewModelScope.launch {
+            try {
+                val response = googleBooksApiClient.getApiService().getBookById(query)
+                _LikeLiveData.value = response
+            } catch (e: Exception) {
+                Log.d("BooksViewModel", "Error exception: " + e.message)
+            }
+        }
+
+        return _LikeLiveData
     }
 }

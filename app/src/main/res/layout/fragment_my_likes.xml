@@ -1,13 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recyclerContainer"
+    android:id="@+id/recyclerContainerMyBooks"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingVertical="0dp"
-    tools:context=".fragments.BookListFragment">
-
+    tools:context=".fragments.MyLikesFragment">
 
     <LinearLayout
         android:id="@+id/linearLayoutSearchBar"
@@ -29,26 +29,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:menu="@menu/top_menu">
+            app:navigationIcon="@drawable/round_arrow_back_24_purple">
 
-
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/toolbarTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/search_bar"
-                android:baselineAligned="false"
-                android:focusedByDefault="false"
-                android:paddingVertical="5dp"
-                android:paddingRight="20dp"
-                android:theme="@style/Search_view_theme"
-                app:closeIcon="@drawable/round_close_24"
-                app:commitIcon="@drawable/round_north_west_24"
-                app:iconifiedByDefault="false"
-                app:queryHint="@string/search"
-                app:searchHintIcon="@drawable/round_search__white_24"
-                app:searchIcon="@drawable/round_search__white_24" />
+                android:layout_gravity="center"
+                android:text="@string/my_likes"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/primary_color" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -66,9 +60,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutSearchBar" />
 
-
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/layoutTotal"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -82,11 +75,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="323dp"
+                android:layout_height="266dp"
+                android:layout_marginBottom="-30dp"
+                android:cropToPadding="false"
+                android:src="@drawable/hearth"
+                app:layout_constraintBottom_toTopOf="@+id/textViewPrincipale"
+                app:layout_constraintEnd_toEndOf="@+id/textViewPrincipale"
+                app:layout_constraintStart_toStartOf="@+id/textViewPrincipale" />
+
             <TextView
                 android:id="@+id/textViewPrincipale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/welcome_string"
+                android:text="@string/no_likes_found"
                 android:textAlignment="center"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -94,42 +98,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.5" />
-
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="0dp"
-                android:layout_height="250dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/best_home_library_apps"
-                app:layout_constraintBottom_toTopOf="@+id/textViewPrincipale"
-                app:layout_constraintEnd_toEndOf="@+id/textViewPrincipale"
-                app:layout_constraintStart_toStartOf="@+id/textViewPrincipale" />
-
-
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewBooks"
+            android:id="@+id/recyclerViewMyLikes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none" />
 
     </LinearLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/likes"
-        android:src="@drawable/round_favourite_24"
-        app:backgroundTint="@color/primary_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@android:color/white"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

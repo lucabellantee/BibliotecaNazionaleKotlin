@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.adapter.BookListAdapter
 import com.example.biblioteca_nazionale.databinding.FragmentBookListBinding
+import com.example.biblioteca_nazionale.interface_.GoogleBooksApiService
 import com.example.biblioteca_nazionale.viewmodel.BooksViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 
 class BookListFragment : Fragment(R.layout.fragment_book_list) {
@@ -29,6 +31,13 @@ class BookListFragment : Fragment(R.layout.fragment_book_list) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentBookListBinding.bind(view)
+
+        val fab: FloatingActionButton = binding.fab
+
+        fab.setOnClickListener{
+            val action = BookListFragmentDirections.actionBookListFragmentToMyLikesFragment()
+            findNavController().navigate(action)
+        }
 
         binding.textViewPrincipale.visibility=View.VISIBLE
         binding.progressBar.visibility = View.GONE

@@ -3,13 +3,10 @@ package com.example.biblioteca_nazionale.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
-import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RatingBar
@@ -243,7 +240,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
     private fun manageLikes(book: Book) {
 
 
-        fbViewModel.getUserMiPiace(book.id).thenAccept { likes ->
+        fbViewModel.getUserMiPiaceById(book.id).thenAccept { likes ->
             var liked = false
 
             for (like in likes) {
@@ -496,8 +493,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
 
         toolbar.setNavigationOnClickListener {
-            val action = BookInfoFragmentDirections.actionBookInfoFragmentToBookListFragment()
-            findNavController().navigate(action)
+            findNavController().popBackStack()
         }
 
         binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->

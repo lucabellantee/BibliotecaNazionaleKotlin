@@ -50,6 +50,7 @@
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_4_API_29" value="120" />
                   <entry key="Pixel_5_API_31" value="120" />
+                  <entry key="Pixel_6_API_33" value="120" />
                   <entry key="Tests" value="360" />
                 </map>
               </option>
@@ -78,6 +79,7 @@
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_4_API_29" value="120" />
                   <entry key="Pixel_5_API_31" value="120" />
+                  <entry key="Pixel_6_API_33" value="120" />
                   <entry key="Tests" value="360" />
                   <entry key="Xiaomi&#10; Mi 10" value="120" />
                 </map>
@@ -93,6 +95,7 @@
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_4_API_29" value="120" />
                   <entry key="Pixel_5_API_31" value="120" />
+                  <entry key="Pixel_6_API_33" value="120" />
                   <entry key="Tests" value="360" />
                 </map>
               </option>
@@ -120,6 +123,7 @@
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_4_API_29" value="120" />
                   <entry key="Pixel_5_API_31" value="120" />
+                  <entry key="Pixel_6_API_33" value="120" />
                   <entry key="Tests" value="360" />
                 </map>
               </option>
