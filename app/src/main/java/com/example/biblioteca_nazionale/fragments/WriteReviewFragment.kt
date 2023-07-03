@@ -17,8 +17,6 @@ import com.example.biblioteca_nazionale.model.Book
 import com.example.biblioteca_nazionale.model.Review
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.firebase.firestore.FirebaseFirestore
-import java.util.concurrent.CompletableFuture
 
 class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
 
@@ -236,7 +234,7 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                 commentToUpdate.title = review.title
                 commentToUpdate.image = review.image
 
-                fbViewModel.firebase.updateBookPrenoted(currentUser).thenAccept {
+                fbViewModel.firebase.updateUser(currentUser).thenAccept {
                     Toast.makeText(requireContext(), "Review updated", Toast.LENGTH_SHORT).show()
                     findNavController().navigate(action)
                 }.exceptionally { throwable ->

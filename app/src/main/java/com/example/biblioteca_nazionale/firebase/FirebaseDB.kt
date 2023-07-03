@@ -1,14 +1,12 @@
 package com.example.biblioteca_nazionale.firebase
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
-import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
 
 
@@ -89,7 +87,7 @@ class FirebaseDB {
     }
 
 
-    fun updateBookPrenoted(newUser: Users): CompletableFuture<Void> {
+    fun updateUser(newUser: Users): CompletableFuture<Void> {
         val uid = newUser.UID
         val futureResult = CompletableFuture<Void>()
 

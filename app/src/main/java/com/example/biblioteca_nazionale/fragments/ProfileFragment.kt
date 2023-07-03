@@ -97,10 +97,11 @@ class ProfileFragment : Fragment() {
         val newEmail = binding.editTextTextEmailAddress.text.toString()
         val newPassword = binding.editTextTextPassword.text.toString()
 
-        if (!binding.editTextTextEmailAddress.text.isEmpty() && !binding.editTextTextPassword.text.isEmpty()) {
+        if (binding.editTextTextEmailAddress.text.isNotEmpty() && binding.editTextTextPassword.text.isNotEmpty()) {
             user?.updateEmail(newEmail)
                 ?.addOnCompleteListener { emailTask ->
                     if (emailTask.isSuccessful) {
+                        fbViewModel.updateEmail(newEmail)
                         Toast.makeText(
                             context,
                             "Email changed succesfully!",
@@ -133,10 +134,11 @@ class ProfileFragment : Fragment() {
                         ).show()
                     }
                 }
-        } else if (!binding.editTextTextEmailAddress.text.isEmpty() && binding.editTextTextPassword.text.isEmpty()) {
+        } else if (binding.editTextTextEmailAddress.text.isNotEmpty() && binding.editTextTextPassword.text.isEmpty()) {
             user?.updateEmail(newEmail)
                 ?.addOnCompleteListener { emailTask ->
                     if (emailTask.isSuccessful) {
+                        fbViewModel.updateEmail(newEmail)
                         Toast.makeText(
                             context,
                             "Email changed succesfully!",
@@ -153,7 +155,7 @@ class ProfileFragment : Fragment() {
                         ).show()
                     }
                 }
-        } else if (binding.editTextTextEmailAddress.text.isEmpty() && !binding.editTextTextPassword.text.isEmpty()) {
+        } else if (binding.editTextTextEmailAddress.text.isEmpty() && binding.editTextTextPassword.text.isNotEmpty()) {
             if (binding.editTextTextPassword.text.toString() == binding.editTextTextPassword2.text.toString()) {
                 user?.updatePassword(newPassword)
                     ?.addOnCompleteListener { passwordTask ->

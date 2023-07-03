@@ -276,7 +276,7 @@ class FirebaseViewModel : ViewModel() {
                 utente.userSettings = UserSettings(ArrayList(), ArrayList(), ArrayList())
             }
             utente.userSettings?.addNewLike(bookId)
-            firebase.updateBookPrenoted(utente)
+            firebase.updateUser(utente)
                 .thenApply {
                     result.complete(true)
                     true
@@ -288,15 +288,13 @@ class FirebaseViewModel : ViewModel() {
         return result
     }
 
-    fun updateUser(): CompletableFuture<Boolean> {
+    fun updateEmail(newEmail: String): CompletableFuture<Boolean> {
         val uid = firebase.getCurrentUid()
         val result = CompletableFuture<Boolean>()
         val currentUser = this.getCurrentUser()
         currentUser.thenAccept { utente ->
-            if (utente.userSettings == null) {
-                utente.userSettings = UserSettings(ArrayList(), ArrayList(), ArrayList())
-            }
-            firebase.updateBookPrenoted(utente)
+            utente.email = newEmail
+            firebase.updateUser(utente)
                 .thenApply {
                     result.complete(true)
                     true
@@ -317,7 +315,7 @@ class FirebaseViewModel : ViewModel() {
                 utente.userSettings = UserSettings(ArrayList(), ArrayList(), ArrayList())
             }
             utente.userSettings?.deleteLike(bookId)
-            firebase.updateBookPrenoted(utente)
+            firebase.updateUser(utente)
                 .thenApply {
                     result.complete(true)
                     true
@@ -346,7 +344,7 @@ class FirebaseViewModel : ViewModel() {
                 utente.userSettings = UserSettings(ArrayList(), ArrayList(), ArrayList())
             }
             utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image, title, dateOfBooked)
-            firebase.updateBookPrenoted(utente)
+            firebase.updateUser(utente)
                 .thenApply {
                     result.complete(true)
                     true
@@ -490,7 +488,7 @@ class FirebaseViewModel : ViewModel() {
 
         currentUser.thenAccept { user ->
             user.userSettings?.removeBook(idLibro)
-            firebase.updateBookPrenoted(user)
+            firebase.updateUser(user)
             onSuccess() // Richiama il callback in caso di successo
         }.exceptionally { throwable ->
             onError() // Richiama il callback in caso di errore
@@ -504,7 +502,7 @@ class FirebaseViewModel : ViewModel() {
 
         return currentUser.thenCompose { user ->
             user.userSettings?.removeComment(idComment)
-            firebase.updateBookPrenoted(user)
+            firebase.updateUser(user)
         }.thenApply { null }
     }
 
@@ -536,7 +534,7 @@ class FirebaseViewModel : ViewModel() {
                 title,
                 image
             )
-            firebase.updateBookPrenoted(user).thenAccept {
+            firebase.updateUser(user).thenAccept {
                 result.complete(null)
             }
         }.exceptionally { throwable ->
@@ -586,7 +584,7 @@ class FirebaseViewModel : ViewModel() {
         currentUser.thenAccept { user ->
             user.userSettings?.removeComment(idComment)
             println(user.userSettings)
-            firebase.updateBookPrenoted(user).thenAccept {
+            firebase.updateUser(user).thenAccept {
                 result.complete(null)
             }
         }.exceptionally { throwable ->
