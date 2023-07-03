@@ -3,6 +3,7 @@ package com.example.biblioteca_nazionale.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -105,6 +106,8 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         val book = arguments?.getParcelable<Book>("book")
 
         book?.let {
+
+            manageLikes(it)
 
             manageRecyclerView(it)
 
@@ -233,6 +236,35 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun manageLikes(book: Book) {
+
+        fbViewModel.getMiPiace(book.id).thenAccept { likes->
+            binding.numLike.text=likes.count().toString()
+        }
+
+        fbViewModel.getUserMiPiace(book.id).thenAccept {likes->
+            var liked = false
+
+            for(like in likes){
+                if(like.bookId == book.id){
+                    liked = true
+                }
+            }
+
+            if(!liked){
+                binding.likeImage.setOnClickListener {
+                    fbViewModel.addNewMiPiace(book.id).thenAccept {
+                        binding.likeImage.setImageDrawable(resources.getDrawable(R.drawable.round_favourite_24))
+                        binding.numLike.text= (binding.numLike.text.toString().toInt()+1).toString()
+                    }
+                    binding.likeImage.setOnClickListener{}
+                }
+            }else{
+                binding.likeImage.setImageDrawable(resources.getDrawable(R.drawable.round_favourite_24))
             }
         }
     }

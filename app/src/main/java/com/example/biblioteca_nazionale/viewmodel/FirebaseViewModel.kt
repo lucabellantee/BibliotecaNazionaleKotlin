@@ -1,11 +1,13 @@
 package com.example.biblioteca_nazionale.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.biblioteca_nazionale.firebase.FirebaseDB
 import com.example.biblioteca_nazionale.model.BookFirebase
+import com.example.biblioteca_nazionale.model.Like
 import com.example.biblioteca_nazionale.model.UserSettings
 import com.example.biblioteca_nazionale.model.Users
 import com.google.firebase.firestore.DocumentSnapshot
@@ -54,6 +56,12 @@ class FirebaseViewModel : ViewModel() {
         return Review(idComment, reviewText, reviewTitle, isbn, vote, date, title, image)
     }
 
+    private fun convertHashMapToLike(hashMap: HashMap<*, *>): Like {
+        val idBook = hashMap["bookId"] as? String ?: ""
+
+        return Like(idBook)
+    }
+
 
     fun getUserInfo(uid: String): MutableLiveData<DocumentSnapshot> {
         return firebase.getAllUserInfoFromUid(uid)
@@ -77,6 +85,7 @@ class FirebaseViewModel : ViewModel() {
             val libriPrenotatiData =
                 impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
             val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
+            val miPiaceData = impostazioniData?.get("miPiace") as? ArrayList<HashMap<*, *>>
             val uid = data?.get("uid") as? String
             val email = data?.get("email") as? String
 
@@ -86,7 +95,10 @@ class FirebaseViewModel : ViewModel() {
                 val commenti =
                     commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
 
-                val userSettings = commenti?.let { UserSettings(libriPrenotati, it) }
+                val miPiace =
+                    miPiaceData?.map { convertHashMapToLike(it) } as ArrayList<Like>?
+
+                val userSettings = commenti?.let { UserSettings(libriPrenotati, it, miPiace) }
                 val users = Users(uid, email, userSettings)
                 futureResult.complete(users)
             } else {
@@ -107,6 +119,7 @@ class FirebaseViewModel : ViewModel() {
                 val libriPrenotatiData =
                     impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
                 val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
+                val miPiaceData = impostazioniData?.get("miPiace") as? ArrayList<HashMap<*, *>>
                 val uid = document?.get("uid") as? String
                 val email = document?.get("email") as? String
 
@@ -115,7 +128,10 @@ class FirebaseViewModel : ViewModel() {
                 val commenti =
                     commentiData?.map { convertHashMapToReview(it) } as ArrayList<Review>?
 
-                val userSettings = commenti?.let { UserSettings(libriPrenotati, it) }
+                val miPiace =
+                    miPiaceData?.map { convertHashMapToLike(it) } as ArrayList<Like>?
+
+                val userSettings = commenti?.let { UserSettings(libriPrenotati, it, miPiace) }
                 val tmpUser = Users(uid.toString(), email.toString(), userSettings)
                 allUser.add(tmpUser)
             }
@@ -135,6 +151,7 @@ class FirebaseViewModel : ViewModel() {
                 val email = document?.get("email") as? String
                 val impostazioniData = document?.get("userSettings") as? HashMap<*, *>
                 val commentiData = impostazioniData?.get("commenti") as? ArrayList<HashMap<*, *>>
+                val miPiaceData = impostazioniData?.get("miPiace") as? ArrayList<HashMap<*, *>>
 
                 val commenti =
                     commentiData?.mapNotNull { convertHashMapToReview(it) } as ArrayList<Review>?
@@ -147,10 +164,13 @@ class FirebaseViewModel : ViewModel() {
                             impostazioniData?.get("libriPrenotati") as? ArrayList<HashMap<*, *>>
                         val libriPrenotati =
                             libriPrenotatiData?.map { convertHashMapToMiniBook(it) } as ArrayList<MiniBook>?
+                        val miPiace =
+                            miPiaceData?.map { convertHashMapToLike(it) } as ArrayList<Like>?
 
                         val userSettings = UserSettings(
                             libriPrenotati,
-                            filteredComments as ArrayList<Review>
+                            filteredComments as ArrayList<Review>,
+                            miPiace
                         )
                         val tmpUser = Users(uid.toString(), email.toString(), userSettings)
                         allUser.add(tmpUser)
@@ -249,6 +269,27 @@ class FirebaseViewModel : ViewModel() {
         return BookFirebase(allComment!!, allRankingStar!!)
     }
 
+    fun addNewMiPiace(bookId: String): CompletableFuture<Boolean> {
+        val uid = firebase.getCurrentUid()
+        val result = CompletableFuture<Boolean>()
+        val currentUser = this.getCurrentUser()
+        currentUser.thenAccept { utente ->
+            if (utente.userSettings == null) {
+                utente.userSettings = UserSettings(ArrayList(), ArrayList(), ArrayList())
+            }
+            utente.userSettings?.addNewLike(bookId)
+            firebase.updateBookPrenoted(utente)
+                .thenApply {
+                    result.complete(true)
+                    true
+                }
+        }.exceptionally { throwable ->
+            result.complete(false)
+            null
+        }
+        return result
+    }
+
 
     fun addNewBookBooked(
         idLibro: String,
@@ -263,7 +304,7 @@ class FirebaseViewModel : ViewModel() {
         val currentUser = this.getCurrentUser()
         currentUser.thenAccept { utente ->
             if (utente.userSettings == null) {
-                utente.userSettings = UserSettings(ArrayList(), ArrayList())
+                utente.userSettings = UserSettings(ArrayList(), ArrayList(), ArrayList())
             }
             utente.userSettings?.addNewBook(idLibro, isbn, placeBooked, image, title, dateOfBooked)
             firebase.updateBookPrenoted(utente)
@@ -344,6 +385,44 @@ class FirebaseViewModel : ViewModel() {
         return futureIsBooked
     }
 
+    fun getMiPiace(bookId: String): CompletableFuture<ArrayList<Like>> {
+
+        val result = CompletableFuture<ArrayList<Like>>()
+
+        var likes = ArrayList<Like>()
+
+        getAllUser().observeForever { users ->
+            for (user in users) {
+                if (user.userSettings?.miPiace?.isNotEmpty() == true) {
+                    for (like in user.userSettings?.miPiace!!) {
+                        if (like.bookId.equals(bookId)) {
+                            likes.add(like)
+                        }
+                    }
+                }
+            }
+            result.complete(likes)
+        }
+        return result
+    }
+
+    fun getUserMiPiace(bookId: String): CompletableFuture<ArrayList<Like>> {
+
+        val result = CompletableFuture<ArrayList<Like>>()
+
+        var likes = ArrayList<Like>()
+
+        getCurrentUser().thenAccept { user ->
+            for (like in user.userSettings?.miPiace!!) {
+                if (like.bookId.equals(bookId)) {
+                    likes.add(like)
+                }
+            }
+            result.complete(likes)
+        }
+        return result
+    }
+
 
     fun removeBookBooked(idLibro: String, onSuccess: () -> Unit, onError: () -> Unit) {
 
@@ -387,7 +466,7 @@ class FirebaseViewModel : ViewModel() {
             this.getCurrentUser()
         currentUser.thenAccept { user ->
             if (user.userSettings == null) {
-                user.userSettings = UserSettings(ArrayList(), ArrayList())
+                user.userSettings = UserSettings(ArrayList(), ArrayList(), ArrayList())
             }
             user.userSettings?.addNewComment(
                 reviewText,
