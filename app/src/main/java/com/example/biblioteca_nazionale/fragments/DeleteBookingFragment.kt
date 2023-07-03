@@ -11,6 +11,8 @@ import com.example.biblioteca_nazionale.R
 import com.example.biblioteca_nazionale.databinding.FragmentDeleteBookingBinding
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class DeleteBookingFragment : Fragment(R.layout.fragment_delete_booking) {
     private var _binding: FragmentDeleteBookingBinding? = null
@@ -24,12 +26,20 @@ class DeleteBookingFragment : Fragment(R.layout.fragment_delete_booking) {
 
         val book = arguments?.getParcelable<MiniBook>("book")
 
+        val inputFormat = "dd/MM/yyyy" // Formato della stringa di input
+        val outputFormat = "dd/MM/yyyy" // Formato della stringa di output
+
+        val inputFormatter = DateTimeFormatter.ofPattern(inputFormat)
+        val outputFormatter = DateTimeFormatter.ofPattern(outputFormat)
         book?.let {
-            val isbn = it.isbn
+            var localDate = LocalDate.parse(it.date, inputFormatter)
+            var modifiedDate = localDate.minusDays(14)
+            var dateOfBooking = modifiedDate.format(outputFormatter)
+            var isbn = it.isbn
             binding.textViewBookName.text = it.title
             binding.textViewBiblioteca.text = it.bookPlace
             binding.textViewId.text = "Id: ${it.isbn}"
-            binding.textViewDataRiconsegna.text = "${binding.textViewDataRiconsegna.text} ${it.date}"
+            binding.textViewDataRiconsegna.text = " Booked on ${dateOfBooking} \n ${binding.textViewDataRiconsegna.text} ${it.date}"
 
             binding.buttonCancella.setOnClickListener {
                 fbModel.removeBookBooked(isbn,

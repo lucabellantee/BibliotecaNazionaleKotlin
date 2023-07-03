@@ -334,6 +334,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                     // Imposta la data minima selezionabile come la data corrente
                     datePickerDialog.datePicker.minDate = calendar.timeInMillis
 
+                    datePickerDialog.setTitle("Select the loan start date")
                     datePickerDialog.show()
                 }
 
