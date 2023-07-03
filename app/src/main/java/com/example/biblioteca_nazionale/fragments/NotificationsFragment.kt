@@ -13,6 +13,10 @@ import com.example.biblioteca_nazionale.adapter.NotificationAdapter
 import com.example.biblioteca_nazionale.databinding.FragmentNotificationsBinding
 import com.example.biblioteca_nazionale.utils.NotificationReceiver
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Calendar
 
 class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
 
@@ -40,15 +44,27 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
         if (flag) {
             flag = false
             model.getAllDate().thenAccept { expirationBook ->
+                val inputFormat = "dd/MM/yyyy"
+                val outputFormat = "dd/MM/yyyy"
+                val inputFormatter = SimpleDateFormat(inputFormat)
+                val outputFormatter = SimpleDateFormat(outputFormat)
                 for (book in expirationBook) {
                     val context: Context = requireContext()
                     val intent = Intent(context, NotificationReceiver::class.java)
                     val uid = model.firebase.getCurrentUid()
+                    // Ricordiamoci che è la data di prenotazione non la expiring date, quindi
+                    // dobbiamo sommare i 14 giorni
+                    val date = inputFormatter.parse(book.date)
+                    val calendar = Calendar.getInstance()
+                    calendar.time = date
+                    calendar.add(Calendar.DAY_OF_MONTH, 14)
+                    val datePlus14Days = calendar.time
+                    val datePlus14DaysString = outputFormatter.format(datePlus14Days)
                     intent.putExtra("uid", uid)
                     intent.putExtra("title", "Book return")
                     intent.putExtra(
                         "text",
-                        "Your book ${book.isbn} taken from the library ${book.bookPlace} will expire ${book.date}"
+                        "Your book ${book.title} taken from the library ${book.bookPlace} will expire ${datePlus14DaysString}"
                     )
                     context.sendBroadcast(intent)
                 }

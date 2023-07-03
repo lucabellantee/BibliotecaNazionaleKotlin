@@ -2,6 +2,7 @@ package com.example.biblioteca_nazionale.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -46,6 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -328,31 +330,66 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         marker.title.toString()
                     )
                 } else if (isBooked == false) {
-                    println(book.info)
+                    val calendar = Calendar.getInstance()
+                    val year = calendar.get(Calendar.YEAR)
+                    val month = calendar.get(Calendar.MONTH)
+                    val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-                    book?.info?.title?.let { it1 ->
-                        fbViewModel.addNewBookBooked(
-                            book.id,
-                            book.id,
-                            binding.textViewNomeBiblioteca.text.toString(),
-                            book?.info?.imageLinks?.thumbnail.toString(),
-                            it1
-                        ).thenAccept { result ->
-                            if (result) {
+                    val datePickerDialog = DatePickerDialog(
+                        requireContext(),
+                        { _, selectedYear, selectedMonth, selectedDay ->
+                            val selectedCalendar = Calendar.getInstance()
+                            selectedCalendar.set(selectedYear, selectedMonth, selectedDay)
+
+                            // Verifica se la data selezionata è successiva alla data corrente
+                            if (selectedCalendar.after(calendar)) {
+                                val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                                // Usa la data selezionata come desideri
+                                // Ad esempio, puoi impostarla su una TextView
+                                // textView.text = selectedDate
+                                book?.info?.title?.let { it1 ->
+                                    fbViewModel.addNewBookBooked(
+                                        book.id,
+                                        book.id,
+                                        binding.textViewNomeBiblioteca.text.toString(),
+                                        book?.info?.imageLinks?.thumbnail.toString(),
+                                        it1,
+                                        selectedDate,
+                                    ).thenAccept { result ->
+                                        if (result) {
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Your book has been booked successfully!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            expirationDate(
+                                                book.id,
+                                                marker.title.toString()
+                                            )
+                                        }
+                                    }
+                                }
+                            } else {
+                                // La data selezionata non è valida
                                 Toast.makeText(
                                     requireContext(),
-                                    "Your book has booked succesfully!",
+                                    "Please select a date after today.",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                expirationDate(
-                                    book.id,
-                                    marker.title.toString()
-                                )
                             }
-                        }
-                    }
+                        },
+                        year,
+                        month,
+                        day
+                    )
 
+                    // Imposta la data minima selezionabile come la data corrente
+                    datePickerDialog.datePicker.minDate = calendar.timeInMillis
+
+                    datePickerDialog.setTitle("Select the loan start date")
+                    datePickerDialog.show()
                 }
+
             }
         }
 
@@ -787,5 +824,22 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             this.title = title
             this.snippet = snippet
         }
+    }
+
+    fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog =
+            DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                // Usa la data selezionata come desideri
+                // Ad esempio, puoi impostarla su una TextView
+                //  textView.text = selectedDate
+            }, year, month, day)
+
+        datePickerDialog.show()
     }
 }

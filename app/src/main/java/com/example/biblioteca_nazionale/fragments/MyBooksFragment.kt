@@ -13,6 +13,8 @@ import com.example.biblioteca_nazionale.databinding.FragmentMyBooksBinding
 import com.example.biblioteca_nazionale.model.MiniBook
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
 
@@ -42,7 +44,20 @@ class MyBooksFragment : Fragment(R.layout.fragment_my_books) {
                     if (userSettings != null) {
                         val libri = userSettings.libriPrenotati
                         if (libri != null) {
+                            val inputFormat = "dd/MM/yyyy"
+                            val outputFormat = "dd/MM/yyyy"
+
+                            val inputFormatter = SimpleDateFormat(inputFormat)
+                            val outputFormatter = SimpleDateFormat(outputFormat)
+
                             for (libro in libri) {
+                                val date = inputFormatter.parse(libro.date)
+                                val calendar = Calendar.getInstance()
+                                calendar.time = date
+                                calendar.add(Calendar.DAY_OF_MONTH, 14)
+                                val datePlus14Days = calendar.time
+                                val datePlus14DaysString = outputFormatter.format(datePlus14Days)
+                                libro.date = datePlus14DaysString
                                 appo.add(libro)
                             }
                         }
