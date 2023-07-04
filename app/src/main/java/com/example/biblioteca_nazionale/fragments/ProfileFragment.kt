@@ -12,11 +12,15 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.biblioteca_nazionale.MainActivity
 import com.example.biblioteca_nazionale.R
-import com.example.biblioteca_nazionale.activity.HomePageActivity
 import com.example.biblioteca_nazionale.databinding.FragmentProfileBinding
 import com.example.biblioteca_nazionale.viewmodel.FirebaseViewModel
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthEmailException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.GoogleAuthProvider
+import java.net.SocketTimeoutException
 
 
 class ProfileFragment : Fragment() {
@@ -108,30 +112,31 @@ class ProfileFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        user.updatePassword(newPassword)
-                            .addOnCompleteListener { passwordTask ->
-                                if (passwordTask.isSuccessful) {
-                                    Toast.makeText(
-                                        context,
-                                        "Password changed succesfully!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Password change operation not completed!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                        if (binding.editTextTextPassword.text.toString() == binding.editTextTextPassword2.text.toString()) {
+                            user.updatePassword(newPassword)
+                                .addOnCompleteListener { passwordTask ->
+                                    if (passwordTask.isSuccessful) {
+                                        Toast.makeText(
+                                            context,
+                                            "Password changed succesfully!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        updateErrorHandling(passwordTask)
+                                    }
                                 }
-                            }
-                        val navController = Navigation.findNavController(binding.root)
-                        navController.navigate(R.id.action_profileInfoFragment_to_credentialUpdated)
+                            val navController = Navigation.findNavController(binding.root)
+                            navController.navigate(R.id.action_profileInfoFragment_to_credentialUpdated)
+                        }
+                        else {
+                            Toast.makeText(
+                                context,
+                                "Password must have the same lenght and characters",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
-                        Toast.makeText(
-                            context,
-                            "Credential not changed, problems occured",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        updateErrorHandling(emailTask)
                     }
                 }
         } else if (binding.editTextTextEmailAddress.text.isNotEmpty() && binding.editTextTextPassword.text.isEmpty()) {
@@ -148,11 +153,7 @@ class ProfileFragment : Fragment() {
                             ProfileFragmentDirections.actionProfileInfoFragmentToCredentialUpdated()
                         findNavController().navigate(action)
                     } else {
-                        Toast.makeText(
-                            context,
-                            "Email not changed, problems occured!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        updateErrorHandling(emailTask)
                     }
                 }
         } else if (binding.editTextTextEmailAddress.text.isEmpty() && binding.editTextTextPassword.text.isNotEmpty()) {
@@ -169,6 +170,7 @@ class ProfileFragment : Fragment() {
                                 ProfileFragmentDirections.actionProfileInfoFragmentToCredentialUpdated()
                             findNavController().navigate(action)
                         } else {
+                            updateErrorHandling(passwordTask)
                             Toast.makeText(
                                 context,
                                 "Password not changed, problems occured!",
@@ -186,6 +188,40 @@ class ProfileFragment : Fragment() {
         } else if (binding.editTextTextEmailAddress.text.isEmpty() && binding.editTextTextPassword.text.isEmpty()) {
             Toast.makeText(context, "No new credential inserted", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun updateErrorHandling(it: Task<Void>){
+        when (it.exception) {
+            is FirebaseAuthWeakPasswordException -> {
+                alertDialog("Registration error","The password must contain 6 characters, of which at least 1 capital letter")
+            }
+            is FirebaseAuthEmailException -> {
+                alertDialog("Registration error","Email not valid, try again!")
+
+            }
+            is FirebaseAuthUserCollisionException -> {
+                alertDialog("Registration error","The email address provided is already associated with another account")
+            }
+            is SocketTimeoutException -> {
+                alertDialog("Network error","Check your internet connection")
+            }
+            else -> {
+                alertDialog("General error","Pay attention to what you entered")
+            }
+        }
+    }
+
+    private fun alertDialog(title: String , description: String){
+        var alertDialogBuilder = androidx.appcompat.app.AlertDialog.Builder(this.requireContext())
+
+        alertDialogBuilder.setTitle(title)
+        alertDialogBuilder.setMessage(description)
+        alertDialogBuilder.setPositiveButton("I understand") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+
     }
 
     private fun logout() {
