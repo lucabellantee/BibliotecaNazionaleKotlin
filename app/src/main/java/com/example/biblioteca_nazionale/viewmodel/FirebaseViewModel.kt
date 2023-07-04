@@ -597,7 +597,6 @@ class FirebaseViewModel : ViewModel() {
     fun deleteAccount(): CompletableFuture<Void> {
         val result = CompletableFuture<Void>()
 
-        println("yolo")
 
         this.getCurrentUser().thenAccept { user ->
             println(user)

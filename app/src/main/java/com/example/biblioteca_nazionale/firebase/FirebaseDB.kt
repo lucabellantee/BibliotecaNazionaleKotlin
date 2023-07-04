@@ -118,7 +118,7 @@ class FirebaseDB {
         val result = CompletableFuture<Void>()
         println(uid)
         db.collection("utenti").document(uid).delete().addOnSuccessListener {
-            println(firebaseAuth.currentUser)
+            //println(firebaseAuth.currentUser)
             firebaseAuth.currentUser?.delete()
             firebaseAuth.signOut()
             result.complete(null)
