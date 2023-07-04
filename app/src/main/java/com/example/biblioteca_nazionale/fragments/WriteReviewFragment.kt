@@ -141,8 +141,7 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
         val toolbar: MaterialToolbar = binding.toolbar
 
         toolbar.setNavigationOnClickListener {
-            val action =
-                WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
+            val action = WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
             findNavController().navigate(action)
         }
 
@@ -161,11 +160,12 @@ class WriteReviewFragment : Fragment(R.layout.fragment_write_review) {
                                 null,
                                 it,
                                 book.info.imageLinks?.thumbnail.toString()
-                            )
+                            ).thenAccept {
+                                val action =
+                                WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
+                                findNavController().navigate(action)
+                            }
                         }
-                        val action =
-                            WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(book)
-                        findNavController().navigate(action)
                     } else {
                         val action =
                             WriteReviewFragmentDirections.actionWriteReviewFragmentToBookInfoFragment(
