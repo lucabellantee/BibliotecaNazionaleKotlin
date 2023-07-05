@@ -119,10 +119,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 binding.textMoreDescription.visibility = View.GONE
             } else binding.textViewDescription.text = description
 
-            manageRatingBars(book)
-
-            manageDescription()
-
             Glide.with(requireContext()).load(book.info.imageLinks?.thumbnail.toString())
                 .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
                 .into(binding.imageViewBook)
@@ -170,6 +166,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         progressBar.visibility = View.GONE
                         binding.scrollViewInfo.visibility = View.VISIBLE
                         buttonReview.visibility = View.GONE
+
+                        manageRatingBars(book)
+
+                        manageDescription()
+
 
                         lifecycleScope.launch(Dispatchers.Main) {
 
