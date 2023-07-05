@@ -714,35 +714,39 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         binding.textShowMyReview.text = requireContext().getString(R.string.read_more)
 
         binding.textReview1.post {
-            if (binding.textReview1.lineCount < 5 && binding.textTitleReview1.lineCount < 2) {
-                binding.textReview1.visibility = View.GONE
-            } else {
-                binding.textShowMyReview.visibility = View.VISIBLE
-                binding.textShowMyReview.setOnClickListener {
-                    isExpandedReview = !isExpandedReview
+            binding.textTitleReview1.post {
+                println(binding.textReview1.lineCount < 5 && binding.textTitleReview1.lineCount < 2)
+                if (binding.textReview1.lineCount < 5 && binding.textTitleReview1.lineCount < 2) {
+                    binding.textShowMyReview.visibility = View.GONE
+                } else {
+                    binding.textShowMyReview.visibility = View.VISIBLE
+                    binding.textShowMyReview.setOnClickListener {
+                        isExpandedReview = !isExpandedReview
 
-                    binding.textReview1.maxLines = if (isExpandedReview) Integer.MAX_VALUE else 5
-                    binding.textTitleReview1.maxLines =
-                        if (isExpandedReview) Integer.MAX_VALUE else 2
+                        binding.textReview1.maxLines =
+                            if (isExpandedReview) Integer.MAX_VALUE else 5
+                        binding.textTitleReview1.maxLines =
+                            if (isExpandedReview) Integer.MAX_VALUE else 2
 
-                    var buttonText = ""
-                    if (isExpandedReview) {
-                        buttonText = requireContext().getString(R.string.read_less)
-                        binding.textReview1.ellipsize = null
-                        binding.textTitleReview1.ellipsize = null
-                    } else {
-                        buttonText = requireContext().getString(R.string.read_more)
-                        if (binding.textReview1.lineCount > 5) {
-                            binding.textReview1.ellipsize = TextUtils.TruncateAt.END
+                        var buttonText = ""
+                        if (isExpandedReview) {
+                            buttonText = requireContext().getString(R.string.read_less)
+                            binding.textReview1.ellipsize = null
+                            binding.textTitleReview1.ellipsize = null
+                        } else {
+                            buttonText = requireContext().getString(R.string.read_more)
+                            if (binding.textReview1.lineCount > 5) {
+                                binding.textReview1.ellipsize = TextUtils.TruncateAt.END
+                            }
+                            if (binding.textTitleReview1.lineCount > 2) {
+                                binding.textTitleReview1.ellipsize = TextUtils.TruncateAt.END
+                            }
                         }
-                        if (binding.textTitleReview1.lineCount > 2) {
-                            binding.textTitleReview1.ellipsize = TextUtils.TruncateAt.END
-                        }
+                        binding.textShowMyReview.text = buttonText
                     }
-                    binding.textShowMyReview.text = buttonText
+                    binding.textShowMyReview.maxLines = 5
+                    binding.textShowMyReview.ellipsize = TextUtils.TruncateAt.END
                 }
-                binding.textShowMyReview.maxLines = 5
-                binding.textShowMyReview.ellipsize = TextUtils.TruncateAt.END
             }
         }
     }
