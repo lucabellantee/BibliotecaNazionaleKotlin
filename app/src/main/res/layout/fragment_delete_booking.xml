@@ -32,23 +32,6 @@
             app:menu="@menu/top_menu"
             app:navigationIcon="@drawable/baseline_arrow_back_24">
 
-
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/search_bar"
-                android:baselineAligned="false"
-                android:paddingVertical="5dp"
-                android:paddingRight="20dp"
-                android:theme="@style/Search_view_theme"
-                app:closeIcon="@drawable/round_close_24"
-                app:commitIcon="@drawable/round_north_west_24"
-                app:iconifiedByDefault="false"
-                app:queryHint="Cerca"
-                app:searchHintIcon="@drawable/round_search__white_24"
-                app:searchIcon="@drawable/round_search__white_24" />
-
         </com.google.android.material.appbar.MaterialToolbar>
 
     </LinearLayout>
