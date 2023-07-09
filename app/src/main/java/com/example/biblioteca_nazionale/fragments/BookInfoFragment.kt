@@ -84,7 +84,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         binding = FragmentBookInfoBinding.bind(view)
 
         binding.recyclerViewReviews.setOnTouchListener { _, event ->
-            // Blocca l'elaborazione dell'evento touch sulla RecyclerView
             true
         }
 
@@ -120,7 +119,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
             } else binding.textViewDescription.text = description
 
             Glide.with(requireContext()).load(book.info.imageLinks?.thumbnail.toString())
-                .apply(RequestOptions().placeholder(R.drawable.baseline_book_24)) // Immagine di fallback
+                .apply(RequestOptions().placeholder(R.drawable.baseline_book_24))
                 .into(binding.imageViewBook)
 
 
@@ -134,12 +133,11 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 googleMap.setOnCameraIdleListener(clusterManager)
                 googleMap.setOnMarkerClickListener(clusterManager)
 
-                // Personalizzazione e visualizzazione della mappa
-                googleMap.uiSettings.isZoomControlsEnabled = true // Abilita i controlli di zoom
+                googleMap.uiSettings.isZoomControlsEnabled = true
                 googleMap.uiSettings.isMyLocationButtonEnabled =
-                    true // Abilita il pulsante "La mia posizione"
+                    true
                 googleMap.uiSettings.isScrollGesturesEnabled =
-                    true // Abilita il gesto di scorrimento sulla mappa
+                    true
                 googleMap.uiSettings.isRotateGesturesEnabled = true
                 googleMap.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
 
@@ -157,7 +155,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                 googleMap.moveCamera(cameraUpdate)
 
                 val geoApiContext = GeoApiContext.Builder()
-                    .apiKey("AIzaSyCtTj2ohggFHtNX2asYNXL1kj31pO8wO_Y") // Replace with your actual API key
+                    .apiKey("AIzaSyCtTj2ohggFHtNX2asYNXL1kj31pO8wO_Y")
                     .build()
 
                 modelRequest.getLibraries().observe(viewLifecycleOwner) { libraries ->
@@ -209,7 +207,7 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                         withContext(Dispatchers.Main) {
                                             val markerOptions = MyItem(
                                                 libraryLatLng, libraryName, "Biblioteca"
-                                            )  // Descrizione opzionale
+                                            )
                                             clusterManager.addItem(markerOptions)
                                             clusterManager.cluster()
 
@@ -322,7 +320,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         "Book already reserved for the same library",
                         Toast.LENGTH_SHORT
                     ).show()
-                    //Log.d("dentro IsBooked = true : ", marker.title)
                     expirationDate(
                         book.id.toString(),
                         marker.title.toString()
@@ -339,12 +336,9 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                             val selectedCalendar = Calendar.getInstance()
                             selectedCalendar.set(selectedYear, selectedMonth, selectedDay)
 
-                            // Verifica se la data selezionata è successiva alla data corrente
                             if (selectedCalendar.after(calendar)) {
                                 val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                                // Usa la data selezionata come desideri
-                                // Ad esempio, puoi impostarla su una TextView
-                                // textView.text = selectedDate
+
                                 book?.info?.title?.let { it1 ->
                                     fbViewModel.addNewBookBooked(
                                         book.id,
@@ -368,7 +362,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                                     }
                                 }
                             } else {
-                                // La data selezionata non è valida
                                 Toast.makeText(
                                     requireContext(),
                                     "Please select a date after today.",
@@ -381,7 +374,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
                         day
                     )
 
-                    // Imposta la data minima selezionabile come la data corrente
                     datePickerDialog.datePicker.minDate = calendar.timeInMillis
 
                     datePickerDialog.setTitle("Select the loan start date")
@@ -836,9 +828,6 @@ class BookInfoFragment : Fragment(R.layout.fragment_book_info) {
         val datePickerDialog =
             DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
                 val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                // Usa la data selezionata come desideri
-                // Ad esempio, puoi impostarla su una TextView
-                //  textView.text = selectedDate
             }, year, month, day)
 
         datePickerDialog.show()
