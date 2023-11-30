@@ -42,4 +42,4 @@ We are thrilled to share this app with the community of book enthusiasts, and we
 
 ## Flutter version
 
-Follow this link for the Flutter versione: https://github.com/Giansimone-Coccia/Biblioteca_Nazionale_Flutter.git
+Follow this link for the Flutter versione: https://github.com/lucabellantee/BibliotecaNazionaleFlutter
